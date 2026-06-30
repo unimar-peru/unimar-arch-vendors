@@ -47,7 +47,10 @@
 | Transversal: Estrategia de documentación     | Practicas dictadas para el estandar de documentación     | [Enlace](estandar/reference/governance/sdlc/03-documentacion/mejores-practicas-documentacion-sdlc.es.md) |
 
 ## hubs
-> Meta: Centralizar las disciplinas que aplican en todas las fases del SDLC. Objetivos: Un solo punto de entrada por área transversal, sin enlaces dispersos a documentos individuales.
+> **Meta:** Centralizar las disciplinas que aplican en todas las fases del SDLC.
+> **Objetivo:** Un solo punto de entrada por área transversal, sin enlaces dispersos a documentos individuales. Esta sección es la referencia detallada de los dominios transversales y el punto de consulta general del estándar.
+>
+> **Documento vivo:** Esta documentación está en constante evolución para reflejar las mejores prácticas y decisiones del equipo. Cualquier observación, sugerencia o duda es bienvenida y debe ser coordinada con el equipo UNIMAR.
 
 | Categoría       | Hub                                                                                                                       | ¿Qué contiene?                                                                                                                                                                                                    | Para quién / Cuándo                                                                         | Meta                                                 |
 |:----------------|:--------------------------------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------|:-----------------------------------------------------|
