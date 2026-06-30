@@ -79,7 +79,7 @@ Ejecutar el despliegue del RC a producción con la estrategia correcta (Blue/Gre
 | [Kubernetes](https://kubernetes.io/) | Orquestación de contenedores y rolling updates | [instalación](https://kubernetes.io/docs/setup/) | [docs](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) | Apache 2.0 (gratuita) |
 | [Helm v3](https://helm.sh/) | Gestión de paquetes Kubernetes | [instalación](https://helm.sh/docs/intro/install/) | [docs](https://helm.sh/docs/) | Apache 2.0 (gratuita) |
 | [Docker](https://www.docker.com/) | Contenedores multi-stage build, distroless | [instalación](https://docs.docker.com/get-docker/) | [docs](https://docs.docker.com/) | Apache 2.0 (gratuita) |
-| [Kong OSS](https://konghq.com/) | API Gateway de borde para canary routing | [instalación](https://konghq.com/install/) | [docs](https://docs.konghq.com/) | Apache 2.0 (gratuita) |
+| [Ingress Controller](https://kubernetes.io/docs/concepts/services-networking/ingress/) | API Gateway de borde para canary routing | [instalación](https://kubernetes.github.io/ingress-nginx/deploy/) | [docs](https://kubernetes.io/docs/concepts/services-networking/ingress/) | Apache 2.0 (gratuita) |
 | [GitHub Actions](https://github.com/features/actions) | CI/CD pipeline automatizado | Nativo en GitHub | [docs](https://docs.github.com/en/actions) | Gratuito para repos públicos |
 
 </details>
@@ -177,7 +177,7 @@ Definir la topología de infraestructura, estrategia de disaster recovery, aprov
 | Componente | Tecnología | Propósito | Alternativa |
 | :--------- | :--------- | :-------- | :---------- |
 | **Orquestación** | Kubernetes (K8s) | Gestión de contenedores en producción | — |
-| **API Gateway** | Kong OSS | Borde de tráfico, rate limiting, autenticación | — |
+| **API Gateway** | Ingress Controller | Borde de tráfico, rate limiting, autenticación | — |
 | **Base de Datos .NET** | SQL Server | Persistencia relacional para runtime .NET | PostgreSQL (con ADR) |
 | **Base de Datos Node.js** | PostgreSQL | Persistencia relacional para runtime Node.js | MongoDB (NoSQL) |
 | **Cache** | Redis | Caché distribuida, sesiones, rate limiting | — |
@@ -194,7 +194,7 @@ Definir la topología de infraestructura, estrategia de disaster recovery, aprov
 | [Kubernetes](https://kubernetes.io/) | Orquestación de contenedores | [instalación](https://kubernetes.io/docs/setup/) | [docs](https://kubernetes.io/docs/) | Apache 2.0 |
 | [Helm v3](https://helm.sh/) | Charts Kubernetes | [instalación](https://helm.sh/docs/intro/install/) | [docs](https://helm.sh/docs/) | Apache 2.0 |
 | [Docker](https://www.docker.com/) | Contenedores | [instalación](https://docs.docker.com/get-docker/) | [docs](https://docs.docker.com/) | Apache 2.0 |
-| [Kong OSS](https://konghq.com/) | API Gateway | [guía](https://konghq.com/install/) | [docs](https://docs.konghq.com/) | Apache 2.0 |
+| [Ingress Controller](https://kubernetes.io/docs/concepts/services-networking/ingress/) | API Gateway | [guía](https://kubernetes.github.io/ingress-nginx/deploy/) | [docs](https://kubernetes.io/docs/concepts/services-networking/ingress/) | Apache 2.0 |
 | [HashiCorp Vault](https://www.vaultproject.io/) | Gestión de secretos | [guía](https://developer.hashicorp.com/vault/docs/install) | [docs](https://developer.hashicorp.com/vault/docs) | BUSL (gratuita) / Enterprise (paga) |
 | [MinIO](https://min.io/) | Almacenamiento S3 | [guía](https://min.io/docs/minio/container/index.html) | [docs](https://min.io/docs/) | AGPL 3.0 (gratuita) |
 | [RabbitMQ](https://www.rabbitmq.com/) | Mensajería AMQP | [instalación](https://www.rabbitmq.com/download.html) | [docs](https://www.rabbitmq.com/documentation.html) | MPL 2.0 (gratuita) |

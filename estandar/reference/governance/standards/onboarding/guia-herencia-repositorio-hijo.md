@@ -50,11 +50,11 @@ El ADR de referencia establece el patrón injectable event bus. Este ADR local e
 
 > **Status:** Accepted
 > **Date:** 2026-06-XX
-> **Overrides:** ADR-0030 — API Gateway: Kong vs NestJS
+> **Overrides:** ADR-0030 — API Gateway: Ingress vs NestJS
 
 ## Divergence Justification
 
-Unimar opera en un entorno gestionado por AWS donde el equipo de plataforma exige ALB como único punto de ingress. Operar un Kong auto-hospedado junto a ALB introduce capas de ruteo redundantes y terminación TLS conflictiva.
+Unimar opera en un entorno gestionado por AWS donde el equipo de plataforma exige ALB como único punto de ingress. Operar un Ingress auto-hospedado junto a ALB introduce capas de ruteo redundantes y terminación TLS conflictiva.
 
 ## Decision
 

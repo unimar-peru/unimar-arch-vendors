@@ -64,7 +64,7 @@ graph TD
  end
 
  subgraph EntryLayer["Tier 1: Ingress y Routing"]
- KongGateway["Kong Gateway / API Management"]
+ IngressGateway["Ingress Gateway / API Management"]
  end
 
  subgraph BFFLayer["Tier 2: Backend-for-Frontend (BFF)"]
@@ -82,9 +82,9 @@ graph TD
  end
 
  WebClient -->|HTTPS Request| CDN
- CDN -->|Dynamic Forward| KongGateway
- KongGateway -->|HTTP/REST| WebBFF
- KongGateway -->|HTTP/REST| MobileBFF
+ CDN -->|Dynamic Forward| IngressGateway
+ IngressGateway -->|HTTP/REST| WebBFF
+ IngressGateway -->|HTTP/REST| MobileBFF
 
  WebBFF <-->|BFF Cache Reads| RedisCache
  WebBFF -->|Internal gRPC| MainAPI
@@ -158,7 +158,7 @@ Todas las decisiones fundacionales están **oficialmente Aprobadas** y son oblig
 16. **[ADR 0021: Auth Graphs de Alto Rendimiento](../adrs/nodejs/0021-compilacion-graph-auth-alto-rendimiento.es.md)**: Requisitos de latencia por debajo de 5ms.
 17. **[ADR 0026: MFA y Seguridad Adaptativa](../adrs/nodejs/0026-autenticacion-adaptativa-mfa-passwordless.es.md)**: Soporte WebAuthn y Passkeys.
 18. **[ADR 0027: Protocolos Duales REST y gRPC](../adrs/nodejs/0027-api-gateway-dual-protocolo-rest-grpc.es.md)**: Streaming interno performante vía gRPC.
-19. **[ADR 0030: Kong Gateway vs NestJS Gateway](../adrs/core/0030-api-gateway-kong-vs-nestjs.es.md)**: Separación de proxies de infraestructura de orquestación de negocio.
+19. **[ADR 0030: Ingress Gateway vs NestJS Gateway](../adrs/core/0030-api-gateway-ingress-vs-nestjs.es.md)**: Separación de proxies de infraestructura de orquestación de negocio.
 20. **[ADR 0029: Primitivas Tácticas DDD](../adrs/nodejs/0029-libreria-primitivas-ddd-tactico.es.md)**: Utilización obligatoria de la librería estandarizada `@nestjslatam/ddd`.
 21. **[ADR 0032: Matriz de Decisión de Protocolo API](../adrs/core/0032-matriz-decision-protocolos-api-rest-grpc-graphql.es.md)**: Marco de evaluación que obliga REST para exposición pública, gRPC para backbones internos y GraphQL para agregación BFF optimizada.
 

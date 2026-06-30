@@ -55,7 +55,7 @@ Establecemos una **Matriz de Ajuste de Protocolo Estricta** adaptada a niveles a
 
 ## Referencias
 - [ADR-0027: Estrategia de Protocolo Dual](../nodejs/0027-api-gateway-dual-protocolo-rest-grpc.es.md)
-- [ADR-0030: Patrones de Gateway de Dos Capas](0030-api-gateway-kong-vs-nestjs.es.md)
+- [ADR-0030: Patrones de Gateway de Dos Capas](0030-api-gateway-ingress-vs-nestjs.es.md)
 
 ---
 [Volver al Índice](../README.md)

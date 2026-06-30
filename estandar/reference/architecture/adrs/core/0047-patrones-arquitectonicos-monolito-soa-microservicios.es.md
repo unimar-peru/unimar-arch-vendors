@@ -178,7 +178,7 @@ Los sistemas exponen sus capacidades mediante servicios interoperables con contr
 Si un producto debe integrarse con plataformas legacy gobernadas por SOA / ESB, la estrategia es:
 
 1. **Anticorruption Layer (ACL):** Exponer un adaptador de infraestructura que traduce los contratos del ESB al lenguaje del dominio. El dominio nunca habla directamente con el ESB.
-2. **API Gateway como frontera:** Kong actúa como punto de entrada único; la lógica de transformación de contratos vive en el adaptador, no en el Gateway.
+2. **API Gateway como frontera:** Ingress actúa como punto de entrada único; la lógica de transformación de contratos vive en el adaptador, no en el Gateway.
 3. **Contratos versionados:** Publicar OpenAPI / AsyncAPI explícitos hacia el ecosistema legacy para garantizar desacoplamiento en la evolución.
 
 ---
@@ -214,7 +214,7 @@ flowchart LR
     end
 
     subgraph "Fase 2: Gateway Frontal"
-        GW[API Gateway<br/>Kong] --> M1
+        GW[API Gateway<br/>Ingress] --> M1
     end
 
     subgraph "Fase 3: Extracción Gradual"
@@ -224,7 +224,7 @@ flowchart LR
 ```
 
 1. **Paso 1 — Modularizar:** Refactorizar el monolito en módulos físicamente limpios bajo Puertos y Adaptadores. Sin cross-module imports directos.
-2. **Paso 2 — Gateway Frontal:** Colocar Kong enfrente del monolito. Toda comunicación externa viaja por ahí desde el inicio.
+2. **Paso 2 — Gateway Frontal:** Colocar Ingress enfrente del monolito. Toda comunicación externa viaja por ahí desde el inicio.
 3. **Paso 3 — Aislar Datos:** Separar el schema de datos del bounded context candidato dentro del motor de base de datos actual (schema-per-context).
 4. **Paso 4 — Extraer Servicio:** Convertir el módulo en un proceso de red independiente y redirigir el tráfico en el Gateway de forma transparente. El resto del monolito no lo nota.
 

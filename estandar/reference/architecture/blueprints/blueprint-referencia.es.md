@@ -46,7 +46,7 @@ La organización promueve una arquitectura políglota deliberada donde los runti
 | **Evolución Progresiva** | [ADR-0006](../adrs/core/0006-transicion-futura-microservicios-dapr.es.md), [ADR-0008](../adrs/nodejs/0008-evolucion-multimodulo-progresiva-gateway-bff.es.md) | Camino a microservicios zero-refactoring vía Dapr |
 | **Sucursal como Dimensión de Negocio** | [ADR-0010](../adrs/core/0010-estrategia-arquitectura-multitenant.es.md), [ADR-0012](../adrs/nodejs/0012-autorizacion-avanzada-rbac-abac.es.md) | `sucursal_id` como atributo de dato; acceso cross-sucursal gobernado por RBAC/ABAC |
 | **Desacoplamiento Estricto** | [ADR-0002](../adrs/nodejs/0002-arquitectura-limpia-nestjs.es.md), [ADR-0003](../adrs/nodejs/0003-estandares-estrictos-typescript.es.md) | Aplicación de frontera ESLint |
-| **Resiliencia** | [ADR-0011](../adrs/core/0011-patrones-resiliencia-tolerancia-fallos.es.md) | Circuit Breakers Distribuidos (Redis + Kong) |
+| **Resiliencia** | [ADR-0011](../adrs/core/0011-patrones-resiliencia-tolerancia-fallos.es.md) | Circuit Breakers Distribuidos (Redis + Ingress) |
 | **Seguridad** | [ADR-0005](../adrs/core/0005-ci-cd-calidad-codeql.es.md), [ADR-0012](../adrs/nodejs/0012-autorizacion-avanzada-rbac-abac.es.md), [ADR-0020](../adrs/core/0020-estrategia-abstraccion-proveedor-identidad.es.md), [ADR-0026](../adrs/nodejs/0026-autenticacion-adaptativa-mfa-passwordless.es.md) | Perímetro zero-trust + RBAC/ABAC |
 | **Latencia API Interna** | [ADR-0014](../adrs/core/0014-estrategia-cache-distribuido-redis.es.md), [ADR-0021](../adrs/nodejs/0021-compilacion-graph-auth-alto-rendimiento.es.md) | Caché de 4 Niveles (Cliente + CDN + BFF + Core) |
 | **Observabilidad** | [ADR-0007](../adrs/nodejs/0007-observabilidad-telemetria-loki-opentelemetry.es.md), [ADR-0046](../adrs/core/0046-dapr-observabilidad-unificada.es.md) | OTel + Loki + trazado distribuido |
@@ -81,7 +81,7 @@ Cualquier sistema basado en este blueprint debe adherirse a los siguientes pilar
 
 Este diagrama captura el contexto completo del sistema. Refleja:
 
-* **[ADR-0030](../adrs/core/0030-api-gateway-kong-vs-nestjs.es.md)**: Gateway de Dos Niveles (Kong Edge + NestJS BFF)
+* **[ADR-0030](../adrs/core/0030-api-gateway-ingress-vs-nestjs.es.md)**: Gateway de Dos Niveles (Ingress Edge + NestJS BFF)
 * **[ADR-0008](../adrs/nodejs/0008-evolucion-multimodulo-progresiva-gateway-bff.es.md)**: Evolución Multi-Módulo progresiva con BFF dedicado por canal de cliente
 * **[ADR-0015](../adrs/core/0015-arquitectura-eventos-intradominio.es.md)**: Abstracción inyectable `IEventBusPort` (In-Memory -> RabbitMQ -> Kafka)
 * **[ADR-0020](../adrs/core/0020-estrategia-abstraccion-proveedor-identidad.es.md)**: Identity Provider enchufable vía Patrón Strategy
@@ -100,7 +100,7 @@ graph TD
  end
 
  subgraph Tier1["Tier 1 — Edge API Gateway (ADR-0030)"]
- Kong["Kong OSS\n[Rate Limiting · JWT Validation · CORS · Routing]"]
+ Ingress["Ingress Controller\n[Rate Limiting · JWT Validation · CORS · Routing]"]
  end
 
  subgraph Tier2["Tier 2 — Capa de Orquestación BFF (ADR-0008)"]
@@ -134,11 +134,11 @@ graph TD
  WebApp --> |TLS/HTTP| CDN
  MobileApp --> |TLS/HTTP| CDN
  B2B --> |TLS/HTTP| CDN
- CDN -->|Dynamic Forward| Kong
+ CDN -->|Dynamic Forward| Ingress
 
- Kong -->|Route| WebBFF
- Kong -->|Route| MobileBFF
- Kong -->|Route B2B| CoreAPI
+ Ingress -->|Route| WebBFF
+ Ingress -->|Route| MobileBFF
+ Ingress -->|Route B2B| CoreAPI
 
  WebBFF -->|Internal gRPC| CoreAPI
  MobileBFF -->|Internal gRPC| CoreAPI
@@ -148,7 +148,7 @@ graph TD
 
  CoreAPI -.->|Traces + Logs| OTel
  WebBFF -.->|Traces + Logs| OTel
- Kong -.->|Access Logs| OTel
+ Ingress -.->|Access Logs| OTel
 ```
 
 ---
@@ -164,11 +164,11 @@ UNIMAR opera desde múltiples sucursales (depósitos, patios, almacenes). Las su
 
 `sucursal_id` es un **atributo de negocio** en las entidades operativas — registra la sucursal donde ocurre la operación. El control de acceso a los datos de una sucursal lo ejerce el sistema RBAC/ABAC ([ADR-0012](../adrs/nodejs/0012-autorizacion-avanzada-rbac-abac.es.md)) a través del claim `sucursales_autorizadas` del JWT: si el operador tiene el claim, puede operar; si no lo tiene, recibe `403 Forbidden`. No se implementa Row-Level Security (RLS) de base de datos — la autorización en capa de aplicación es el único y suficiente mecanismo de control.
 
-### 4.3 Patrón de Gateway de Dos Niveles ([ADR-0030](../adrs/core/0030-api-gateway-kong-vs-nestjs.es.md))
+### 4.3 Patrón de Gateway de Dos Niveles ([ADR-0030](../adrs/core/0030-api-gateway-ingress-vs-nestjs.es.md))
 
 | Nivel | Tecnología | Responsabilidad |
 | --- | --- | --- |
-| **Nivel 1 — Edge** | Kong OSS (NGINX/OpenResty) | Rate Limiting, validación JWT, terminación SSL, Routing |
+| **Nivel 1 — Edge** | Ingress Controller (NGINX/OpenResty) | Rate Limiting, validación JWT, terminación SSL, Routing |
 | **Nivel 2 — BFF** | NestJS | Agregación de datos, conformación de payloads, lógica específica de cliente |
 
 ### 4.4 Bus de Eventos Inyectable ([ADR-0015](../adrs/core/0015-arquitectura-eventos-intradominio.es.md))
@@ -177,7 +177,7 @@ El dominio nunca importa un broker de mensajes concreto. Toda comunicación así
 ### 4.5 Ruta de Evolución Progresiva ([ADR-0006](../adrs/core/0006-transicion-futura-microservicios-dapr.es.md))
 1. **Milestone 1 — Monolito Modular**: Proceso único, módulos de dominio lógicamente aislados.
 2. **Milestone 2 — Extracción de Servicios**: Dominios críticos extraídos como micro-proyectos Nx con DBs aisladas, consumidos vía gRPC/Dapr.
-3. **Milestone 3 — Mesh Completo de Microservicios**: Sidecars Dapr, Service Mesh, Kong como superficie API unificada, y **extracción de Microfrontends** ([ADR-0055](../adrs/core/0055-estrategia-arquitectura-microfrontends.es.md)).
+3. **Milestone 3 — Mesh Completo de Microservicios**: Sidecars Dapr, Service Mesh, Ingress como superficie API unificada, y **extracción de Microfrontends** ([ADR-0055](../adrs/core/0055-estrategia-arquitectura-microfrontends.es.md)).
 
 ---
 
@@ -224,7 +224,7 @@ graph TD
 **Reglas Fase 1:**
 
 * Un proceso NestJS. Una instancia PostgreSQL. Docker Compose para dev local.
-* Sin Kong gateway — HTTPS directo a la app. Añade Kong en Fase 2 cuando un segundo canal de cliente o partner externo se incorpore.
+* Sin Ingress gateway — HTTPS directo a la app. Añade Ingress en Fase 2 cuando un segundo canal de cliente o partner externo se incorpore.
 * Bus de eventos in-memory. Reemplaza con RabbitMQ solo cuando se necesite entrega asíncrona cross-servicio ([ADR-0015](../adrs/core/0015-arquitectura-eventos-intradominio.es.md)).
 * Redis es opcional. Añade solo cuando se incumpla un umbral de latencia específico ([ADR-0014](../adrs/core/0014-estrategia-cache-distribuido-redis.es.md)).
 

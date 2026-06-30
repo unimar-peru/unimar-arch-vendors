@@ -7,7 +7,7 @@ Aprobado
 2026-05-08
 
 ## Contexto
-Sin registros estructurados y rastreo distribuido, diagnosticar problemas en producción requiere conjeturas. Mensajes de registro sin IDs de correlación hacen imposible rastrear una única petición de usuario a través de múltiples capas de servicio (Kong -> BFF -> API Core -> Base de Datos). La observabilidad debe ser un ciudadano de primera clase, no una ocurrencia tardía.
+Sin registros estructurados y rastreo distribuido, diagnosticar problemas en producción requiere conjeturas. Mensajes de registro sin IDs de correlación hacen imposible rastrear una única petición de usuario a través de múltiples capas de servicio (Ingress -> BFF -> API Core -> Base de Datos). La observabilidad debe ser un ciudadano de primera clase, no una ocurrencia tardía.
 
 ## Decisión
 Adoptar el estándar **OpenTelemetry (OTel)** como el espinazo unificado de observabilidad, con la siguiente cadena de herramientas:
@@ -29,7 +29,7 @@ Adoptar el estándar **OpenTelemetry (OTel)** como el espinazo unificado de obse
 ## Consecuencias
 
 ### Positivas
-- Un único `traceId` rastrea una petición desde el log del gateway Kong hasta el plan de consulta de PostgreSQL.
+- Un único `traceId` rastrea una petición desde el log del gateway Ingress hasta el plan de consulta de PostgreSQL.
 - Los dashboards de Grafana proporcionan visibilidad a nivel de SRE con desglose de latencia P50/P95/P99.
 - Cero cambios de código en el Core de dominio - toda la instrumentación reside en las capas de infraestructura y adaptadores.
 - **Soberanía Tecnológica Absoluta**: Cero bloqueo de proveedor. El protocolo OTel nos desacopla de Datadog, Dynatrace, Grafana, o cualquier proveedor comercial de forma nativa.

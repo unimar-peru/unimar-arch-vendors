@@ -67,7 +67,7 @@ La Matriz de ADRs es el catálogo de estado de todas las decisiones arquitectón
 | ADR | Título | Estado | Runtime |
 |---|---|---|---|
 | [ADR-0027](nodejs/0027-api-gateway-dual-protocolo-rest-grpc.es.md) | Dual-Protocol REST/gRPC API Gateway | `Aceptado` | Node.js |
-| [ADR-0030](core/0030-api-gateway-kong-vs-nestjs.es.md) | API Gateway — Kong vs NestJS | `Aceptado` | Agnóstico |
+| [ADR-0030](core/0030-api-gateway-ingress-vs-nestjs.es.md) | API Gateway — Ingress vs NestJS | `Aceptado` | Agnóstico |
 | [ADR-0032](core/0032-matriz-decision-protocolos-api-rest-grpc-graphql.es.md) | API Protocol Decision Matrix — REST/gRPC/GraphQL | `Aceptado` | Agnóstico |
 
 ### Seguridad e Identidad
@@ -194,7 +194,7 @@ La Matriz de ADRs es el catálogo de estado de todas las decisiones arquitectón
 | ADR-0025 | Feature Flag Provider Abstraction | `Aceptado` | Configuración |
 | ADR-0060 | Feature Flags — Gestión Centralizada en UMS | `Aceptado` | Configuración |
 | ADR-0028 | Self-Hosted Hybrid Infrastructure | `Aceptado` | Infraestructura |
-| ADR-0030 | API Gateway — Kong vs NestJS | `Aceptado` | APIs |
+| ADR-0030 | API Gateway — Ingress vs NestJS | `Aceptado` | APIs |
 | ADR-0031 | Schema per Context | `Aceptado` | Persistencia |
 | ADR-0032 | API Protocol Decision Matrix | `Aceptado` | APIs |
 | ADR-0033 | Transactional Outbox Pattern | `Pendiente de Importación` | Mensajería |

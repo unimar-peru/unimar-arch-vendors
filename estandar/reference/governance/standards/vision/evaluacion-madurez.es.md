@@ -12,7 +12,7 @@ Esta matriz califica nuestra infraestructura actual y preparación de diseño fr
 | :--- | :--- | :--- | :--- | :--- |
 | **Integración** | **Strangler Fig** | **Núcleo Crítico** | 100% Listo | La estrategia fundamental de la arquitectura. Los módulos están lógicamente aislados para la división incremental de microservicios sin tiempo de inactividad del servicio. |
 | **Composición** | **BFF (Backend for Frontend)** | **Núcleo Obligatorio** | 100% Adoptado | Implementado oficialmente a través de capas NestJS especializadas por dispositivo ([ADR-0008](../../../architecture/adrs/nodejs/0008-evolucion-multimodulo-progresiva-gateway-bff.es.md)). Previene la contaminación cruzada entre canales. |
-| **Fiabilidad** | **Circuit Breaker** | **Operacional** | 100% Adoptado | Implementado a través de **Circuit Breakers Distribuidos** compartiendo estado vía Redis ([ADR-0011](../../../architecture/adrs/core/0011-patrones-resiliencia-tolerancia-fallos.es.md)) combinado con monitoreo de salud activo en Kong Ingress Edge. |
+| **Fiabilidad** | **Circuit Breaker** | **Operacional** | 100% Adoptado | Implementado a través de **Circuit Breakers Distribuidos** compartiendo estado vía Redis ([ADR-0011](../../../architecture/adrs/core/0011-patrones-resiliencia-tolerancia-fallos.es.md)) combinado con monitoreo de salud activo en Ingress Ingress Edge. |
 | **Base de Datos** | **Schema Per Context** | **Núcleo Obligatorio** | 100% Adoptado | Resuelve el acoplamiento desde el primer día. Previene la intoxicación por joins de SQL puro a través de dominios ([ADR-0031](../../../architecture/adrs/core/0031-esquema-por-contexto-catalogo-eventos-dominio.es.md)). Portabilidad de BD con cero refactorización. |
 | **Escalabilidad** | **CQRS (Básico)** | **Opcional** | Hoja de Ruta | Habilitado para ser implementado como Modelos de Lectura agregados solo cuando la contienda de lectura en base de datos lo justifique. |
 | **Consistencia** | **Saga Pattern** | **Futuro Distribuido** | Hoja de Ruta | Estrategia establecida para uso exclusivo a partir de la Fase 3, resolviendo transacciones distribuidas en escenarios de microservicios. |
@@ -56,15 +56,15 @@ Evadir las APIs de servicio para ejecutar joins SQL directos a través de datos 
 ---
 
 ### 2.3 El Anti-patrón "Fat Controller / Smart Pipe"
-Filtración de validación de negocio vital o reglas de orquestación en el API gateway (Kong) o colas de mensajes.
+Filtración de validación de negocio vital o reglas de orquestación en el API gateway (Ingress) o colas de mensajes.
 
 | Campo | Análisis de Definición e Impacto |
 | :--- | :--- |
 | **Criticidad** | **ALTA** (Degrada la mantenibilidad y las pruebas) |
-| **Ejemplo Concreto** | Escribir 500 líneas de código Lua personalizado dentro de Kong para validar descuentos dinámicos, o codificar la lógica del flujo de trabajo dentro de las claves de enlace de RabbitMQ. |
+| **Ejemplo Concreto** | Escribir 500 líneas de código Lua personalizado dentro de Ingress para validar descuentos dinámicos, o codificar la lógica del flujo de trabajo dentro de las claves de enlace de RabbitMQ. |
 | **Impacto en Producción** | La lógica se vuelve imposible de probar por las unidades estándar de CI/CD. Aparecen "errores invisibles" en producción que no se replican en los entornos de desarrollo de los ingenieros locales. |
-| **Riesgos Operativos** | Vendor lock-in (bloqueo de lógica al Lua específico de Kong). Los ingenieros de infraestructura sobrescriben accidentalmente la lógica de negocio durante los parches del servidor. |
-| **Defensa de Inmunización** | **Estrategia de Tuberías Tontas / Endpoints Inteligentes**. Kong solo ejecuta políticas agnósticas (JWT, SSL, Rate Limit). Todas las decisiones de negocio DEBEN vivir dentro del Hexágono de Aplicación de Typescript donde son probadas con Jest. |
+| **Riesgos Operativos** | Vendor lock-in (bloqueo de lógica al Lua específico de Ingress). Los ingenieros de infraestructura sobrescriben accidentalmente la lógica de negocio durante los parches del servidor. |
+| **Defensa de Inmunización** | **Estrategia de Tuberías Tontas / Endpoints Inteligentes**. Ingress solo ejecuta políticas agnósticas (JWT, SSL, Rate Limit). Todas las decisiones de negocio DEBEN vivir dentro del Hexágono de Aplicación de Typescript donde son probadas con Jest. |
 
 ---
 
@@ -74,7 +74,7 @@ Generación de logs de consola no coordinados a través de pods sin correlación
 | Campo | Análisis de Definición e Impacto |
 | :--- | :--- |
 | **Criticidad** | **ALTA** (Paraliza las capacidades de depuración de SRE) |
-| **Ejemplo Concreto** | Un cliente de alto valor reporta el error "500 - ID XJ92". SRE revisa los logs de Kong, los logs de BFF y los logs de Core API independientemente y no puede decir qué consulta SQL exacta disparó esa falla de usuario específica. |
+| **Ejemplo Concreto** | Un cliente de alto valor reporta el error "500 - ID XJ92". SRE revisa los logs de Ingress, los logs de BFF y los logs de Core API independientemente y no puede decir qué consulta SQL exacta disparó esa falla de usuario específica. |
 | **Impacto en Producción** | El tiempo promedio de resolución de problemas se dispara de 5 minutos a 4 horas. Los ingenieros deben hacer "grep" en archivos de texto dispersos intentando reconstruir la historia manualmente. |
 | **Riesgos Operativos** | Alto desgaste del personal de soporte, pérdida de confianza del cliente debido a tiempos de reacción extremadamente lentos ante interrupciones graves. |
 | **Defensa de Inmunización** | **[ADR-0007](../../../architecture/adrs/nodejs/0007-observabilidad-telemetria-loki-opentelemetry.es.md) (Trazado Distribuido OTel)**. Un único `TraceParent ID` viaja desde el inicio de la solicitud hasta la respuesta de la BD. Ingresar ese ID en Jaeger muestra la línea de tiempo completa del mapa de árbol instantáneamente. |

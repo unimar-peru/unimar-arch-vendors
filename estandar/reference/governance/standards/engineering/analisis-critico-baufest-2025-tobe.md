@@ -444,7 +444,7 @@ El plan siguiente se superpone al roadmap Baufest original, modificándolo para 
 * Catálogo de datos (Purview o DataHub).
 * Stack LGTM autoadministrado o co-administrado.
 * _Data contracts_ v1 firmados por los _bounded contexts_.
-* API Gateway agnóstico (Kong, Apigee o KrakenD, decisión por ADR).
+* API Gateway agnóstico (Ingress, Apigee o KrakenD, decisión por ADR).
 * ADR-0076 _Arquitectura de datos v1_.
 * ADR-0077 _API Gateway_.
 * ADR-0078 _Observabilidad v1_.

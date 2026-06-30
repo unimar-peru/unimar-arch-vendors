@@ -149,7 +149,7 @@ sequenceDiagram
 ---
 
 ## 8. Vista de Despliegue
-Fase 1: un proceso NestJS, una instancia PostgreSQL, Docker Compose para dev local. Sin Kong gateway (HTTPS directo) y bus de eventos in-memory. OTel Collector para logs/traces. Redis se añadirá solo si se incumple el umbral p95 < 300 ms ([ADR-0014](../../../../architecture/adrs/core/0014-estrategia-cache-distribuido-redis.es.md)).
+Fase 1: un proceso NestJS, una instancia PostgreSQL, Docker Compose para dev local. Sin Ingress gateway (HTTPS directo) y bus de eventos in-memory. OTel Collector para logs/traces. Redis se añadirá solo si se incumple el umbral p95 < 300 ms ([ADR-0014](../../../../architecture/adrs/core/0014-estrategia-cache-distribuido-redis.es.md)).
 
 ---
 

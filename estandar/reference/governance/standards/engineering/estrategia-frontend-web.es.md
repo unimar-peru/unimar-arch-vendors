@@ -172,7 +172,7 @@ describe('Button', () => {
 | **CSRF** | Tokens CSRF en headers, SameSite cookies | Ky/Axios con interceptors | [OWASP CSRF](https://owasp.org/www-community/attacks/csrf) |
 | **Exposición de datos sensibles** | No almacenar tokens en localStorage. Usar cookies httpOnly | Vault + BFF | [Estrategia de Seguridad](../../sdlc/estrategia-seguridad.es.md) |
 | **Dependencias vulnerables** | SCA continuo, renovación automática de dependencias | Snyk / Renovate | [Plan de Seguridad](../testing/plan-seguridad.es.md) |
-| **Clickjacking** | Cabecera X-Frame-Options: DENY | Servidor web / Kong | [OWASP Clickjacking](https://owasp.org/www-community/attacks/Clickjacking) |
+| **Clickjacking** | Cabecera X-Frame-Options: DENY | Servidor web / Ingress | [OWASP Clickjacking](https://owasp.org/www-community/attacks/Clickjacking) |
 
 ---
 

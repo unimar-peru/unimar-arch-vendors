@@ -25,7 +25,7 @@ Esta hoja sirve como referencia de herramientas por capa arquitectónica para de
 
 ### 3. Capa de Gateway
 
-- **API Gateway:** Kong Gateway (Edición de Código Abierto)
+- **API Gateway:** Ingress Gateway (Edición de Código Abierto)
 - **Gestión de Sesión:** JSON Web Tokens (JWT) firmados con RS256
 - **Seguridad Interna:** TLS mutuo (mTLS) vía Malla de Servicios Istio
 

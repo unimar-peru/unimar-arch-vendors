@@ -221,7 +221,7 @@ paths:
 | [@nestjs/swagger](https://docs.nestjs.com/openapi/introduction) | OpenAPI para NestJS | npm | [docs](https://docs.nestjs.com/openapi/introduction) | MIT |
 | [Stoplight](https://stoplight.io/) | Design-first API (OpenAPI editor) | Web / CLI | [docs](https://docs.stoplight.io/) | Free / Team (paga) |
 | [Redoc](https://redocly.com/redoc) | Documentación API renderizada | npm | [docs](https://redocly.com/docs/redoc/) | MIT |
-| [Kong](https://konghq.com/) | API Gateway + Developer Portal | [guía](https://konghq.com/install/) | [docs](https://docs.konghq.com/) | Apache 2.0 |
+| [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) | API Gateway + Developer Portal | [guía](https://kubernetes.github.io/ingress-nginx/deploy/) | [docs](https://kubernetes.io/docs/concepts/services-networking/ingress/) | Apache 2.0 |
 
 ---
 
@@ -231,7 +231,7 @@ paths:
 | :-- | :----- | :----------- |
 | ADR-0032 | Protocolos API | Cuándo usar REST, gRPC, GraphQL |
 | ADR-0038 | Result Pattern | Manejo de errores con Result<T,E> |
-| ADR-0030 | API Gateway 2 niveles | Kong + BFF |
+| ADR-0030 | API Gateway 2 niveles | Ingress + BFF |
 | ADR-0040 | Contratos Multi-Runtime | Type-safe, versionado, compatibilidad |
 
 ---

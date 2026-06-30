@@ -26,11 +26,11 @@ Para prevenir el over-engineering prematuro, los Sidecars de Dapr **NO** están 
 - O BIEN: Se exige reintento automático / circuit breaking transparente avanzado que exceda la capacidad del cliente estándar.
 - O BIEN: Integración políglota que requiere abstracción Pub/Sub uniforme (cargas Go/Python).
 
-### Mecánica del Patrón Strangler Fig vía Kong
-La evolución utiliza el **Patrón Strangler Fig** aprovechando el API Gateway de borde existente (Kong) para gobernar el desvío gradual de tráfico desde endpoints legados hacia micro-unidades extraídas sin modificar el monolito:
+### Mecánica del Patrón Strangler Fig vía Ingress
+La evolución utiliza el **Patrón Strangler Fig** aprovechando el API Gateway de borde existente (Ingress) para gobernar el desvío gradual de tráfico desde endpoints legados hacia micro-unidades extraídas sin modificar el monolito:
 
 ```yaml
-# Ejemplo de Enrutamiento Strangler Estándar en Kong
+# Ejemplo de Enrutamiento Strangler Estándar en Ingress
 routes:
  - name: facturacion-nuevo-servicio
  paths: ["/api/v2/billing"] # Versión de servicio nuevo objetivo

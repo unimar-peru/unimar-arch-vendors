@@ -23,7 +23,7 @@ Un módulo de dominio DEBE considerarse un candidato válido para la fase de ext
 
 ### Procedimiento Operativo de Extracción:
 1. **Validación:** El Lead Developer del Squad presenta la métrica al Architectural Board.
-2. **Aislamiento Temporal:** Configuración de routing en Gateway (Kong) para habilitar el patrón Strangler Fig.
+2. **Aislamiento Temporal:** Configuración de routing en Gateway (Ingress) para habilitar el patrón Strangler Fig.
 3. **Desacoplamiento de DB:** Migración de schema hacia una instancia independiente según fase 2 del Database Migration Path ([ADR-0031](0031-esquema-por-contexto-catalogo-eventos-dominio.es.md)).
 
 ## Consecuencias

@@ -16,7 +16,7 @@ flowchart TD
         DNS["DNS / CDN"]
     end
     subgraph EDGE["Capa Edge"]
-        KONG["Kong API Gateway<br/>Rate limiting, TLS, Auth"]
+        INGRESS["Ingress API Gateway<br/>Rate limiting, TLS, Auth"]
     end
     subgraph MULTI_AZ["Multi-AZ"]
         subgraph AZ1["Availability Zone 1"]
@@ -35,9 +35,9 @@ flowchart TD
         VAULT["HashiCorp Vault<br/>Secretos"]
         RABBIT["RabbitMQ<br/>Colas"]
     end
-    DNS --> KONG
-    KONG --> K8S1
-    KONG --> K8S2
+    DNS --> INGRESS
+    INGRESS --> K8S1
+    INGRESS --> K8S2
     K8S1 --> DB1
     K8S2 --> DB2
     DB1 -.->|"Replicación Síncrona"| DB2
@@ -58,7 +58,7 @@ flowchart TD
 | Componente | Tecnología | Propósito | Alternativa | DR |
 | :--------- | :--------- | :-------- | :---------- | :- |
 | **Orquestación** | Kubernetes (K8s) | Contenedores en producción | — | Multi-AZ |
-| **API Gateway** | Kong OSS | Borde, rate limiting, auth | — | Activo-pasivo |
+| **API Gateway** | Ingress Controller | Borde, rate limiting, auth | — | Activo-pasivo |
 | **BD .NET** | SQL Server | Persistencia relacional | PostgreSQL (con ADR) | Always On Availability Group |
 | **BD Node.js** | PostgreSQL | Persistencia relacional | MongoDB (NoSQL) | Streaming Replication |
 | **Cache** | Redis | Cache, sesiones, rate limiting | — | Sentinel / Cluster |

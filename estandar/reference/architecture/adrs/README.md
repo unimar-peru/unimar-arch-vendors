@@ -35,7 +35,7 @@ Architecture Decision Records de Unimar Arch. La [matriz de ADRs](matriz-adr.es.
 | 0024 | [Plataforma de Gestión de Configuración y Features](core/0024-plataforma-gestion-configuracion-features.es.md) |
 | 0025 | [Abstracción de Proveedor de Feature Flags](core/0025-abstraccion-proveedor-feature-flags.es.md) |
 | 0028 | [Infraestructura Híbrida Autogestionada (On-Premise)](core/0028-infraestructura-hibrida-autogestionada.es.md) |
-| 0030 | [API Gateway: Kong vs NestJS](core/0030-api-gateway-kong-vs-nestjs.es.md) |
+| 0030 | [API Gateway: Ingress vs NestJS](core/0030-api-gateway-ingress-vs-nestjs.es.md) |
 | 0031 | [Esquema por Contexto y Catálogo de Eventos de Dominio](core/0031-esquema-por-contexto-catalogo-eventos-dominio.es.md) |
 | 0032 | [Matriz de Decisión de Protocolos API: REST / gRPC / GraphQL](core/0032-matriz-decision-protocolos-api-rest-grpc-graphql.es.md) |
 | 0033 | [Patrón Transactional Outbox](core/0033-patron-transactional-outbox.es.md) |

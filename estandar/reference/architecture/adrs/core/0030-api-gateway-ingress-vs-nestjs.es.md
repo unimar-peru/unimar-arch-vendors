@@ -1,4 +1,4 @@
-# [ADR 0030](0030-api-gateway-kong-vs-nestjs.es.md): Estrategia de Gateway de API - Kong Edge vs NestJS BFF
+# [ADR 0030](0030-api-gateway-ingress-vs-nestjs.es.md): Estrategia de Gateway de API - Ingress Edge vs NestJS BFF
 
 ## Estado
 Aprobado
@@ -12,14 +12,14 @@ Utilizar hilos de la aplicación Node.js para realizar enrutamiento de infraestr
 ## Decisión
 Formalizar un rígido **Modelo de Gateway Distribuido de Dos Capas** para desacoplar correctamente la infraestructura de la orquestación:
 
-1. **Capa 1 - Edge Gateway (Kong OSS)**: Barrera de alto rendimiento basada en NGINX. Se sitúa literalmente en el perímetro del clúster público. Gestiona solo reglas transversales no funcionales: SSL, estrangulamiento de claves de API, validación de firma de origen JWT simple, reenvío de ruta y reglas WAF.
+1. **Capa 1 - Edge Gateway (Ingress Controller)**: Barrera de alto rendimiento basada en NGINX. Se sitúa literalmente en el perímetro del clúster público. Gestiona solo reglas transversales no funcionales: SSL, estrangulamiento de claves de API, validación de firma de origen JWT simple, reenvío de ruta y reglas WAF.
 2. **Capa 2 - Gateway de Aplicación (NestJS BFF)**: Lógica de Node personalizada desplegada de forma segura dentro de la zona de seguridad de Capa 1. Responsable de componer respuestas de datos heterogéneos, eliminar PII para formatos de UI genéricos, adaptar las cargas útiles del dispositivo y gestionar la mecánica de cookies del usuario.
 
 ### Arquitectura Actualizada de Dos Capas
 
 ```mermaid
 graph TD
- U["Clientes Públicos (Mobile / Web)"] -->|TLS/HTTP| K["[Capa 1] Kong Edge Gateway"]
+ U["Clientes Públicos (Mobile / Web)"] -->|TLS/HTTP| K["[Capa 1] Ingress Edge Gateway"]
 
  subgraph SecureCluster["Red Protegida"]
  K -->|Reenvío| W["[Capa 2] NestJS Web BFF"]
@@ -40,7 +40,7 @@ graph TD
 
 ### Negativas
 - Añade una variable de latencia de segundo salto (típicamente insignificante <1ms de sobrecarga si se despliega correctamente).
-- Introduce el ciclo de vida del stack operativo de gestión de Kong.
+- Introduce el ciclo de vida del stack operativo de gestión de Ingress.
 
 ## Referencias
 - [ADR-0008: Patrones Progresivos de BFF](../nodejs/0008-evolucion-multimodulo-progresiva-gateway-bff.es.md)

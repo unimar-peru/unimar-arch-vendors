@@ -15,7 +15,7 @@ Implementar Patrones de Resiliencia explícitos protegiendo todas las salidas de
 1. **Circuit Breaker Distribuido (Opossum + Redis)**: Envolver las llamadas de red salientes en adaptadores de infraestructura de alto nivel. El estado operativo del circuito (Abierto/Cerrado/Semi-Abierto) DEBE almacenarse en el **Clúster Redis** compartido en lugar de la memoria local del proceso. Cuando un único nodo de aplicación activa el breaker, el estado se propaga globalmente a través del clúster instantáneamente, previniendo llamadas fallidas redundantes de nodos pares.
 2. **Reintento con Backoff (Retry with Backoff)**: Configurar interceptores para códigos transitorios no fatales que ejecuten intentos de backoff exponencial transparentes nativamente dentro de la lógica del adaptador antes de entregar un resultado de error.
 3. **Lógica de Dominio Desacoplada**: El dominio de negocio central debe permanecer 100% agnóstico a estos patrones.
-4. **Comprobaciones Activas de Salud en el Borde de Ingreso**: Habilitar la lógica de circuit breaking upstream de Kong Gateway. Kong monitoriza la capacidad de respuesta de los endpoints y termina las asignaciones de objetivos aguas arriba a nivel del gateway de API si las métricas de salud colapsan, protegiendo los nodos de backend de impactos directos de olas de peticiones.
+4. **Comprobaciones Activas de Salud en el Borde de Ingreso**: Habilitar la lógica de circuit breaking upstream de Ingress Gateway. Ingress monitoriza la capacidad de respuesta de los endpoints y termina las asignaciones de objetivos aguas arriba a nivel del gateway de API si las métricas de salud colapsan, protegiendo los nodos de backend de impactos directos de olas de peticiones.
 
 ## Consecuencias
 

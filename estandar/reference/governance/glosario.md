@@ -193,7 +193,7 @@ Terminología controlada del corpus Unimar Arch. Para las reglas de validación 
 | **Saga** | Transacción distribuida con pasos de compensación (coreografía u orquestación). |
 | **CQRS** | _Command Query Responsibility Segregation_ — separación de modelos de comando (escritura) y consulta (lectura). |
 | **BFF** | _Backend for Frontend_ — API de borde especializada por canal cliente (web, móvil). |
-| **API Gateway (2 niveles)** | Kong Edge + NestJS BFF como arquitectura de gateway en dos niveles. |
+| **API Gateway (2 niveles)** | Ingress Edge + NestJS BFF como arquitectura de gateway en dos niveles. |
 | **Cache de 4 Niveles** | Cliente → CDN → BFF → Core. |
 | **Aislamiento de Doble Capa** | Filtros de aplicación + RLS nativo de base de datos como failsafe de seguridad. |
 | **Sucursal como Dimensión** | `sucursal_id` como atributo de negocio, no como tenant. |
@@ -341,7 +341,7 @@ Terminología controlada del corpus Unimar Arch. Para las reglas de validación 
 | **OCI Container** | Estándar de empaquetado de contenedores. |
 | **Distroless** | Imagen base minimalista (Google) sin shell ni gestor de paquetes. |
 | **Multi-stage build** | Compilación multi-etapa para imágenes Docker optimizadas. |
-| **Kong OSS** | API Gateway de borde basado en NGINX / OpenResty. |
+| **Ingress Controller** | API Gateway de borde basado en NGINX / OpenResty. |
 | **MinIO** | Almacenamiento de objetos compatible con S3. |
 | **HashiCorp Vault** | Gestor de secretos y credenciales. |
 | **RabbitMQ** | Broker de mensajes AMQP. |

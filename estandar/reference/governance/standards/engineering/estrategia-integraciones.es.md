@@ -15,8 +15,8 @@ flowchart TD
         CLIENTES["Clientes B2B<br/>API / EDI / Portal"]
         PROV["Proveedores<br/>Navieras, Transporte"]
     end
-    subgraph EDGE["Capa Edge — Kong API Gateway"]
-        KONG["Rate Limiting, Auth, TLS,<br/>Routing, Analytics"]
+    subgraph EDGE["Capa Edge — Ingress API Gateway"]
+        INGRESS["Rate Limiting, Auth, TLS,<br/>Routing, Analytics"]
     end
     subgraph BFF["BFF (NestJS)"]
         BFF1["BFF Web"]
@@ -38,13 +38,13 @@ flowchart TD
     SUNAT --> ACL1
     SAP --> ACL2
     CLIENTES --> ACL3
-    PROV --> KONG
-    ACL1 --> KONG
-    ACL2 --> KONG
-    ACL3 --> KONG
-    KONG --> BFF1
-    KONG --> BFF2
-    KONG --> BFF3
+    PROV --> INGRESS
+    ACL1 --> INGRESS
+    ACL2 --> INGRESS
+    ACL3 --> INGRESS
+    INGRESS --> BFF1
+    INGRESS --> BFF2
+    INGRESS --> BFF3
     BFF1 --> SVC1
     BFF2 --> SVC2
     BFF3 --> SVC3
@@ -88,11 +88,11 @@ flowchart TD
 | :------ | :------ |
 | **Propósito** | Clientes externos consultan estados de despacho, descargan documentación, crean órdenes |
 | **¿Por qué?** | Diferenciador competitivo: cliente puede auto-gestionar sin llamar a Unimar |
-| **Protocolo** | REST (público) via Kong. OPCIONAL: EDI para clientes legacy |
+| **Protocolo** | REST (público) via Ingress. OPCIONAL: EDI para clientes legacy |
 | **Autenticación** | OAuth 2.0 Client Credentials + API Keys para clientes B2B |
 | **Rate Limiting** | Por plan (tiers): Basic 100 req/min, Premium 1000 req/min |
-| **Documentación** | OpenAPI 3.1 + Developer Portal (Kong) |
-| **Ejemplo** | Cliente B2B → `GET /api/v1/b2b/despachos?ruc=20100412447` → Autenticación → Kong → BFF B2B → API Despachos |
+| **Documentación** | OpenAPI 3.1 + Developer Portal (Ingress) |
+| **Ejemplo** | Cliente B2B → `GET /api/v1/b2b/despachos?ruc=20100412447` → Autenticación → Ingress → BFF B2B → API Despachos |
 
 ### 2.4 Integraciones con Proveedores (Navieras, Transporte)
 
@@ -103,7 +103,7 @@ flowchart TD
 | **Protocolo** | REST (preferido) o SFTP para archivos EDI/XML |
 | **Patrón** | Push (API callback) o Pull (Worker programado cada 30 min) |
 | **Seguridad** | API Keys + IP whitelisting |
-| **Ejemplo** | Naviera → `POST /api/v1/prov/bl` → Kong → Worker procesa → Event Bus → sistema Contenedores |
+| **Ejemplo** | Naviera → `POST /api/v1/prov/bl` → Ingress → Worker procesa → Event Bus → sistema Contenedores |
 
 ### 2.5 Integraciones Internas (Entre Servicios Unimar)
 
@@ -112,7 +112,7 @@ flowchart TD
 | **Propósito** | Comunicación entre los microservicios/módulos de la suite Unimar |
 | **¿Por qué?** | La suite Unimar tiene 12+ sistemas que deben interoperar |
 | **Protocolo** | REST (síncrono) + RabbitMQ (asíncrono). gRPC para alta performance interna |
-| **Gateway** | Kong (edge) + NestJS BFF (internas). Servicios no se llaman directamente |
+| **Gateway** | Ingress (edge) + NestJS BFF (internas). Servicios no se llaman directamente |
 | **Resiliencia** | Circuit breaker (opossum/Polly), retry, timeout, bulkhead. Ver ADR-0011 |
 | **Contratos** | Pact contract testing obligatorio. Ver [Guía de Pruebas de Contrato](./guia-pruebas-contrato.es.md) |
 | **Ejemplo** | API Despachos → Event Bus → API Contenedores actualiza estado. Todo vía RabbitMQ con DLQ |
@@ -156,9 +156,9 @@ acls/
 | Aspecto | Medida | Referencia |
 | :------ | :----- | :--------- |
 | **Autenticación** | OAuth 2.0 Client Credentials + JWT para internas. mTLS para críticas | ADR-0020 |
-| **Autorización** | RBAC por API Key + scope. Kong valida tokens en edge | [Estrategia de Seguridad](../../sdlc/estrategia-seguridad.es.md) |
+| **Autorización** | RBAC por API Key + scope. Ingress valida tokens en edge | [Estrategia de Seguridad](../../sdlc/estrategia-seguridad.es.md) |
 | **Cifrado en tránsito** | TLS 1.2+ obligatorio en todas las integraciones | [Plan de Seguridad](../testing/plan-seguridad.es.md) |
-| **Rate Limiting** | Por cliente IP + API Key. Kong + Redis | ADR-0030 |
+| **Rate Limiting** | Por cliente IP + API Key. Ingress + Redis | ADR-0030 |
 | ** Auditoría** | Cada request externo se loguea con traceId, timestamp, payload hash | Loki + OpenTelemetry |
 | **Network Segregation** | VPC separada para integraciones externas. Sin acceso directo a BD | [Infraestructura](../../../infrastructure/README.md) |
 
@@ -168,7 +168,7 @@ acls/
 
 | Herramienta | Propósito | Instalación | Uso | Licencia |
 | :---------- | :-------- | :---------- | :-- | :------- |
-| [Kong OSS](https://konghq.com/) | API Gateway de borde con rate limiting, auth, routing | [guía](https://konghq.com/install/) | [docs](https://docs.konghq.com/) | Apache 2.0 |
+| [Ingress Controller](https://kubernetes.io/docs/concepts/services-networking/ingress/) | API Gateway de borde con rate limiting, auth, routing | [guía](https://kubernetes.github.io/ingress-nginx/deploy/) | [docs](https://kubernetes.io/docs/concepts/services-networking/ingress/) | Apache 2.0 |
 | [RabbitMQ](https://www.rabbitmq.com/) | Mensajería asíncrona FIFO + DLQ | [instalación](https://www.rabbitmq.com/download.html) | [docs](https://www.rabbitmq.com/documentation.html) | MPL 2.0 |
 | [NestJS](https://nestjs.com/) | BFF por canal + workers de integración | `npm install @nestjs/core` | [docs](https://docs.nestjs.com/) | MIT |
 | [Pact](https://pact.io/) | Contract testing entre servicios | `npm install @pact-foundation/pact` | [docs](https://docs.pact.io/) | MIT |
@@ -197,7 +197,7 @@ acls/
 
 | ADR | Título | ¿Qué define? |
 | :-- | :----- | :----------- |
-| ADR-0030 | API Gateway 2 niveles | Kong Edge + NestJS BFF |
+| ADR-0030 | API Gateway 2 niveles | Ingress Edge + NestJS BFF |
 | ADR-0027 | Protocolo Dual REST/gRPC | REST para externo, gRPC para interno |
 | ADR-0032 | Matriz Protocolos API | REST vs gRPC vs GraphQL |
 | ADR-0015 | Eventos Intradominio | Event bus in-memory / RabbitMQ |
@@ -215,7 +215,7 @@ acls/
 | [Guía de Pruebas de Contrato](./guia-pruebas-contrato.es.md) | Contract testing con Pact por integración |
 | [Estrategia de Seguridad](../../sdlc/estrategia-seguridad.es.md) | SAST, DAST, SCA aplicado a integraciones |
 | [Plan de Seguridad](../testing/plan-seguridad.es.md) | mTLS, API Keys, cifrado en integraciones |
-| [Hub de Infraestructura](../../../infrastructure/README.md) | VPC, network segregation, Kong deployment |
+| [Hub de Infraestructura](../../../infrastructure/README.md) | VPC, network segregation, Ingress deployment |
 | [Estrategia de Monitoreo](./estrategia-monitoreo.es.md) | Dashboards, alertas, SLIs/SLOs por integración |
 
 ---

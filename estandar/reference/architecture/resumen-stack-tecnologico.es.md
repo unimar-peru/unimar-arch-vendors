@@ -22,10 +22,10 @@ Esta hoja sirve como referencia de herramientas por capa arquitectónica para de
 * **Documentación de API:** OpenAPI v3 (Swagger) vía decoradores NestJS
 
 ### 3. Capa de Gateway
-* **API Gateway:** Kong Gateway (Edición de Código Abierto)
+* **API Gateway:** Ingress Gateway (Edición de Código Abierto)
 * **Gestión de Sesión:** JSON Web Tokens (JWT) firmados con RS256
 * **Seguridad Interna:** TLS mutuo (mTLS) vía Malla de Servicios Istio
-* **Limitación de Tasa:** Limitador de Tasa de Ventana Deslizante (plugin Kong Redis)
+* **Limitación de Tasa:** Limitador de Tasa de Ventana Deslizante (rate limiting de Ingress)
 
 ### 4. Capa de Dominio y Aplicación
 * **Patrón Arquitectónico:** Arquitectura Hexagonal (Puertos y Adaptadores)

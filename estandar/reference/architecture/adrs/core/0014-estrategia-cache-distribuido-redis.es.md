@@ -13,7 +13,7 @@ El rendimiento de lectura repetitivo y de alta intensidad durante las horas pico
 Evolucionar hacia una **Estrategia de Caché Escalonado Multi-Capa** integral utilizando almacenamiento en caché en el borde de CDN y nodos Redis distribuidos para interceptar y resolver las peticiones de lectura lo más cerca posible del usuario:
 
 ### Nivel 1: Borde Público (CDN Opcional y Configurable)
-El sistema soporta la integración de una Red de Distribución de Contenidos (CDN) (ej. Cloudflare, Akamai) desplegada delante del Gateway Kong Edge. Esta capa es **totalmente opcional y configurable dinámicamente** en los ajustes de topología de infraestructura; los despliegues a pequeña escala pueden desactivar esta capa para enrutar directamente al origen, mientras que el escalado Enterprise puede activarla vía configuración de entorno.
+El sistema soporta la integración de una Red de Distribución de Contenidos (CDN) (ej. Cloudflare, Akamai) desplegada delante del Gateway Ingress Edge. Esta capa es **totalmente opcional y configurable dinámicamente** en los ajustes de topología de infraestructura; los despliegues a pequeña escala pueden desactivar esta capa para enrutar directamente al origen, mientras que el escalado Enterprise puede activarla vía configuración de entorno.
 * **Alcance**: Activos estáticos de la aplicación (JS, CSS, imágenes), archivos de branding multi-tenant, y APIs de catálogo público de solo lectura con baja volatilidad.
 * **Impacto**: Cero utilización del origen del servidor para las peticiones que coincidan.
 
