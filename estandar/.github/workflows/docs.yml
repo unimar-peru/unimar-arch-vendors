@@ -1,0 +1,36 @@
+name: Documentation Validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "**.md"
+      - ".harness/**"
+      - "reference/**"
+      - "docs/**"
+      - "license/**"
+      - "AGENTS.md"
+      - "README.md"
+      - "DECISIONS.md"
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    name: Validate documentation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20.12"
+      - name: Encoding, traceability and structure validation
+        run: node .harness/scripts/validate-docs.mjs
+      - name: Markdownlint
+        if: always()
+        run: |
+          npx -y markdownlint-cli@0.39.0 \
+            --config .markdownlint.json \
+            '**/*.md' \
+            --ignore '_bmad' \
+            --ignore 'node_modules' || true

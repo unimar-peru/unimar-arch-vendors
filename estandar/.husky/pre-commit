@@ -1,0 +1,19 @@
+#!/usr/bin/env sh
+# Unimar Arch pre-commit hook.
+# Runs the lightweight documentation validation on staged files.
+
+set -e
+
+# 1. Lint staged markdown (markdownlint if available)
+if command -v npx >/dev/null 2>&1; then
+  npx -y markdownlint-cli@0.39.0 \
+    --config .markdownlint.json \
+    $(git diff --cached --name-only --diff-filter=ACM | grep -E '\.md$' || true) \
+    --ignore '_bmad' \
+    --ignore 'node_modules' || true
+fi
+
+# 2. Validate encoding and structure
+node .harness/scripts/validate-docs.mjs
+
+echo "[husky] pre-commit checks passed."

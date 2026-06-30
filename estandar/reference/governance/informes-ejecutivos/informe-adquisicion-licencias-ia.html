@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.10" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Plan de Adquisición de Licencias de IA — UNIMAR</title>
+  <style>
+
+html {
+color: #1a1a1a;
+background-color: #fdfdfd;
+}
+body {
+margin: 0 auto;
+max-width: 36em;
+padding-left: 50px;
+padding-right: 50px;
+padding-top: 50px;
+padding-bottom: 50px;
+hyphens: auto;
+overflow-wrap: break-word;
+text-rendering: optimizeLegibility;
+font-kerning: normal;
+}
+@media (max-width: 600px) {
+body {
+font-size: 0.9em;
+padding: 12px;
+}
+h1 {
+font-size: 1.8em;
+}
+}
+@media print {
+html {
+background-color: white;
+}
+body {
+background-color: transparent;
+color: black;
+font-size: 12pt;
+}
+p, h2, h3 {
+orphans: 3;
+widows: 3;
+}
+h2, h3, h4 {
+page-break-after: avoid;
+}
+}
+p {
+margin: 1em 0;
+}
+a {
+color: #1a1a1a;
+}
+a:visited {
+color: #1a1a1a;
+}
+img {
+max-width: 100%;
+}
+svg {
+height: auto;
+max-width: 100%;
+}
+h1, h2, h3, h4, h5, h6 {
+margin-top: 1.4em;
+}
+h5, h6 {
+font-size: 1em;
+font-style: italic;
+}
+h6 {
+font-weight: normal;
+}
+ol, ul {
+padding-left: 1.7em;
+margin-top: 1em;
+}
+li > ol, li > ul {
+margin-top: 0;
+}
+blockquote {
+margin: 1em 0 1em 1.7em;
+padding-left: 1em;
+border-left: 2px solid #e6e6e6;
+color: #606060;
+}
+code {
+white-space: pre-wrap;
+font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+font-size: 85%;
+margin: 0;
+hyphens: manual;
+}
+pre {
+margin: 1em 0;
+overflow: auto;
+}
+pre code {
+padding: 0;
+overflow: visible;
+overflow-wrap: normal;
+}
+.sourceCode {
+background-color: transparent;
+overflow: visible;
+}
+hr {
+border: none;
+border-top: 1px solid #1a1a1a;
+height: 1px;
+margin: 1em 0;
+}
+table {
+margin: 1em 0;
+border-collapse: collapse;
+width: 100%;
+overflow-x: auto;
+display: block;
+font-variant-numeric: lining-nums tabular-nums;
+}
+table caption {
+margin-bottom: 0.75em;
+}
+tbody {
+margin-top: 0.5em;
+border-top: 1px solid #1a1a1a;
+border-bottom: 1px solid #1a1a1a;
+}
+th {
+border-top: 1px solid #1a1a1a;
+padding: 0.25em 0.5em 0.25em 0.5em;
+}
+td {
+padding: 0.125em 0.5em 0.25em 0.5em;
+}
+header {
+margin-bottom: 4em;
+text-align: center;
+}
+#TOC li {
+list-style: none;
+}
+#TOC ul {
+padding-left: 1.3em;
+}
+#TOC > ul {
+padding-left: 0;
+}
+#TOC a:not(:hover) {
+text-decoration: none;
+}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+.display.math{display: block; text-align: center; margin: 0.5rem auto;}
+</style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Plan de Adquisición de Licencias de IA — UNIMAR</h1>
+</header>
+<h1 id="informe-estratégico-para-decisión-ejecutiva">INFORME ESTRATÉGICO
+PARA DECISIÓN EJECUTIVA</h1>
+<h2 id="plan-de-adquisición-de-licencias-de-ia">Plan de Adquisición de
+Licencias de IA</h2>
+<p><strong>UNIMAR | JUNIO 2026</strong></p>
+<blockquote>
+<p>📄 <strong>Descargar:</strong> <a href="./informe-adquisicion-licencias-ia.html"><code>Versión HTML</code></a>
+(abrir en navegador, Cmd+P → Guardar como PDF) · <a href="./generate-pdf.sh"><code>Script de generación PDF</code></a>
+(<code>bash generate-pdf.sh</code>)</p>
+</blockquote>
+<hr />
+<h2 id="hoja-0-síntesis-ejecutiva-para-decisión-inmediata">HOJA 0 —
+SÍNTESIS EJECUTIVA PARA DECISIÓN INMEDIATA</h2>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 74%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Dimensión</th>
+<th style="text-align: left;">Síntesis para la Dirección</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Problema</strong></td>
+<td style="text-align: left;">El equipo de 20 personas (analistas,
+desarrolladores, QA) necesita herramientas de IA para acelerar el
+desarrollo bajo estándares <code>unimar_arch</code> con el framework
+BMAD Spec-Driven. Sin licencias, el equipo produce código sin
+asistencia, lento y propenso a desviarse de los estándares.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Objetivo</strong></td>
+<td style="text-align: left;">Dotar al equipo de IA generativa para: (1)
+orquestar especificaciones técnicas con Claude, (2) asistir en
+codificación diaria con OpenCode, (3) mantener calidad arquitectónica
+consistente.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Modelo recomendado</strong>
+⭐</td>
+<td style="text-align: left;"><strong>Escenario Base Híbrido → USD
+810/mes</strong> <br /><br />✅ <strong>Por qué sí:</strong> Cubre calidad
+arquitectónica (Claude $200 para Arquitecto y Analista Principal) +
+productividad diaria (OpenCode Go para 5 líderes + OpenCode Gratuito
+para 15 devs/QA). <br />❌ <strong>Por qué dudar:</strong> OpenCode
+Gratuito tiene límites de 200 peticiones/5h que podrían saturarse en
+horas pico. Sin Copilot, el autocompletado en VS Code es menos
+fluido.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Alternativa</strong> ⚠️</td>
+<td style="text-align: left;"><strong>Escenario Híbrido + Copilot → USD
+905/mes</strong> <br /><br />Agrega GitHub Copilot Business para 5
+líderes. Mejora la velocidad de codificación boilerplate pero incrementa
+el costo en USD 95/mes.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Inversión total</strong></td>
+<td style="text-align: left;"><strong>USD 810/mes</strong> para todo el
+equipo de 20 personas. Menos de <strong>USD
+41/persona/mes</strong>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Decisión del Comité Ejecutivo:</strong> Aprobar el
+<strong>Escenario Base (USD 810/mes)</strong> con Claude $200 (2
+licencias) + Claude Pro $20 (18 licencias) + OpenCode Go (5 líderes).
+Evaluar en Fase 3 (mes 7-12) la incorporación de GitHub Copilot Business
+si la velocidad de codificación boilerplate lo justifica.</p>
+<hr />
+<h2 id="modelos-y-opciones-de-ia-disponibles">1. MODELOS Y OPCIONES DE
+IA DISPONIBLES</h2>
+<h3 id="tabla-1-comparativa-de-herramientas-de-ia">Tabla 1: Comparativa
+de Herramientas de IA</h3>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Herramienta</th>
+<th style="text-align: left;">Modelo / Plan</th>
+<th style="text-align: left;">Costo por Usuario/Mes</th>
+<th style="text-align: left;">Pros</th>
+<th style="text-align: left;">Contras</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Claude</strong></td>
+<td style="text-align: left;">Pro (Uso general)</td>
+<td style="text-align: left;">~USD 20</td>
+<td style="text-align: left;">• Excelente razonamiento lógico y
+matemático.<br>• Ideal para revisión de estándares de arquitectura.<br>•
+Gran capacidad de contexto (200K tokens).</td>
+<td style="text-align: left;">• Costo elevado en los tiers
+superiores.<br>• No tiene integración nativa en VS Code tan profunda
+como Copilot.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Claude</strong></td>
+<td style="text-align: left;">Arquitecto / Analista</td>
+<td style="text-align: left;">USD 200</td>
+<td style="text-align: left;">• Máxima capacidad de razonamiento
+complejo.<br>• Perfecto para generar especificaciones (SDD) y validar
+flujos BMAD.<br>• Agente autónomo para tareas críticas.</td>
+<td style="text-align: left;">• Precio prohibitivo para asignar a todo
+el equipo.<br>• Requiere curva de aprendizaje para sacarle todo el
+provecho.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>OpenCode</strong></td>
+<td style="text-align: left;">Gratuito (Freemium)</td>
+<td style="text-align: left;">USD 0</td>
+<td style="text-align: left;">• Sin costo inicial.<br>• Acceso a modelos
+open-source de última generación.<br>• Suficiente para tareas de
+programación diarias.</td>
+<td style="text-align: left;">• Límites de uso estrictos (ej. 200
+peticiones/5h).<br>• Calidad y velocidad variables según la demanda del
+servidor.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>OpenCode</strong></td>
+<td style="text-align: left;">Go (Suscripción)</td>
+<td style="text-align: left;">USD 10</td>
+<td style="text-align: left;">• <strong>Excelente relación
+costo-beneficio</strong>.<br>• Acceso garantizado a modelos premium
+open-source (GLM-5.2, DeepSeek V4).<br>• Precio fijo y predecible.</td>
+<td style="text-align: left;">• No incluye los modelos más grandes
+(disponibles en Black).<br>• Ligera sobrecarga de gestión de
+suscripciones individuales.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>OpenCode</strong></td>
+<td style="text-align: left;">Black / Zen</td>
+<td style="text-align: left;">USD 100 / 200 (plano) o Pago por uso</td>
+<td style="text-align: left;">• Acceso a modelos de máxima
+capacidad.<br>• Flexibilidad de pago según consumo real (Zen).</td>
+<td style="text-align: left;">• Costo fijo alto (Black) o impredecible
+(Zen).<br>• Sobredimensionado para el 80% del equipo.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>GitHub Copilot</strong></td>
+<td style="text-align: left;">Business (Recomendado)</td>
+<td style="text-align: left;">USD 19</td>
+<td style="text-align: left;">• <strong>Integración nativa con VS
+Code</strong> y GitHub.<br>• Autocompletado inteligente en tiempo
+real.<br>• Excelente para código boilerplate y pruebas unitarias.<br>•
+Seguridad empresarial y políticas de filtrado.</td>
+<td style="text-align: left;">• Precio adicional a las otras
+herramientas.<br>• No es tan bueno como Claude para razonamiento
+arquitectónico profundo.<br>• Requiere plan Business para gestión
+centralizada.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>GitHub Copilot</strong></td>
+<td style="text-align: left;">Pro (Individual)</td>
+<td style="text-align: left;">USD 10</td>
+<td style="text-align: left;">• Más económico que Business.</td>
+<td style="text-align: left;">• Gestión descentralizada (cada uno paga
+por su cuenta).<br>• Menos controles de seguridad y políticas de
+repositorio.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="análisis-y-recomendación-estratégica">2. ANÁLISIS Y
+RECOMENDACIÓN ESTRATÉGICA</h2>
+<p>Basado en el contexto del equipo (20 personas, estándar
+<code>unimar_arch</code>, uso de BMAD para automatización spec-driven, y
+presupuesto ajustado), <strong>la herramienta más recomendada como
+núcleo estratégico es CLAUDE (Tier Arquitecto/Analista)</strong>.</p>
+<p><strong>Justificación de la elección:</strong> El éxito del enfoque
+<strong>Spec-Driven con BMAD</strong> depende críticamente de la
+precisión en la interpretación de requisitos y la generación de
+especificaciones técnicas complejas. Claude (especialmente el tier de
+USD 200) supera a las demás herramientas en razonamiento profundo,
+manejo de contexto largo y seguimiento de estándares de software. Si
+bien es costoso, basta con <strong>2 licencias</strong> (Arquitecto y
+Analista Principal) para orquestar a los agentes de IA que luego
+generarán el código base, el cual será validado por el resto del equipo
+con herramientas más económicas.</p>
+<hr />
+<h2 id="plan-de-adopción-y-escenarios-de-costos">3. PLAN DE ADOPCIÓN Y
+ESCENARIOS DE COSTOS</h2>
+<p>Para equilibrar presupuesto y rendimiento, se propone un modelo
+<strong>híbrido y progresivo</strong>.</p>
+<h3 id="tabla-2-escenarios-de-suscripción-20-personas">Tabla 2:
+Escenarios de Suscripción (20 Personas)</h3>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Rol / Herramienta</th>
+<th style="text-align: left;">Escenario Base (Recomendado)</th>
+<th style="text-align: left;">Escenario Híbrido + Copilot
+(Opcional)</th>
+<th style="text-align: left;">Escenario Full (Máxima Productividad)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Claude USD 200</strong> (2
+usuarios: Arquitecto y Analista Ppal)</td>
+<td style="text-align: left;">USD 400</td>
+<td style="text-align: left;">USD 400</td>
+<td style="text-align: left;">USD 400</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Claude Pro USD 20</strong> (18
+usuarios restantes)</td>
+<td style="text-align: left;">USD 360</td>
+<td style="text-align: left;">USD 360</td>
+<td style="text-align: left;">USD 360</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>OpenCode Go USD 10</strong> (5
+Líderes/Devs Senior)</td>
+<td style="text-align: left;">USD 50</td>
+<td style="text-align: left;">USD 50</td>
+<td style="text-align: left;">USD 200 (para 20)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>OpenCode Gratuito</strong> (15
+Devs/QA)</td>
+<td style="text-align: left;">USD 0</td>
+<td style="text-align: left;">USD 0</td>
+<td style="text-align: left;">USD 0</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>GitHub Copilot Business USD
+19</strong> (Opcional)</td>
+<td style="text-align: left;">USD 0</td>
+<td style="text-align: left;">+USD 95 (5 líderes)</td>
+<td style="text-align: left;">+USD 380 (20 líderes)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Costo Total Mensual</strong></td>
+<td style="text-align: left;"><strong>USD 810</strong></td>
+<td style="text-align: left;"><strong>USD 905</strong></td>
+<td style="text-align: left;"><strong>USD 1,340</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="ventajas-y-desventajas-del-modelo-recomendado-base-usd-810">4.
+VENTAJAS Y DESVENTAJAS DEL MODELO RECOMENDADO (BASE: USD 810)</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Ventajas</th>
+<th style="text-align: left;">Desventajas</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">• <strong>Enfoque en calidad:</strong> Las
+2 licencias caras aseguran que la “cabeza” del proyecto (Arquitectura y
+Especificaciones) sea de primer nivel.<br>• <strong>Ahorro
+significativo:</strong> El 75% del equipo usa herramientas gratuitas o
+de bajo costo (USD 10).<br>• <strong>Escalabilidad:</strong> Permite
+activar Copilot o pasar a OpenCode Black/Go masivamente según la carga
+de trabajo futura.<br>• <strong>Alineación con BMAD:</strong> Claude es
+el mejor para orquestar agentes autónomos y validar el cumplimiento del
+estándar <code>unimar_arch</code>.</td>
+<td style="text-align: left;">• <strong>Riesgo de límites:</strong> Los
+15 usuarios con OpenCode Gratuito podrían quedarse sin peticiones en
+horas pico.<br>• <strong>Falta de Copilot:</strong> El autocompletado en
+VS Code no será tan fluido como con Copilot, lo que puede ralentizar la
+codificación pura (boilerplate).<br>• <strong>Gestión
+descentralizada:</strong> Al tener 3 herramientas diferentes (Claude,
+OpenCode), la gestión de facturación y acceso es más compleja.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="hoja-de-ruta-de-implementación-evolución-progresiva">5. HOJA DE
+RUTA DE IMPLEMENTACIÓN (EVOLUCIÓN PROGRESIVA)</h2>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Fase</th>
+<th style="text-align: left;">Mes</th>
+<th style="text-align: left;">Acción</th>
+<th style="text-align: left;">Costo Estimado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Fase 1</strong></td>
+<td style="text-align: left;">1 - 3</td>
+<td style="text-align: left;">Implementar el <strong>Escenario Base (USD
+810)</strong>. Capacitar al Arquitecto y Analista en BMAD con Claude. El
+resto usa OpenCode Gratuito.</td>
+<td style="text-align: left;">USD 810/mes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Fase 2</strong></td>
+<td style="text-align: left;">4 - 6</td>
+<td style="text-align: left;">Evaluar la saturación de OpenCode
+Gratuito. Si hay cuellos de botella, activar <strong>OpenCode Go para
+los 5 líderes</strong> (ya incluido en el escenario base).</td>
+<td style="text-align: left;">USD 810/mes (ya contemplado)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Fase 3</strong></td>
+<td style="text-align: left;">7 - 12</td>
+<td style="text-align: left;">Si la productividad en código repetitivo
+es baja, añadir <strong>GitHub Copilot Business</strong> solo para los
+líderes (Escenario Híbrido).</td>
+<td style="text-align: left;">USD 905/mes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Fase 4</strong></td>
+<td style="text-align: left;">&gt;12</td>
+<td style="text-align: left;">Si el presupuesto lo permite y el equipo
+crece, migrar a <strong>OpenCode Black (plano)</strong> o
+<strong>Copilot para todo el equipo</strong>.</td>
+<td style="text-align: left;">USD 1,340/mes</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="conclusión-final">6. CONCLUSIÓN FINAL</h2>
+<p><strong>La adquisición recomendada es:</strong></p>
+<ol type="1">
+<li><strong>Claude (Tier USD 200)</strong>: 2 licencias para Arquitecto
+y Analista Principal <em>(Obligatorio)</em>.</li>
+<li><strong>Claude (Pro)</strong>: 18 licencias para el resto del equipo
+<em>(Obligatorio)</em>.</li>
+<li><strong>OpenCode (Go)</strong>: 5 licencias para Líderes Técnicos
+<em>(Recomendado)</em>.</li>
+<li><strong>OpenCode (Gratuito)</strong>: Para los 15 miembros restantes
+<em>(Base)</em>.</li>
+<li><strong>GitHub Copilot</strong>: Evaluar en Fase 3, no adquirir
+inicialmente para mantener el costo en <strong>USD
+810/mes</strong>.</li>
+</ol>
+<p>Este plan asegura que la <strong>calidad arquitectónica</strong>
+(Claude) y la <strong>eficiencia operativa</strong> (OpenCode) estén
+cubiertas sin exceder el presupuesto inicial, permitiendo una evolución
+natural hacia herramientas más potentes según las necesidades del
+proyecto.</p>
+</body>
+</html>

@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.10" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Informe Estratégico SCM y DevSecOps</title>
+  <style>
+
+html {
+color: #1a1a1a;
+background-color: #fdfdfd;
+}
+body {
+margin: 0 auto;
+max-width: 36em;
+padding-left: 50px;
+padding-right: 50px;
+padding-top: 50px;
+padding-bottom: 50px;
+hyphens: auto;
+overflow-wrap: break-word;
+text-rendering: optimizeLegibility;
+font-kerning: normal;
+}
+@media (max-width: 600px) {
+body {
+font-size: 0.9em;
+padding: 12px;
+}
+h1 {
+font-size: 1.8em;
+}
+}
+@media print {
+html {
+background-color: white;
+}
+body {
+background-color: transparent;
+color: black;
+font-size: 12pt;
+}
+p, h2, h3 {
+orphans: 3;
+widows: 3;
+}
+h2, h3, h4 {
+page-break-after: avoid;
+}
+}
+p {
+margin: 1em 0;
+}
+a {
+color: #1a1a1a;
+}
+a:visited {
+color: #1a1a1a;
+}
+img {
+max-width: 100%;
+}
+svg {
+height: auto;
+max-width: 100%;
+}
+h1, h2, h3, h4, h5, h6 {
+margin-top: 1.4em;
+}
+h5, h6 {
+font-size: 1em;
+font-style: italic;
+}
+h6 {
+font-weight: normal;
+}
+ol, ul {
+padding-left: 1.7em;
+margin-top: 1em;
+}
+li > ol, li > ul {
+margin-top: 0;
+}
+blockquote {
+margin: 1em 0 1em 1.7em;
+padding-left: 1em;
+border-left: 2px solid #e6e6e6;
+color: #606060;
+}
+code {
+white-space: pre-wrap;
+font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+font-size: 85%;
+margin: 0;
+hyphens: manual;
+}
+pre {
+margin: 1em 0;
+overflow: auto;
+}
+pre code {
+padding: 0;
+overflow: visible;
+overflow-wrap: normal;
+}
+.sourceCode {
+background-color: transparent;
+overflow: visible;
+}
+hr {
+border: none;
+border-top: 1px solid #1a1a1a;
+height: 1px;
+margin: 1em 0;
+}
+table {
+margin: 1em 0;
+border-collapse: collapse;
+width: 100%;
+overflow-x: auto;
+display: block;
+font-variant-numeric: lining-nums tabular-nums;
+}
+table caption {
+margin-bottom: 0.75em;
+}
+tbody {
+margin-top: 0.5em;
+border-top: 1px solid #1a1a1a;
+border-bottom: 1px solid #1a1a1a;
+}
+th {
+border-top: 1px solid #1a1a1a;
+padding: 0.25em 0.5em 0.25em 0.5em;
+}
+td {
+padding: 0.125em 0.5em 0.25em 0.5em;
+}
+header {
+margin-bottom: 4em;
+text-align: center;
+}
+#TOC li {
+list-style: none;
+}
+#TOC ul {
+padding-left: 1.3em;
+}
+#TOC > ul {
+padding-left: 0;
+}
+#TOC a:not(:hover) {
+text-decoration: none;
+}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+.display.math{display: block; text-align: center; margin: 0.5rem auto;}
+</style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Informe Estratégico SCM y DevSecOps</h1>
+</header>
+<h1 id="informe-estratégico-para-decisión-ejecutiva">INFORME ESTRATÉGICO
+PARA DECISIÓN EJECUTIVA</h1>
+<h2 id="plataforma-scm-y-devsecops-análisis-de-mercado-completo-v7">Plataforma
+SCM y DevSecOps – Análisis de Mercado Completo (V7)</h2>
+<p><strong>UNIMAR | 10 DE JUNIO DE 2026</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Control</th>
+<th style="text-align: left;">Detalle</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Versión</strong></td>
+<td style="text-align: left;">1.0</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Fecha</strong></td>
+<td style="text-align: left;">18/06/2026</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Autores</strong></td>
+<td style="text-align: left;">Alberto Arroyo, Cristhian Jara</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Aprobador</strong></td>
+<td style="text-align: left;">Carlos Villanueva</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Estado</strong></td>
+<td style="text-align: left;">Aprobado</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Descargar:</strong> <a href="./informe-analisis-scm-devsecops-v7.html"><code>Versión HTML</code></a>
+(abrir en navegador, Cmd+P → Guardar como PDF) · <a href="./generate-pdf.sh"><code>Script de generación PDF</code></a>
+(<code>bash generate-pdf.sh</code>)</p>
+</blockquote>
+<hr />
+<h2 id="hoja-0-síntesis-ejecutiva-para-decisión-inmediata">HOJA 0 —
+SÍNTESIS EJECUTIVA PARA DECISIÓN INMEDIATA</h2>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 74%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Dimensión</th>
+<th style="text-align: left;">Síntesis para la Dirección</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Problema crítico</strong></td>
+<td style="text-align: left;">SecurityScorecard <strong>F</strong>, TFS
+2012 (obsoleto, sin parches), 50% del código lo escriben proveedores
+<strong>sin que UNIMAR pueda revisar ni auditar lo que
+entregan</strong>. Si un proveedor comete un error (exponer una clave de
+SAP) o es comprometido, UNIMAR no tiene cómo saberlo hasta que el daño
+está hecho.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>¿Por qué ahora?</strong></td>
+<td style="text-align: left;">Cada mes sin controles, un proveedor puede
+<strong>exponer accidentalmente</strong> una credencial de SAP o BD en
+un commit, o su entorno puede ser <strong>comprometido</strong> y usar
+su acceso legítimo para inyectar código. No es malicia del proveedor —es
+que UNIMAR no tiene cómo detectarlo hasta que ya es tarde. Un solo
+incidente (ransomware, filtración) cuesta <strong>USD
+50,000–500,000</strong>.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Decisión recomendada</strong></td>
+<td style="text-align: left;"><strong>Ruta híbrida:</strong> Seguridad
+Local para el equipo interno + add-ons solo en repos con proveedores. El
+costo <strong>escala con el riesgo</strong>: ~USD 130/mes sin
+outsourcers, ~USD 600/mes con 2 proveedores.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Costo del “no hacer
+nada”</strong></td>
+<td style="text-align: left;"><strong>USD 50,000–500,000 por
+incidente.</strong> Frente a eso, los ~USD 600/mes del escenario más
+probable con 2 proveedores son el precio de una póliza de seguro.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Próximo paso
+concreto</strong></td>
+<td style="text-align: left;">1. Adquirir <strong>GitHub Team</strong>
+(USD 100/mes). 2. Implementar Seguridad Local (Fase 0, 4 semanas). 3.
+Activar add-ons solo cuando un proveedor externo contribuya a un
+repositorio crítico.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Las 3 opciones en 30 segundos:</strong></p>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 44%" />
+<col style="width: 34%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Opción</th>
+<th style="text-align: left;">Costo mensual</th>
+<th style="text-align: left;">Para quién</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Híbrida
+(recomendada)</strong></td>
+<td style="text-align: left;"><strong>USD 130 → ~600</strong> (escalable
+según proveedores)</td>
+<td style="text-align: left;">Equipo que empieza con recursos internos y
+suma proveedores progresivamente</td>
+</tr>
+<tr>
+<td style="text-align: left;">Completa (add-ons para todos)</td>
+<td style="text-align: left;"><strong>USD 1,325 fijo</strong></td>
+<td style="text-align: left;">Quien prefiera un costo predecible desde
+el día 1 sin gestionar granularidad</td>
+</tr>
+<tr>
+<td style="text-align: left;">Solo Seguridad Local</td>
+<td style="text-align: left;"><strong>USD 130 fijo</strong></td>
+<td style="text-align: left;">Solo viable si no hubiera proveedores
+externos. Riesgo alto con outsourcing</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Decisión del Comité Ejecutivo:</strong> Aprobar
+<strong>GitHub Team</strong> + <strong>Seguridad Local</strong> como
+capa base. Activar add-ons incrementalmente cuando entren proveedores.
+El costo crece con el riesgo real. En el escenario más probable (2
+proveedores, 5 committers c/u): <strong>~USD 600/mes</strong>, ahorrando
+<strong>~USD 725/mes vs. comprar todo upfront</strong>.</p>
+</blockquote>
+<hr />
+<h2 id="resumen-ejecutivo-y-veredicto">1. RESUMEN EJECUTIVO Y
+VEREDICTO</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Veredicto</strong></th>
+<th style="text-align: left;"><strong>Recomendación</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>RUTA HÍBRIDA
+RECOMENDADA</strong></td>
+<td style="text-align: left;"><strong>Seguridad Local para el equipo
+interno + add-ons solo para repos con proveedores</strong>. Arranca en
+USD 130/mes y escala hasta ~USD 850/mes con 3 proveedores. El costo
+crece con el riesgo real, no antes. Vea la tabla de costos escalables en
+la Hoja 0.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>ÓPTIMO (COSTO FIJO)</strong></td>
+<td style="text-align: left;"><strong>GitHub Team + Secret Protection +
+Code Security</strong> (USD 1,325/mes). Seguridad completa para todos
+los repositorios desde el día 1. Úselo si la Dirección prefiere un costo
+fijo predecible y no quiere gestionar la granularidad por repositorio.
+Cuesta ~USD 725/mes más que la ruta híbrida en el escenario con 2
+proveedores.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>ALTERNATIVA VÁLIDA</strong></td>
+<td style="text-align: left;"><strong>Azure DevOps + Secret Protection +
+Code Security</strong>. Misma capacidad de seguridad que GitHub, con
+mejor integración nativa si UNIMAR ya tiene compromiso fuerte con el
+ecosistema Azure.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>ALTERNATIVA DE MENOR
+COSTO</strong></td>
+<td style="text-align: left;"><strong>GitHub Team + Seguridad
+Local</strong> (Husky + talisman + SonarQube). Sin add-ons en la nube.
+Ahorro de USD 1,195/mes vs. la opción óptima, pero sin enforce
+centralizado sobre outsourcers. Solo viable si UNIMAR no tuviera
+proveedores externos.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>DESCARTAR</strong></td>
+<td style="text-align: left;"><strong>Azure DevOps Basic</strong> como
+solución única. Es un “repositorio barato” que no audita el contenido
+del código, dejando los riesgos de seguridad a revisión manual.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>OBJETIVO FUTURO</strong></td>
+<td style="text-align: left;"><strong>GitHub Enterprise +
+Seguridad</strong>. Solo cuando UNIMAR requiera SAML/SCIM, auditoría
+centralizada (SOC2) o IP allow lists. Por ahora, es sobredimensionado y
+genera costos y complejidad innecesarios.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Conclusión financiera clave:</strong> La ruta híbrida
+<strong>puede costar desde USD 130/mes</strong> (solo equipo interno)
+<strong>hasta ~USD 850/mes</strong> (con 3 proveedores), ahorrando
+<strong>USD 475 a 1,195/mes</strong> vs. comprar todo upfront. En el
+escenario más probable (2 proveedores, 5 committers c/u), <strong>~USD
+600/mes</strong>. La opción de seguridad completa para todos (USD
+1,325/mes) es el techo si toda la organización eventualmente
+externaliza.</p>
+<hr />
+<h2 id="catálogo-completo-de-productos-y-modelos-todas-las-versiones">2.
+CATÁLOGO COMPLETO DE PRODUCTOS Y MODELOS (TODAS LAS VERSIONES)</h2>
+<h3 id="ecosistema-azure-devops-microsoft">2.1 Ecosistema Azure DevOps
+(Microsoft)</h3>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Modelo</th>
+<th style="text-align: left;">Costo Base (25 users)</th>
+<th style="text-align: left;">Complementos</th>
+<th style="text-align: left;">Costo Total (25 users)</th>
+<th style="text-align: left;">Pros</th>
+<th style="text-align: left;">Contras</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>ADO Basic</strong></td>
+<td style="text-align: left;">USD 120/mes</td>
+<td style="text-align: left;">Ninguno</td>
+<td style="text-align: left;">USD 120/mes</td>
+<td style="text-align: left;">Menor costo del mercado. Primeros 5
+usuarios gratuitos.</td>
+<td style="text-align: left;">No tiene Secret Protection ni Code
+Security. Los secretos (SAP, BD, APIs) y vulnerabilidades dependen de
+revisión manual.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>ADO + Seguridad
+Completa</strong></td>
+<td style="text-align: left;">USD 120/mes</td>
+<td style="text-align: left;">Secret (USD 19) + Code Security (USD
+30)</td>
+<td style="text-align: left;"><strong>USD 1,345/mes</strong></td>
+<td style="text-align: left;"><strong>Misma seguridad preventiva que
+GitHub</strong>. Integración nativa con Azure Entra ID.</td>
+<td style="text-align: left;">Menor ecosistema de colaboración con
+terceros. Interfaz menos ágil para revisiones de código externas.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Azure DevOps Server</strong></td>
+<td style="text-align: left;">On-premise (cotizar)</td>
+<td style="text-align: left;">N/A</td>
+<td style="text-align: left;">Variable</td>
+<td style="text-align: left;">Para entornos con restricción regulatoria
+de nube.</td>
+<td style="text-align: left;">Obsolescencia tecnológica; no es el futuro
+de Microsoft.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ecosistema-github-microsoft">2.2 Ecosistema GitHub
+(Microsoft)</h3>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Modelo</th>
+<th style="text-align: left;">Costo Base (25 users)</th>
+<th style="text-align: left;">Complementos</th>
+<th style="text-align: left;">Costo Total (25 users)</th>
+<th style="text-align: left;">Pros</th>
+<th style="text-align: left;">Contras</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>GitHub Team</strong></td>
+<td style="text-align: left;">USD 100/mes (USD 4×25)</td>
+<td style="text-align: left;">Ninguno</td>
+<td style="text-align: left;">USD 100/mes</td>
+<td style="text-align: left;">Colaboración básica, CODEOWNERS, branch
+protection.</td>
+<td style="text-align: left;">Sin Secret Protection ni Code
+Security.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>GitHub Team + Seguridad
+Local</strong></td>
+<td style="text-align: left;">USD 100/mes</td>
+<td style="text-align: left;">SonarQube (~USD 30) + hooks/talisman (USD
+0)</td>
+<td style="text-align: left;"><strong>~USD 130/mes</strong></td>
+<td style="text-align: left;">Costo mínimo. Seguridad auto-gestionada
+con pre-commit hooks (Husky + talisman/git-secrets), linters y SonarQube
+auto-hosteado. Sin depender de add-ons de plataforma.</td>
+<td style="text-align: left;">Sin enforce centralizado. Los hooks se
+bypassan con <code>--no-verify</code>. Sin auditoría ni revocación
+automática de secretos. Sin CodeQL ni Dependabot.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>GitHub Team +
+Seguridad</strong></td>
+<td style="text-align: left;">USD 100/mes</td>
+<td style="text-align: left;">Secret (USD 19) + Code Security (USD
+30)</td>
+<td style="text-align: left;"><strong>USD 1,325/mes</strong></td>
+<td style="text-align: left;"><strong>ÓPTIMO (COSTO FIJO)</strong>.
+Misma seguridad que Enterprise. Modelo de pago por committer activo (no
+por usuario total). Para equipo que prefiere costo fijo.</td>
+<td style="text-align: left;">Sin SAML SSO. Sin Audit Log API
+centralizado.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>GitHub Enterprise +
+Seguridad</strong></td>
+<td style="text-align: left;">USD 525/mes (USD 21×25)</td>
+<td style="text-align: left;">Secret (USD 19) + Code Security (USD
+30)</td>
+<td style="text-align: left;"><strong>USD 1,750/mes</strong></td>
+<td style="text-align: left;">Gobierno completo (SAML, SCIM, Audit logs,
+IP allow lists).</td>
+<td style="text-align: left;"><strong>Sobredimensionado</strong>.
+Complejidad administrativa (EMU). Costo USD 425/mes más alto que
+Team.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>GitHub + Copilot</strong></td>
+<td style="text-align: left;">Variable</td>
+<td style="text-align: left;">USD 19/usuario/mes</td>
+<td style="text-align: left;">+ USD 228/mes (12 internos)</td>
+<td style="text-align: left;">Asistente IA para cerrar brecha de skill
+gap.</td>
+<td style="text-align: left;">Licencia separada y opcional. No es un
+requisito de SCM.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="otras-plataformas-referencia-de-mercado">2.3 Otras Plataformas
+(Referencia de Mercado)</h3>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Modelo</th>
+<th style="text-align: left;">Costo Base (25 users)</th>
+<th style="text-align: left;">Complementos</th>
+<th style="text-align: left;">Costo Total (25 users)</th>
+<th style="text-align: left;">Pros</th>
+<th style="text-align: left;">Contras</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>GitLab Ultimate</strong></td>
+<td style="text-align: left;">USD 99/usuario/mes</td>
+<td style="text-align: left;">N/A</td>
+<td style="text-align: left;"><strong>USD 2,475/mes</strong></td>
+<td style="text-align: left;">Seguridad y compliance avanzados (todo en
+uno).</td>
+<td style="text-align: left;"><strong>Casi el doble</strong> de la
+opción recomendada. Curva de aprendizaje pronunciada.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Bitbucket Premium</strong></td>
+<td style="text-align: left;">USD ~7.53/usuario/mes</td>
+<td style="text-align: left;">N/A</td>
+<td style="text-align: left;">USD ~188/mes</td>
+<td style="text-align: left;">Integración nativa con Jira. Mayor
+almacenamiento.</td>
+<td style="text-align: left;">No tiene Secret Protection ni Code
+Security. Descartar por seguridad insuficiente.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="análisis-financiero-consolidado-base-25-contribuidores-50-outsourcing">3.
+ANÁLISIS FINANCIERO CONSOLIDADO (BASE: 25 CONTRIBUIDORES, 50%
+OUTSOURCING)</h2>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Escenario</th>
+<th style="text-align: left;">USD/mes (sin IGV)</th>
+<th style="text-align: left;">USD/mes (con IGV 18%)</th>
+<th style="text-align: left;">PEN/mes (con IGV)</th>
+<th style="text-align: left;">Decisión</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">A. ADO Basic</td>
+<td style="text-align: left;">$120</td>
+<td style="text-align: left;">$141.60</td>
+<td style="text-align: left;">S/ 495.32</td>
+<td style="text-align: left;"><strong>Descartar</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;">B. ADO + Seguridad</td>
+<td style="text-align: left;">$1,345</td>
+<td style="text-align: left;">$1,587.10</td>
+<td style="text-align: left;">S/ 5,551.68</td>
+<td style="text-align: left;"><strong>Alternativa válida</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;">C. GitHub Team + Seguridad</td>
+<td style="text-align: left;">$1,325</td>
+<td style="text-align: left;">$1,563.50</td>
+<td style="text-align: left;">S/ 5,469.12</td>
+<td style="text-align: left;"><strong>Óptimo (costo fijo)</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;">D. GitHub Enterprise + Seguridad</td>
+<td style="text-align: left;">$1,750</td>
+<td style="text-align: left;">$2,065.00</td>
+<td style="text-align: left;">S/ 7,223.37</td>
+<td style="text-align: left;"><strong>Objetivo estratégico
+futuro</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;">E. GitLab Ultimate</td>
+<td style="text-align: left;">$2,475</td>
+<td style="text-align: left;">$2,920.50</td>
+<td style="text-align: left;">S/ 10,215.91</td>
+<td style="text-align: left;"><strong>Descartar</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;">F. Bitbucket Premium</td>
+<td style="text-align: left;">$188</td>
+<td style="text-align: left;">$221.84</td>
+<td style="text-align: left;">S/ 776.40</td>
+<td style="text-align: left;"><strong>Descartar (sin
+seguridad)</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>G. GitHub Team + Seguridad
+Local</strong></td>
+<td style="text-align: left;"><strong>$130</strong></td>
+<td style="text-align: left;"><strong>$153.40</strong></td>
+<td style="text-align: left;"><strong>S/ 536.59</strong></td>
+<td style="text-align: left;"><strong>Alternativa de menor costo (con
+riesgo operativo)</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>H. Ruta híbrida
+(recomendada)</strong></td>
+<td style="text-align: left;"><strong>~$130 a ~$600</strong></td>
+<td style="text-align: left;"><strong>variable</strong></td>
+<td style="text-align: left;"><strong>variable</strong></td>
+<td style="text-align: left;"><strong>Costo escala con el
+riesgo</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Comparativa de ahorro con la ruta híbrida:</strong> En el
+escenario más probable (2 proveedores, 10 committers externos), el costo
+es ~USD 600/mes, ahorrando <strong>~USD 725/mes vs. la opción de
+seguridad completa para todos</strong>. Si solo hay equipo interno, el
+ahorro es de <strong>USD 1,195/mes</strong>.</p>
+<p><strong>Ruta híbrida — costo variable (no fijo):</strong> | Escenario
+| USD/mes | ¿Cuándo? | | :——– | :—— | :——- | | Solo equipo interno (~20
+personas) | <strong>~130</strong> | Meses 0-3 | | +1 proveedor (5
+committers) | <strong>~360</strong> | Primer outsourcer | | +2
+proveedores (10 committers) | <strong>~600</strong> | Escenario típico
+con 2 outsourcers | | +3 proveedores (15 committers) |
+<strong>~850</strong> | Escalamiento mayor | | Todos los repositorios
+con add-ons | <strong>1,325</strong> | Techo máximo | El ahorro
+vs. comprar todo upfront es de <strong>USD 475 a 1,195/mes</strong>.</p>
+<hr />
+<h2 id="matriz-de-decisión-ponderada-con-pesos-dinámicos-para-50-outsourcing">4.
+MATRIZ DE DECISIÓN PONDERADA (CON PESOS DINÁMICOS PARA 50%
+OUTSOURCING)</h2>
+<table>
+<colgroup>
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Criterio</th>
+<th style="text-align: left;">Peso</th>
+<th style="text-align: left;">ADO Basic</th>
+<th style="text-align: left;">ADO + Seguridad</th>
+<th style="text-align: left;">GitHub Team + Seguridad</th>
+<th style="text-align: left;">GitHub Team + Seg. Local</th>
+<th style="text-align: left;">GitHub Enterprise + Seguridad</th>
+<th style="text-align: left;">GitLab Ultimate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Seguridad preventiva</strong></td>
+<td style="text-align: left;">30%</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;"><strong>5</strong></td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">5</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Control de
+proveedores</strong></td>
+<td style="text-align: left;">20%</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;"><strong>5</strong></td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">4</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Desarrollo del equipo
+interno</strong></td>
+<td style="text-align: left;">15%</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;"><strong>5</strong></td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">3</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Cobertura de código
+activo</strong></td>
+<td style="text-align: left;">15%</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">5</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Identidad y
+cumplimiento</strong></td>
+<td style="text-align: left;">10%</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">5</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Costo / TCO</strong></td>
+<td style="text-align: left;">10%</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;"><strong>5</strong></td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Puntaje Ponderado</strong></td>
+<td style="text-align: left;"><strong>100%</strong></td>
+<td style="text-align: left;"><strong>2.75</strong></td>
+<td style="text-align: left;"><strong>3.90</strong></td>
+<td style="text-align: left;"><strong>4.70</strong></td>
+<td style="text-align: left;"><strong>3.45</strong></td>
+<td style="text-align: left;"><strong>4.30</strong></td>
+<td style="text-align: left;"><strong>3.55</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Ranking</strong></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">6º</td>
+<td style="text-align: left;">3º</td>
+<td style="text-align: left;"><strong>1º</strong></td>
+<td style="text-align: left;">5º</td>
+<td style="text-align: left;">2º</td>
+<td style="text-align: left;">4º</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Análisis de la matriz:</strong> - <strong>GitHub Team +
+Seguridad (4.70)</strong> gana porque ofrece la máxima seguridad y
+control sobre proveedores al mismo costo que ADO, pero con una
+experiencia de colaboración superior y menor complejidad administrativa
+que Enterprise. - <strong>GitHub Enterprise (4.30)</strong> es
+técnicamente superior en gobierno, pero penaliza en costo y complejidad
+para una empresa pequeña. - <strong>ADO + Seguridad (3.90)</strong> es
+una alternativa sólida, especialmente si UNIMAR decide mantener todo en
+el ecosistema Azure. - <strong>GitHub Team + Seguridad Local
+(3.45)</strong> penaliza en seguridad preventiva y control de
+proveedores porque los hooks locales son bypassables y no hay
+enforcement centralizado. Su fortaleza es el costo, pero no es
+recomendable como solución única con 50% outsourcing.</p>
+<hr />
+<h2 id="análisis-detallado-pros-y-contras-por-producto-contexto-unimar">5.
+ANÁLISIS DETALLADO: PROS Y CONTRAS POR PRODUCTO (CONTEXTO UNIMAR)</h2>
+<h3 id="azure-devops-basic-usd-120mes">5.1 Azure DevOps Basic (USD
+120/mes)</h3>
+<ul>
+<li><strong>Pros</strong>: Precio imbatible. Integración con Azure
+Boards y Pipelines. Familiaridad si vienen de TFS.</li>
+<li><strong>Contras</strong>: <strong>No audita el código</strong>. No
+bloquea secretos (SAP, Azure, APIs). No escanea vulnerabilidades.
+Depende 100% de revisión manual. Con outsourcing, el control se delega a
+las prácticas de cada agencia.</li>
+<li><strong>Veredicto</strong>: <strong>Descartar</strong> para código
+activo o crítico. Solo útil si la Dirección acepta explícitamente el
+riesgo residual.</li>
+</ul>
+<h3 id="azure-devops-secret-protection-code-security-usd-1345mes">5.2
+Azure DevOps + Secret Protection + Code Security (USD 1,345/mes)</h3>
+<ul>
+<li><strong>Pros</strong>: Misma capacidad de escaneo que GitHub (Secret
+scanning, CodeQL, Dependabot). Aprovecha la inversión en identidad Entra
+ID. Alternativa económica frente a GitHub Enterprise.</li>
+<li><strong>Contras</strong>: La interfaz de revisión de código es menos
+ágil para colaboración con terceros. La comunidad de desarrolladores es
+menor. El gobierno de repositorios (CODEOWNERS, reglas) es más
+rígido.</li>
+<li><strong>Veredicto</strong>: <strong>Alternativa válida</strong>. Si
+UNIMAR prioriza el ecosistema Microsoft sobre la experiencia de
+desarrollador, esta opción es perfectamente defendible.</li>
+</ul>
+<h3 id="github-team-secret-protection-code-security-usd-1325mes-óptimo-costo-fijo">5.3
+GitHub Team + Secret Protection + Code Security (USD 1,325/mes) – ÓPTIMO
+(COSTO FIJO)</h3>
+<ul>
+<li><strong>Pros</strong>:
+<ul>
+<li><strong>Costo óptimo</strong>: USD 20/mes más barato que ADO
+seguro.</li>
+<li><strong>Seguridad completa</strong>: Secret protection (evita
+filtraciones de llaves) + Code Security (CodeQL, Copilot Autofix,
+Dependabot).</li>
+<li><strong>Colaboración superior</strong>: Pull Requests, CODEOWNERS,
+discusiones por hilos; ideal para que UNIMAR controle el código que
+entregan los proveedores externos.</li>
+<li><strong>Modelo de pago justo</strong>: Se paga solo por los
+“committers activos” en los repositorios protegidos, no por todos los
+usuarios con acceso.</li>
+<li><strong>Menos complejidad</strong>: No requiere configurar
+Enterprise Managed Users (EMU), lo cual reduce la curva de aprendizaje
+del equipo interno.</li>
+</ul></li>
+<li><strong>Contras</strong>: Carece de SAML SSO (aunque soporta
+autenticación OAuth con Entra ID). Carece de audit logs centralizados
+vía API. Cuesta USD 725/mes más que la ruta híbrida en el escenario más
+probable.</li>
+<li><strong>Veredicto</strong>: <strong>Óptimo si se prefiere un costo
+fijo predecible.</strong> La ruta híbrida es más económica si no todos
+los repositorios tienen proveedores externos.</li>
+</ul>
+<h3 id="github-enterprise-secret-protection-code-security-usd-1750mes">5.4
+GitHub Enterprise + Secret Protection + Code Security (USD
+1,750/mes)</h3>
+<ul>
+<li><strong>Pros</strong>: Gobierno total (SAML/SCIM, audit logs, IP
+allow lists, políticas de repositorio a nivel de organización). Cumple
+con compliance SOC2/FedRAMP.</li>
+<li><strong>Contras</strong>: Cuesta USD 425/mes más que Team. La
+administración de EMU es pesada para equipos pequeños. El equipo interno
+(&lt; 20 personas) perderá tiempo en configuración en lugar de
+desarrollar.</li>
+<li><strong>Veredicto</strong>: <strong>Objetivo estratégico</strong>.
+Evaluar en 12-18 meses si UNIMAR crece, requiere certificaciones o
+contrata más proveedores.</li>
+</ul>
+<h3 id="gitlab-ultimate-usd-2475mes">5.5 GitLab Ultimate (USD
+2,475/mes)</h3>
+<ul>
+<li><strong>Pros</strong>: Todo en uno (SCM, CI/CD, Security,
+Compliance). Muy potente para organizaciones grandes.</li>
+<li><strong>Contras</strong>: <strong>Casi el doble de costo</strong>.
+Comunidad más pequeña. El skill gap para adoptarlo es mayor. No
+justificado para &lt; 20 personas.</li>
+<li><strong>Veredicto</strong>: <strong>Descartar</strong> por
+ahora.</li>
+</ul>
+<h3 id="bitbucket-premium-usd-188mes">5.6 Bitbucket Premium (USD
+~188/mes)</h3>
+<ul>
+<li><strong>Pros</strong>: Integración perfecta con Jira. Muy
+barato.</li>
+<li><strong>Contras</strong>: No tiene Secret Protection ni Code
+Security. Carece de los controles preventivos que UNIMAR necesita
+urgentemente.</li>
+<li><strong>Veredicto</strong>: <strong>Descartar</strong> por seguridad
+insuficiente.</li>
+</ul>
+<h3 id="github-team-seguridad-local-usd-130mes-alternativa-de-menor-costo">5.7
+GitHub Team + Seguridad Local (~USD 130/mes) – ALTERNATIVA DE MENOR
+COSTO</h3>
+<p>Este escenario combina GitHub Team base con una capa de seguridad
+auto-gestionada mediante herramientas open source ejecutadas en local y
+en CI/CD, sin contratar los add-ons de seguridad de GitHub.</p>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 33%" />
+<col style="width: 15%" />
+<col style="width: 21%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Componente</th>
+<th style="text-align: left;">Herramienta</th>
+<th style="text-align: left;">Costo</th>
+<th style="text-align: left;">Función</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Pre-commit hooks</td>
+<td style="text-align: left;">Husky + lint-staged</td>
+<td style="text-align: left;">USD 0</td>
+<td style="text-align: left;">Ejecuta validaciones automáticas antes de
+cada commit</td>
+</tr>
+<tr>
+<td style="text-align: left;">Escaneo de secretos</td>
+<td style="text-align: left;">talisman / git-secrets /
+detect-secrets</td>
+<td style="text-align: left;">USD 0</td>
+<td style="text-align: left;">Bloquea commits que contengan
+credenciales, tokens, llaves</td>
+</tr>
+<tr>
+<td style="text-align: left;">Calidad de código</td>
+<td style="text-align: left;">ESLint + Prettier + commitlint</td>
+<td style="text-align: left;">USD 0</td>
+<td style="text-align: left;">Estandariza estilo, formato y mensajes de
+commit</td>
+</tr>
+<tr>
+<td style="text-align: left;">Análisis estático profundo</td>
+<td style="text-align: left;">SonarQube Community Edition
+(self-hosted)</td>
+<td style="text-align: left;">~USD 30/mes (VM)</td>
+<td style="text-align: left;">Code smells, duplicación, cobertura,
+vulnerabilidades</td>
+</tr>
+<tr>
+<td style="text-align: left;">Validación en CI</td>
+<td style="text-align: left;">GitHub Actions (free tier incluido)</td>
+<td style="text-align: left;">USD 0</td>
+<td style="text-align: left;">Ejecuta los mismos checks en el servidor
+de CI</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Costo total estimado: ~USD 130/mes</strong> (GitHub Team USD
+100 + VM SonarQube USD 30).</p>
+<p><strong>Pros:</strong> - <strong>Costo mínimo</strong>: Ahorra USD
+1,195/mes frente a la opción recomendada. - <strong>Independencia de
+plataforma</strong>: Las reglas funcionan igual en GitHub, GitLab o
+Azure DevOps. - <strong>Control total</strong>: El equipo define sus
+propias reglas de calidad y seguridad. - <strong>Desarrollo de
+disciplina</strong>: Fomenta una cultura DevSecOps en el equipo interno.
+- <strong>SonarQube Community es gratuito</strong>: Solo se paga la
+infraestructura (VM pequeña).</p>
+<p><strong>Contras (riesgos explícitos):</strong> -
+<strong>Bypassable</strong>: <code>git commit --no-verify</code> salta
+todos los hooks. Con 50% outsourcing, no hay forma de garantizar que los
+proveedores ejecuten los hooks. - <strong>Sin enforce
+centralizado</strong>: GitHub no bloquea el push aunque los hooks fallen
+en local. El secret ya viajó al remoto antes de que el CI lo detecte. -
+<strong>Sin auditoría corporativa</strong>: No hay un registro
+centralizado de qué secretos se detectaron, quién los ignoró y cuándo. -
+<strong>Sin revocación automática</strong>: GitHub Secret Scanning
+notifica al proveedor (Azure, AWS, SAP) cuando encuentra una key válida.
+Los hooks locales solo avisan al desarrollador. - <strong>Carga
+operativa</strong>: Alguien debe mantener SonarQube (actualizaciones,
+backups, seguridad del servidor), actualizar reglas de hooks y asegurar
+que todos los desarrolladores (internos y externos) tengan la
+configuración correcta. - <strong>Sin CodeQL</strong>: No hay análisis
+semántico profundo de vulnerabilidades en el código (SQLi, XSS, RCE).
+SonarQube cubre parte, pero no al mismo nivel. - <strong>Sin
+Dependabot</strong>: No hay alertas automáticas de dependencias
+vulnerables. Habría que suplirlo con Snyk (costo adicional) o renovación
+manual. - <strong>Falso sentido de seguridad</strong>: El equipo puede
+creer que está protegido cuando en realidad los hooks pueden no estar
+ejecutándose en todos los entornos.</p>
+<p><strong>Veredicto</strong>: <strong>Alternativa viable solo para el
+equipo interno</strong> como capa adicional de seguridad, pero
+<strong>no como única defensa</strong> para el modelo 50% outsourcing.
+Si se adopta, debe combinarse con controles en el servidor de CI (GitHub
+Actions) que rechacen PRs con secretos o vulnerabilidades críticas.
+Recomendable como estrategia complementaria a la opción óptima, no
+sustitutiva.</p>
+<hr />
+<h2 id="diagnóstico-crítico-de-la-realidad-as-is-y-mitigación">6.
+DIAGNÓSTICO CRÍTICO DE LA REALIDAD AS-IS Y MITIGACIÓN</h2>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Dolor AS-IS</th>
+<th style="text-align: left;">Riesgo con ADO Basic</th>
+<th style="text-align: left;">Mitigación con <strong>GitHub Team +
+Seguridad</strong> (nube)</th>
+<th style="text-align: left;">Mitigación parcial con <strong>GitHub Team
++ Seguridad Local</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Legacy (TFS 2012)</strong></td>
+<td style="text-align: left;">Migrar deuda técnica sin auditoría.</td>
+<td style="text-align: left;">Escaneo automático (CodeQL) y reglas de
+branch obligatorias.</td>
+<td style="text-align: left;">SonarQube escanea deuda técnica, pero sin
+CodeQL. Sin enforce automático en push.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SecurityScorecard F</strong></td>
+<td style="text-align: left;">Seguridad reactiva y manual.</td>
+<td style="text-align: left;">Secret scanning bloquea push de
+contraseñas + Code scanning bloquea vulnerabilidades.</td>
+<td style="text-align: left;">talisman/git-secrets en pre-commit
+(bypasseable). SonarQube detecta vulnerabilidades post-commit.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Outsourcing 50%</strong></td>
+<td style="text-align: left;">Depender de las prácticas de cada
+agencia.</td>
+<td style="text-align: left;">Pull Requests con CODEOWNERS y Quality
+Gates con <strong>evidencia corporativa</strong> automática.</td>
+<td style="text-align: left;"><strong>Sin enforce sobre
+outsourcers</strong>. Los hooks son responsabilidad de cada agencia. El
+control se delega.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Skill gap interno</strong></td>
+<td style="text-align: left;">Revisión manual por un equipo en
+aprendizaje.</td>
+<td style="text-align: left;">CodeQL + Copilot Autofix incluyen
+explicaciones y parches automáticos.</td>
+<td style="text-align: left;">SonarQube reporta code smells, pero sin
+explicaciones contextuales ni autofix. Curva de aprendizaje más
+alta.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Criticidad logística</strong></td>
+<td style="text-align: left;">Cambios sin barreras suficientes.</td>
+<td style="text-align: left;">Branch protection + trazabilidad completa
++ rollback inmediato.</td>
+<td style="text-align: left;">Branch protection funciona (es de GitHub,
+no del add-on), pero sin escaneo automático en merge.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="controles-mínimos-no-negociables-aplicables-a-cualquier-plataforma">7.
+CONTROLES MÍNIMOS NO NEGOCIABLES (APLICABLES A CUALQUIER
+PLATAFORMA)</h2>
+<ul>
+<li>Todo repositorio debe tener <strong>propietario técnico y de negocio
+interno</strong>.</li>
+<li>Los proveedores <strong>no administran unilateralmente</strong>
+repositorios corporativos.</li>
+<li>Ningún cambio llega a producción sin <strong>Pull Request y
+revisiones definidas</strong>.</li>
+<li>Las ramas productivas no permiten <strong>push
+directo</strong>.</li>
+<li>Los secretos detectados se <strong>revocan y rotan</strong>
+(eliminarlos del commit no es suficiente).</li>
+<li>Las vulnerabilidades <strong>críticas bloquean el
+release</strong>.</li>
+<li>Los accesos externos son <strong>nominativos</strong>, con caducidad
+y offboarding &lt; 4 horas.</li>
+<li>Las excepciones quedan <strong>justificadas, aprobadas y con
+vencimiento</strong>.</li>
+</ul>
+<hr />
+<h2 id="hoja-de-ruta-incremental-horizonte-relativo">8. HOJA DE RUTA
+INCREMENTAL (HORIZONTE RELATIVO)</h2>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Fase</th>
+<th style="text-align: left;">Horizonte</th>
+<th style="text-align: left;">Hitos</th>
+<th style="text-align: left;">Costo mensual estimado</th>
+<th style="text-align: left;">Trigger</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>0. Inventario y
+Gobierno</strong></td>
+<td style="text-align: left;">0-4 semanas</td>
+<td style="text-align: left;">Inventario TFS; dueños; SSO/MFA; piloto
+3-5 repos. <strong>Implementar seguridad local (Husky + talisman +
+SonarQube) como capa base del equipo interno.</strong></td>
+<td style="text-align: left;"><strong>USD 130</strong> (solo GitHub Team
+USD 100 + hosting SonarQube)</td>
+<td style="text-align: left;">100% repos críticos inventariados.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>1. Código Interno
+Seguro</strong></td>
+<td style="text-align: left;">Meses 1-3</td>
+<td style="text-align: left;">GitHub para todo desarrollo nuevo; ADO
+Boards transitorio; branch protection. Seguridad Local operativa para el
+equipo interno.</td>
+<td style="text-align: left;"><strong>USD 130</strong></td>
+<td style="text-align: left;">100% proyectos nuevos con branch
+protection; 0 falsos positivos críticos en SonarQube.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>2. Activación por
+Proveedor</strong></td>
+<td style="text-align: left;">Meses 3-6</td>
+<td style="text-align: left;"><strong>Por cada repositorio donde un
+proveedor externo contribuya, activar Secret Protection + Code
+Security</strong> para esos committers. Migrar repos activos/críticos de
+TFS.</td>
+<td style="text-align: left;"><strong>USD 130 a ~850</strong> (escala
+con cada proveedor)</td>
+<td style="text-align: left;">Primer commit de un proveedor externo en
+un repositorio marcado como crítico.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>3. Escalamiento
+controlado</strong></td>
+<td style="text-align: left;">Meses 6-9</td>
+<td style="text-align: left;">Mantener add-ons solo en repos con
+outsourcers. Archivar repos inactivos de TFS. Piloto Copilot para equipo
+interno.</td>
+<td style="text-align: left;"><strong>~USD 360 a 1,000</strong> (depende
+del número de outsourcers activos)</td>
+<td style="text-align: left;">Exposición residual &lt; 25%; cero
+secretos válidos expuestos.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>4. Consolidación</strong></td>
+<td style="text-align: left;">Meses 9-12</td>
+<td style="text-align: left;">Evaluar cobertura: si todos los
+repositorios tienen outsourcers, el costo alcanza el tope de <strong>USD
+1,325/mes</strong>. Evaluar retiro total de TFS.</td>
+<td style="text-align: left;"><strong>USD 130 a 1,325</strong> (techo
+natural si toda la organización externaliza)</td>
+<td style="text-align: left;">Todo código activo bajo controles.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="conclusión-directiva-final">9. CONCLUSIÓN DIRECTIVA FINAL</h2>
+<p>El error del informe anterior fue asumir que la única alternativa
+segura a ADO Basic era GitHub Enterprise. <strong>Esto omitió que GitHub
+Team permite contratar Secret Protection y Code Security desde abril de
+2025.</strong></p>
+<p>Para UNIMAR, una empresa con un equipo TI de menos de 20 personas y
+un modelo de desarrollo 50% externalizado:</p>
+<ol type="1">
+<li><strong>No se necesita GitHub Enterprise hoy</strong>. El gobierno
+corporativo (SAML, audit logs) es valioso, pero su costo y complejidad
+administrativa no se justifican para el tamaño actual.</li>
+<li><strong>ADO Basic es un falso ahorro</strong>. No compra controles
+preventivos, trasladando el riesgo al equipo interno y a los
+proveedores.</li>
+<li><strong>La clave no es elegir entre “todo caro” o “todo
+barato”.</strong> La plataforma GitHub permite activar los add-ons de
+seguridad <strong>por repositorio y por committer</strong>. Esto cambia
+completamente la ecuación financiera.</li>
+</ol>
+<p><strong>La decisión inteligente: empezar con Seguridad Local y
+escalar los add-ons solo donde haya proveedores.</strong></p>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 35%" />
+<col style="width: 40%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Escenario</th>
+<th style="text-align: left;">Costo mensual</th>
+<th style="text-align: left;">¿Cuándo aplica?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Solo equipo interno (20 personas)</td>
+<td style="text-align: left;"><strong>USD 130/mes</strong></td>
+<td style="text-align: left;">Meses 1-3, mientras se configura el
+gobierno de repositorios</td>
+</tr>
+<tr>
+<td style="text-align: left;">Equipo + 1 proveedor (5 committers
+externos)</td>
+<td style="text-align: left;"><strong>~USD 360/mes</strong></td>
+<td style="text-align: left;">Cuando el primer proveedor comienza a
+contribuir</td>
+</tr>
+<tr>
+<td style="text-align: left;">Equipo + 3 proveedores (15 committers
+externos)</td>
+<td style="text-align: left;"><strong>~USD 850/mes</strong></td>
+<td style="text-align: left;">Escalamiento normal con múltiples
+outsourcers</td>
+</tr>
+<tr>
+<td style="text-align: left;">Todos los repositorios con add-ons (25
+committers)</td>
+<td style="text-align: left;"><strong>USD 1,325/mes</strong></td>
+<td style="text-align: left;">Escenario máximo: toda la organización
+bajo seguridad completa</td>
+</tr>
+</tbody>
+</table>
+<p><strong>¿Por qué esta ruta híbrida es superior a comprar todo
+upfront?</strong> - <strong>El riesgo con outsourcers se mitiga porque
+los add-ons se activan justo cuando ellos entran</strong>, no antes. No
+hay ventana de exposición. - <strong>El equipo interno se beneficia de
+la Seguridad Local</strong> (Husky, talisman, SonarQube), que además
+fomenta disciplina DevSecOps. - <strong>El ahorro es real y
+tangible</strong>: si hoy solo hay 2 proveedores con 5 committers cada
+uno, el costo es ~USD 600/mes, no USD 1,325. <strong>Ahorro de ~USD
+725/mes (S/ 2,536/mes)</strong>. - <strong>Si UNIMAR decide internalizar
+el desarrollo mañana</strong>, los add-ons simplemente se desactivan y
+el costo vuelve a USD 130/mes.</p>
+<p><strong>Veredicto final del Comité Ejecutivo:</strong>
+<strong>Aprobar GitHub Team como plataforma SCM (USD 100/mes).
+Implementar Seguridad Local como capa base para todo el equipo interno.
+Activar Secret Protection + Code Security de forma incremental,
+repositorio por repositorio, solo cuando un proveedor externo comience a
+contribuir. Esta ruta híbrida asegura que el costo crece con el riesgo
+real, no antes.</strong></p>
+<hr />
+<p><strong>Anexo:</strong> Modelo Excel dinámico
+(<code>UNIMAR_Modelo_Dinamico_SCM_DevSecOps_v7.xlsx</code>) con
+parámetros editables (licencias, outsourcing, repositorios legacy, TCO)
+y análisis de sensibilidad.</p>
+<p><strong>Fuentes oficiales:</strong> Microsoft Azure DevOps Pricing;
+GitHub Pricing; GitLab Pricing; Bitbucket Pricing; SBS Perú (TC
+08/06/2026: S/ 3.498). Precios públicos sin descuentos, sin consumo
+variable y sin IGV. Cotización final sujeta a contrato comercial.</p>
+</body>
+</html>

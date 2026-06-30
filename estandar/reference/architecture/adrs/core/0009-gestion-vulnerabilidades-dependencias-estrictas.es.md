@@ -1,0 +1,35 @@
+# [ADR 0009](0009-gestion-vulnerabilidades-dependencias-estrictas.es.md): Fijación Estricta de Dependencias y Gestión Automatizada de Vulnerabilidades
+
+## Estado
+Aprobado
+
+## Fecha
+2026-05-08
+
+## Contexto
+A medida que el monorepo crece, las dependencias de terceros plantean riesgos críticos de seguridad y estabilidad. El uso del versionado semántico dinámico por defecto (`^1.0.0`) en el `package.json` lleva a instalaciones locales no deterministas ("funciona en mi máquina") y a roturas accidentales durante el desarrollo cuando las dependencias transitivas internas cambian inesperadamente. Necesitamos un control estricto y un escaneo continuo de CVEs.
+
+## Decisión
+Adoptar una **Estrategia de Gobernanza de Dependencias Automatizada de Tolerancia Cero**:
+
+1. **Fijación de Versión Exacta**: Imponer el versionado estático en todos los archivos `package.json` eliminando todos los prefijos `^` y `~`. Cada dependencia queda bloqueada a una cadena de versión exacta e inmutable (ej., `"react": "18.3.1"`).
+2. **Política de Bots Automatizados**: Integrar un bot (como Dependabot o Renovate) para escanear y proponer saltos de dependencia a través de Pull Requests automatizados, asegurando pasos de incremento manejables.
+3. **Comprobaciones CI de Tolerancia Cero**: La pipeline CI debe ejecutar `npm audit --audit-level=high` en cada PR. Cualquier vulnerabilidad Alta o Crítica fuerza un fallo inmediato de la construcción.
+4. **Construcciones Reproducibles Puras**: Las pipelines de CI deben ejecutar estrictamente `npm ci` para eliminar la varianza durante la generación del árbol de dependencias de construcción.
+
+## Consecuencias
+
+### Positivas
+- **Reproducibilidad Absoluta**: Garantiza que los desarrolladores y producción ejecuten módulos idénticos byte por byte.
+- **Seguridad Proactiva**: Descubre CVEs vía la automatización CI antes de que se infiltren en el árbol de ejecución `main`.
+- **Actualizaciones Controladas**: El control de cambios es estricto; sabes exactamente qué código cambió.
+
+### Negativas
+- **Mayor Ruido de PR**: El bot de dependencias genera ruido periódico en el flujo de trabajo de PRs.
+- **Esfuerzo Manual**: Los desarrolladores deben resolver roturas ocasionales durante las actualizaciones directas de versiones mayores (major).
+
+## Referencias
+- [ADR-0005: Puertas de Calidad CI/CD con CodeQL](0005-ci-cd-calidad-codeql.es.md)
+
+---
+[Volver al Índice](../README.md)
