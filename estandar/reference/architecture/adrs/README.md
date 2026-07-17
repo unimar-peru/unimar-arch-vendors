@@ -54,9 +54,9 @@ Architecture Decision Records de Unimar Arch. La [matriz de ADRs](matriz-adr.es.
 | 0051 | [Estrategia de Motor de Base de Datos Empresarial](core/0051-estrategia-motor-base-datos-empresarial.es.md) |
 | 0052 | [Estrategia de Aislamiento de Pruebas Unitarias](core/0052-estrategia-aislamiento-pruebas-unitarias.es.md) |
 | 0053 | [Estrategia de Pruebas de Integración y E2E](core/0053-estrategia-pruebas-integracion-e2e.es.md) |
-| 0054 | Estándares de Diseño y Normalización de Base de Datos |
+| 0054 | [Estándares de Diseño y Normalización de Base de Datos](core/0054-estandares-diseno-normalizacion-base-datos.es.md) |
 | 0055 | [Estrategia de Arquitectura de Microfrontends](core/0055-estrategia-arquitectura-microfrontends.es.md) |
-| 0056 | [Convenciones de Naming y Diseño Empresarial](core/0056-convenciones-nombre-diseno-empresarial.es.md) |
+| 0056 | [Clean Code como Base de Ingeniería de la Suite](core/0056-convenciones-nombre-diseno-empresarial.es.md) |
 | 0060 | Feature Flags — Gestión Centralizada en UMS |
 
 </details>
@@ -129,5 +129,5 @@ Architecture Decision Records de Unimar Arch. La [matriz de ADRs](matriz-adr.es.
 
 <p align="center">
   <strong>© Unimar S.A.</strong> · RUC 20100412447 · Operador Logístico Aduanero desde 1978<br>
-  Última revisión: 2026-06-09
+  Última revisión: 2026-07-17
 </p>

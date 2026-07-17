@@ -63,8 +63,8 @@ Primitivas centralizadas aprobadas que sirven a la red políglota. Los adaptador
  * **Perfil .NET de referencia:** Microsoft SQL Server.
  * **Perfil Node.js de referencia:** PostgreSQL.
 * **Restricción de Madurez:** REQUERIDO aislamiento de Esquema por Contexto. ESTÁN PROHIBIDOS los SQL Joins directos a través de las fronteras de esquemas de contextos delimitados.
-* **Estándares de Diseño:** Todo el modelado de datos DEBE cumplir con los estándares definidos en el [ADR-0054](./adrs/core/0054-estandares-diseño-normalizacion-base-datos.es.md) (línea base 3NF para SQL).
-* **Patrón de Aislamiento:** Estrategia de Seguridad Configurable ([ADR-0044](./adrs/core/0044-estrategia-persistencia-seguridad-configurable.es.md)). La Seguridad a Nivel de Fila (RLS) nativa es OPCIONAL/RECOMENDADA para densidades multi-sucursal, gobernada por el flag `SECURITY_STRATEGY_MODE` gestionado según ADR-0060.
+* **Estándares de Diseño:** Todo el modelado de datos DEBE cumplir con los estándares definidos en el [ADR-0054](./adrs/core/0054-estandares-diseno-normalizacion-base-datos.es.md) (línea base 3NF para SQL).
+* **Acceso por Sucursal:** El acceso por sucursal lo controla la autorización en la capa de aplicación (RBAC/ABAC) mediante el claim `sucursales_autorizadas` ([ADR-0010](./adrs/core/0010-estrategia-arquitectura-multitenant.es.md)). La Seguridad a Nivel de Fila (RLS) de base de datos no se implementa como mecanismo de aislamiento.
 
 ### 4.2 Caché Distribuida
 * **Contrato:** Caché distribuida accedida mediante un puerto de caché. Las implementaciones compatibles con Redis son la opción de referencia, no una dependencia de la capa de dominio.

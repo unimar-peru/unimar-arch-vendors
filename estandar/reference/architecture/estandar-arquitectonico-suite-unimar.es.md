@@ -118,7 +118,7 @@ Cualquier reemplazo de herramienta aprobada requiere ADR antes de escribir códi
 | Monolito Modular | Punto de partida de productos nuevos. | Un proceso, límites de módulo estrictos, schema por contexto. |
 | Microservicios | Solo cuando [ADR-0045](adrs/core/0045-criterios-extraccion-microservicios.es.md) lo habilite. | Servicio por contexto, datos propios, contratos versionados. |
 | BFF | Canales con necesidades divergentes. | La lógica específica del canal vive en BFF, no en el dominio. |
-| Transactional Outbox | Publicación asíncrona confiable. | No usar como estándar obligatorio hasta aprobar ADR-0033. |
+| Transactional Outbox | Publicación asíncrona confiable. | No es un estándar obligatorio. ADR-0033 está `Aceptado` como catálogo del patrón: lo describe y no obliga a usarlo. |
 | CQRS | Lecturas complejas o modelos divergentes. | No aplicar por defecto; requiere criterio explícito mientras ADR-0034 siga pendiente. |
 | Sagas | Transacciones distribuidas con compensaciones. | Permitido solo con observabilidad, idempotencia y compensaciones documentadas; ADR-0035 pendiente. |
 | ACL | Integración con legados o modelos externos. | Traduce al lenguaje del dominio; no filtra lógica externa al dominio. |
@@ -145,7 +145,7 @@ Cada producto debe cubrir:
 
 - Autenticación federada o integración con el Sistema de Usuarios de la suite.
 - Autorización RBAC/ABAC según criticidad del dominio.
-- Aislamiento por sucursal en aplicación como control primario y RLS nativo como failsafe cuando aplique.
+- Acceso por sucursal gestionado por la autorización en la capa de aplicación (RBAC/ABAC) mediante el claim `sucursales_autorizadas`; no se implementa RLS de base de datos (ADR-0010).
 - Gestión de secretos fuera de Git, ConfigMaps y artefactos estáticos.
 - Auditoría inmutable para acciones de negocio relevantes.
 - Clasificación y protección de datos sensibles.

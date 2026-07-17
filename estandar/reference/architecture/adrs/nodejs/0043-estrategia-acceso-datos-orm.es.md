@@ -42,7 +42,7 @@ Para reportes analíticos, JOINs complejos que causen degradación del rendimien
 ## Implicaciones de Diseño
 
 ### Soporte Multi-Tenancy
-El soporte de TypeORM para la clonación de conexiones y la anulación dinámica de `schema` durante las peticiones se alinea con nuestra estrategia de aislamiento basada en RLS/Esquema ([ADR 0010](../core/0010-estrategia-arquitectura-multitenant.es.md)). Usar `nestjs-cls` para inyectar el contexto del inquilino en la capa de datos de forma dinámica.
+El soporte de TypeORM para la clonación de conexiones y la anulación dinámica de `schema` durante las peticiones se alinea con nuestra estrategia de aislamiento basada en Esquema por contexto ([ADR 0010](../core/0010-estrategia-arquitectura-multitenant.es.md), [ADR-0031](../core/0031-esquema-por-contexto-catalogo-eventos-dominio.es.md)). Usar `nestjs-cls` para inyectar el contexto del inquilino en la capa de datos de forma dinámica.
 
 ### Migraciones
 Las migraciones deben escribirse explícitamente a través de archivos TypeScript generados por el CLI de TypeORM. La sincronización automática de esquemas (`synchronize: true`) está PROHIBIDA en entornos de producción.

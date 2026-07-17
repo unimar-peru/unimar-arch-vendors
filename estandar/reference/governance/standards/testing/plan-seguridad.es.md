@@ -214,7 +214,7 @@ QA Lead / Security Lead
 | ADR-0009 | Gestión de Vulnerabilidades | Política de CVEs, SCA obligatorio |
 | ADR-0012 | Autorización RBAC/ABAC | Control de acceso basado en roles |
 | ADR-0020 | Abstracción de Identidad | OIDC, OAuth 2.0, SAML 2.0 |
-| ADR-0044 | Seguridad Configurable en Persistencia | RLS, cifrado, aislamiento por sucursal |
+| ADR-0010 | Sucursal como Dimensión de Negocio y Contexto de Autorización | Acceso por sucursal vía autorización (claim `sucursales_autorizadas`); sin RLS |
 
 ---
 

@@ -1,6 +1,6 @@
 # Estrategia de Base de Datos
 
-> **Estándares de Referencia:** ADR-0051 (motor BD por runtime), ADR-0054 (diseño y normalización), ADR-0044 (RLS, cifrado), [ISO/IEC 25010](https://www.iso.org/standard/35733.html) (eficiencia de rendimiento).
+> **Estándares de Referencia:** ADR-0051 (motor BD por runtime), ADR-0054 (diseño y normalización), ADR-0010 (acceso por sucursal), [ISO/IEC 25010](https://www.iso.org/standard/35733.html) (eficiencia de rendimiento).
 > **Propósito:** Definir la estrategia de selección, diseño, operación y seguridad de bases de datos segmentada por runtime (.NET, Node.js, Android), con herramientas, estándares y criterios de aceptación claros.
 
 ---
@@ -28,7 +28,7 @@
 | **Índices por query plan** | Indexar columnas de filtro y join. Revisar query plans periódicamente | SQL Server Profiler / EXPLAIN ANALYZE (PostgreSQL) |
 | **Migraciones versionadas** | Cada cambio de schema es una migración en código. Rollback siempre disponible | EF Core migrations (.NET), TypeORM migrations (Node.js) |
 | **Nomenclatura por runtime** | PascalCase para .NET (ej. `UserProfiles`), snake_case para Node.js (ej. `user_profiles`) | Ver ADR-0054 |
-| **RLS activo** | Row-Level Security para aislamiento por sucursal. Ver ADR-0044 | SQL Server / PostgreSQL RLS policies |
+| **Sin RLS** | Row-Level Security no se implementa: el acceso por sucursal lo controla la autorización en la capa de aplicación. Ver ADR-0010 | `sucursal_id` como atributo de negocio + claim `sucursales_autorizadas` |
 
 ### 2.2 Modelo NoSQL (MongoDB)
 
@@ -58,7 +58,7 @@
 | **Cifrado en reposo** | TDE (SQL Server) / pgcrypto (PostgreSQL) / SQLCipher (Android) | ISO 27001 A.10 | Plan de Seguridad § BD |
 | **Cifrado en tránsito** | TLS 1.2+ entre app y BD | NIST SP 800-53 (SC-8) | Plan de Seguridad |
 | **Control de acceso** | Principio de mínimo privilegio. Roles por contexto | CIS Benchmarks | Plan de Seguridad § BD |
-| **Aislamiento por sucursal** | RLS (Row-Level Security) por `sucursal_id` | ADR-0044 | ADR-0044 |
+| **Acceso por sucursal** | Autorización RBAC/ABAC vía claim `sucursales_autorizadas`. Sin RLS | ADR-0010 | ADR-0010 |
 | **Auditoría** | SQL Server Audit / PostgreSQL Audit Log / pgaudit | ISO 27001 A.12.4 | Plan de Seguridad |
 | **Backups cifrados** | Backup con cifrado nativo o TDE | NIST SP 800-53 (CP-9) | Hub de Infraestructura |
 
@@ -121,7 +121,7 @@
 | :-- | :----- | :----------- |
 | ADR-0051 | Motor BD Empresarial | SQL Server para .NET, PostgreSQL/MongoDB para Node.js |
 | ADR-0054 | Diseño y Normalización | 3NF (SQL), Design-for-Access (NoSQL), nomenclatura |
-| ADR-0044 | Persistencia Seguridad Configurable | RLS, cifrado, aislamiento por sucursal |
+| ADR-0010 | Sucursal como Dimensión de Negocio | Acceso por autorización, sin RLS |
 | ADR-0047 | Patrones Arquitectónicos | Evolución de patrones de persistencia |
 
 ---

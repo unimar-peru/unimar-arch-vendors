@@ -1,7 +1,7 @@
 # [ADR 0044](0044-estrategia-persistencia-seguridad-configurable.es.md): Estrategia de Persistencia de Seguridad Configurable (Agnosticismo vs. RLS Nativo)
 
 ## Estado
-Propuesto
+Deprecado (2026-07-16 — [ADR-0010](0010-estrategia-arquitectura-multitenant.es.md) desestimó el aislamiento multi-tenant por RLS, eliminando el problema que este ADR resolvía)
 
 ## Fecha
 2026-05-12
@@ -45,7 +45,7 @@ Adoptar una **Estrategia de Persistencia Configurable** utilizando el patrón St
 
 ## Referencias
 - [ADR-0002: Arquitectura Hexagonal Limpia con NestJS](../nodejs/0002-arquitectura-limpia-nestjs.es.md)
-- [ADR-0010: Estrategia de Arquitectura Multi-Tenancy](0010-estrategia-arquitectura-multitenant.es.md)
+- [ADR-0010: Sucursal como Dimensión de Negocio y Contexto de Autorización](0010-estrategia-arquitectura-multitenant.es.md)
 
 ---
 [Volver al Índice](../README.md)

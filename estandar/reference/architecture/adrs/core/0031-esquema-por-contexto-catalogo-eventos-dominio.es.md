@@ -10,7 +10,7 @@ Aprobado
 
 Como el sistema está diseñado como un **Monolito Progresivo** ([ADR-0006](0006-transicion-futura-microservicios-dapr.es.md)) destinado a evolucionar hacia microservicios, existen dos riesgos estructurales que no están cubiertos por la línea base actual de ADR:
 
-1. **Esquema de PostgreSQL Plano**: [ADR-0010](0010-estrategia-arquitectura-multitenant.es.md) define la Seguridad a Nivel de Fila (RLS) para el aislamiento multi-tenant, pero todas las tablas residen en un único esquema plano. Al extraer un contexto delimitado a un microservicio independiente, no hay una frontera de propiedad clara a nivel de base de datos. Los joins entre tablas se convierten en llamadas entre servicios, y los planes de migración se vuelven ambiguos.
+1. **Esquema de PostgreSQL Plano**: [ADR-0010](0010-estrategia-arquitectura-multitenant.es.md) resuelve el acceso por sucursal en la capa de aplicación, pero no dice nada sobre las fronteras entre contextos: todas las tablas residen en un único esquema plano. Al extraer un contexto delimitado a un microservicio independiente, no hay una frontera de propiedad clara a nivel de base de datos. Los joins entre tablas se convierten en llamadas entre servicios, y los planes de migración se vuelven ambiguos.
 
 2. **Sin Catálogo de Eventos de Dominio**: [ADR-0015](0015-arquitectura-eventos-intradominio.es.md) define la abstracción inyectable `IEventBusPort`, pero no especifica **qué eventos cruzan los límites de contexto**, ni los **contratos de carga útil tipados** para esos eventos. Sin este catálogo, las dependencias entre contextos son implícitas y no están documentadas, lo que hace que la extracción de microservicios sea insegura.
 
@@ -159,7 +159,7 @@ class CategoryDeletedEvent {
 
 ## Referencias
 - [ADR-0006: Transición Futura a Microservicios con Dapr](0006-transicion-futura-microservicios-dapr.es.md)
-- [ADR-0010: Estrategia Multi-Tenancy (RLS)](0010-estrategia-arquitectura-multitenant.es.md)
+- [ADR-0010: Sucursal como Dimensión de Negocio y Contexto de Autorización](0010-estrategia-arquitectura-multitenant.es.md)
 - [ADR-0015: Arquitectura Dirigida por Eventos (Bus Inyectable)](0015-arquitectura-eventos-intradominio.es.md)
 
 ---

@@ -3,13 +3,13 @@
 <p align="right">
   <img src="https://img.shields.io/badge/UNIMAR%20S.A.-Operador_Log%C3%ADstico_Aduanero-0f3e67?style=for-the-badge&logoColor=white" alt="Unimar S.A.">
   <img src="https://img.shields.io/badge/Unimar%20Arch-ADR-0055%3A%20Estrategia%20de%20Arquite%E2%80%A6-003c6b?style=for-the-badge&logoColor=white" alt="Unimar Arch">
-  <img src="https://img.shields.io/badge/Estado-Activo-27ae60?style=flat-square" alt="Estado">
+  <img src="https://img.shields.io/badge/Estado-Borrador-c07a12?style=flat-square" alt="Estado">
   <img src="https://img.shields.io/badge/Versi%C3%B3n-0.1.0-042139?style=flat-square" alt="Versión">
 </p>
 
 ## Estado
 
-Propuesto (Preparacion para Fase 3)
+Borrador (Preparación para Fase 3 — no aplicar como decisión vinculante hasta su aprobación)
 
 ## Contexto
 

@@ -1,6 +1,6 @@
 # Flujo de Arquitectura de Observabilidad
 
-Este blueprint explica cómo un servicio alineado con los estándares debe propagar correlación por request, correlación de sesión, trazas, logs y métricas a través de middleware, decoradores de aplicación, instrumentación de runtime y la plataforma de observabilidad.
+Este blueprint explica cómo un servicio alineado con los estándares debe propagar la correlación de la transacción funcional, trazas, logs y métricas a través de middleware, decoradores de aplicación, instrumentación de runtime y la plataforma de observabilidad. La correlación se propaga mediante **W3C Baggage** portando un `transactionId`; las cabeceras propietarias de correlación no forman parte del contrato vigente.
 
 Complementa:
 - [Observability Playbook](../governance/standards/engineering/playbook-observabilidad.es.md)
@@ -15,7 +15,7 @@ Complementa:
 flowchart LR
     Client["Cliente / Navegador / Consumidor Upstream"]
     Correlation["Middleware de Correlación"]
-    Session["Middleware de Session Tracking"]
+    Session["Middleware de Contexto de Transacción"]
     Context["Contexto de Ejecución Scoped"]
     RequestLog["Structured Request Logging"]
     Endpoint["Endpoint REST / GraphQL / gRPC"]
@@ -34,17 +34,17 @@ flowchart LR
     Prometheus["Prometheus"]
     Grafana["Grafana"]
 
-    Client -->|"X-Correlation-Id\nX-Session-Tracking-Id"| Correlation
+    Client -->|"W3C Baggage: transactionId"| Correlation
     Correlation --> Session
-    Correlation -->|"baggage: correlation.id"| Activity
+    Correlation -->|"baggage: transactionId"| Activity
     Session --> Context
-    Session -->|"baggage/tag: session.tracking_id"| Activity
+    Session -->|"baggage/tag: transactionId"| Activity
     Session --> RequestLog
     RequestLog --> Endpoint
     Endpoint --> Handler
     Handler --> Aop
     Aop --> ProductLogger
-    ProductLogger -->|"CorrelationId\nSessionTrackingId\nTraceId\nSpanId\nBoundedContext\nTenantId o Scope"| Mel
+    ProductLogger -->|"transactionId\nTraceId\nSpanId\nBoundedContext\nTenantId o Scope"| Mel
     Mel --> Serilog
     Serilog --> Stdout
     Stdout --> Promtail
@@ -65,12 +65,12 @@ flowchart LR
 
 | Componente | Responsabilidad |
 | --- | --- |
-| Middleware de correlación | Resolver o generar un identificador por request y propagarlo a headers, scope de logs y `Activity` baggage. |
-| Middleware de session tracking | Resolver o generar un identificador de sesión y persistirlo en contexto scoped y en `Activity` baggage/tags. |
+| Middleware de correlación | Adoptar el `transactionId` que entra por W3C Baggage, o acuñarlo si falta, y propagarlo al scope de logs y al `Activity` baggage saliente. |
+| Middleware de contexto de transacción | Persistir el `transactionId` en el contexto scoped y en `Activity` baggage/tags para la continuidad asíncrona. |
 | Contexto de ejecución scoped | Proveer un snapshot seguro consumible por AOP, exception handling, request logging y continuidad asíncrona. |
 | Structured request logging | Emitir un log operativo por request con timing, path, status code, correlación, sesión, trace y span. |
 | Decorador AOP de logging | Instrumentar entrada, salida, duración y excepciones sin acoplar la lógica de negocio al framework de logs. |
-| Logger estructurado del producto | Aplicar enriquecimiento específico como `TenantId`, `BoundedContext`, `CorrelationId`, `SessionTrackingId`, `TraceId` y `SpanId`. |
+| Logger estructurado del producto | Aplicar enriquecimiento específico como `TenantId`, `BoundedContext`, `transactionId`, `TraceId` y `SpanId`. |
 | OpenTelemetry SDK | Generar trazas y métricas desde instrumentación de framework y la `Activity` activa. |
 | OTel Collector | Recibir señales OTLP y distribuirlas a los backends de trazas y métricas. |
 | Promtail | Enviar flujos de stdout a Loki cuando no se usa exportación directa de logs por OTLP. |
@@ -122,10 +122,10 @@ flowchart TB
 
 ## 4. Reglas Canónicas de Correlación
 
-1. El cliente debería enviar `X-Session-Tracking-Id` en cada request cuando importe correlacionar el journey de negocio.
-2. El servicio debe responder siempre con `X-Correlation-Id` y `X-Session-Tracking-Id`.
-3. Los request logs, decorator logs y exception logs deben compartir el mismo envelope de correlación.
-4. `SessionTrackingId` no debe emitirse como label general de métricas por su alta cardinalidad.
+1. La correlación funcional se propaga mediante **W3C Baggage** portando un `transactionId`; las cabeceras propietarias `X-Correlation-Id` y `X-Session-Tracking-Id` no forman parte del contrato vigente.
+2. El servicio adopta el `transactionId` que entra por Baggage, o lo acuña si falta, y nunca lo regenera.
+3. Los request logs, decorator logs y exception logs deben compartir el mismo `transactionId` de correlación.
+4. El `transactionId` no debe emitirse como label general de métricas por su alta cardinalidad.
 5. El contexto específico del producto como `TenantId` debe enriquecerlo el logger del producto, no el middleware genérico.
 
 ## 5. Vista de Despliegue

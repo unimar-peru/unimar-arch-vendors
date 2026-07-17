@@ -77,7 +77,7 @@ graph TD
  end
 
  subgraph StorageLayer["Tier 4: Persistencia y Estado"]
- PostgresSQL[("PostgreSQL 16 (Dual-Layer RLS)")]
+ PostgresSQL[("PostgreSQL 16")]
  RedisCache[("Redis Caché Distribuida")]
  end
 

@@ -287,7 +287,7 @@ npx --no -- commitlint --edit $1
 [Capturas, logs, o descripción de cómo se probó]
 
 ## Referencias
-[UNIMAR-123](https://jira.unimar.compe/browse/UNIMAR-123)
+[UNIMAR-123](https://jira.unimar.com.pe/browse/UNIMAR-123)
 ```
 
 ### Estrategia de merge por rama destino
