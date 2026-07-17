@@ -48,9 +48,9 @@ Esta hoja sirve como referencia de herramientas por capa arquitectónica para de
 
 ### 6. Estrategia de Aislamiento por Sucursal
 
-- **Modelo de Aislamiento:** Base de Datos Compartida con Row-Level Security (RLS)
-- **Contexto de Resolución de Sucursal:** Extracción de claims desde `ClaimsPrincipal` vía `TenantResolver`
-- **Imposición de Aislamiento:** Filtros de consulta de EF Core + `sp_set_session_context` para RLS secundario
+- **Modelo de Datos:** Base de Datos Compartida. `sucursal_id` es un atributo de negocio, no un discriminador de tenant ([ADR-0010](./adrs/core/0010-estrategia-arquitectura-multitenant.es.md))
+- **Contexto de Autorización:** Claim `sucursales_autorizadas` extraído desde `ClaimsPrincipal`
+- **Imposición:** Validación de autorización en los casos de uso (RBAC/ABAC). **Único** mecanismo de control: no se usa SQL Server Row-Level Security. Los filtros de consulta de EF Core son un comportamiento de usabilidad anulable, no una barrera de seguridad
 
 ### 7. Infraestructura y Despliegue
 

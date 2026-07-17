@@ -3,6 +3,8 @@
 ## Estado
 Deprecado (2026-07-16 — [ADR-0010](0010-estrategia-arquitectura-multitenant.es.md) desestimó el aislamiento multi-tenant por RLS, eliminando el problema que este ADR resolvía)
 
+> **Aviso:** el cuerpo de este ADR (RLS, «aislamiento de doble capa», el flag `SECURITY_STRATEGY_MODE` y los modos `INFRA_NATIVE`/`APP_FILTER`) describe un modelo que ya **no está vigente**. La norma es [ADR-0010](0010-estrategia-arquitectura-multitenant.es.md): RLS no se implementa y el acceso por sucursal se controla exclusivamente por autorización en la capa de aplicación. Este ADR se conserva solo como registro histórico.
+
 ## Fecha
 2026-05-12
 

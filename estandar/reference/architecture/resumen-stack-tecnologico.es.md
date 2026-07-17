@@ -43,10 +43,13 @@ Esta hoja sirve como referencia de herramientas por capa arquitectónica para de
 * **Almacén de Objetos y Activos:** MinIO (Compatible con S3, Autohospedado)
 * **Bróker de Mensajes Asíncrono:** RabbitMQ gobernado por control de flujo ([ADR-0036](./adrs/core/0036-estrategia-entrega-bus-mensajes-fifo-dlq.es.md)) y Outbox ([ADR-0033](./adrs/core/0033-patron-transactional-outbox.es.md))
 
-### 6. Estrategia de Multi-tenancy
-* **Modelo de Aislamiento de Datos:** Base de Datos Compartida con Row-Level Security (RLS)
-* **Contexto de Resolución de Inquilino:** Extracción de claims de JWT vía Guards de NestJS
-* **Imposición de Aislamiento:** Inyección dinámica de sesión de transacción de base de datos (`SET LOCAL app.current_tenant`)
+### 6. Estrategia de Acceso por Sucursal
+
+> UNIMAR **no es multi-tenant**. La sucursal es una dimensión de negocio, no un inquilino ([ADR-0010](./adrs/core/0010-estrategia-arquitectura-multitenant.es.md)).
+
+* **Modelo de Datos:** Base de Datos Compartida. `sucursal_id` es un atributo de negocio en las entidades operativas; la data maestra corporativa no lo lleva
+* **Contexto de Autorización:** Claim `sucursales_autorizadas` del JWT, extraído vía Guards de NestJS
+* **Imposición:** Validación de autorización en los casos de uso (RBAC/ABAC). **Único** mecanismo de control: no se usa Row-Level Security
 
 ### 7. Infraestructura y Despliegue
 * **Motor de Contenedores:** Docker v25 (Imágenes node distroless multi-etapa)
