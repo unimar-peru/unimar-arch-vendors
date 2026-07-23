@@ -1,4 +1,4 @@
-# [ADR 0054](0054-estandares-diseño-normalizacion-base-datos.es.md): Estándares de Diseño y Normalización de Bases de Datos
+# [ADR 0054](0054-estandares-diseno-normalizacion-base-datos.es.md): Estándares de Diseño y Normalización de Bases de Datos
 
 ## 1. Metadatos
 * **ADR ID:** 0054

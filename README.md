@@ -51,6 +51,8 @@
 > **Objetivo:** Un solo punto de entrada por área transversal, sin enlaces dispersos a documentos individuales. Esta sección es la referencia detallada de los dominios transversales y el punto de consulta general del estándar.
 >
 > **Documento vivo:** Esta documentación está en constante evolución para reflejar las mejores prácticas y decisiones del equipo. Cualquier observación, sugerencia o duda es bienvenida y debe ser coordinada con el equipo UNIMAR.
+>
+> **Preguntas frecuentes:** Consulta el [Q&A para Proveedores](estandar/reference/PREGUNTAS-RESPUESTAS.md) para respuestas rápidas a las dudas más comunes.
 
 | Categoría       | Hub                                                                                                                       | ¿Qué contiene?                                                                                                                                                                                                    | Para quién / Cuándo                                                                         | Meta                                                 |
 |:----------------|:--------------------------------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------|:-----------------------------------------------------|

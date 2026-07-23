@@ -1,6 +1,6 @@
 # Escenarios de Despliegue Multi-Nube y Cumplimiento
 
-Este documento detalla las arquitecturas de despliegue aprobadas para la Arquitectura Corporativa, considerando controles rigurosos de soberanía de datos, seguridad y la adaptabilidad del selector de estrategia de seguridad (`SECURITY_STRATEGY_MODE`).
+Este documento detalla las arquitecturas de despliegue aprobadas para la Arquitectura Corporativa, considerando controles rigurosos de soberanía de datos y seguridad. El control de acceso por sucursal se resuelve siempre en la capa de aplicación ([ADR-0010](./adrs/core/0010-estrategia-arquitectura-multitenant.es.md)), de modo que es idéntico en los tres escenarios y no depende del proveedor.
 
 ---
 
@@ -12,7 +12,7 @@ Cualquier implementación física de la arquitectura debe satisfacer las directr
 | :--- | :--- | :--- |
 | **Soberanía** | Restricción geográfica física. | Adaptadores de persistencia específicos por región legal. |
 | **Cifrado** | En reposo (AES-256) y tránsito (TLS 1.3). | Terminado en TLS de Gateway, encriptación nativa de BD. |
-| **Segregación** | Control de Acceso Basado en Atributos (ABAC). | Lógica delegada al Selector (`INFRA_NATIVE` vs `APP_AGNOSTIC`). |
+| **Segregación** | Control de Acceso Basado en Atributos (ABAC). | Lógica resuelta en la capa de aplicación, igual en todo proveedor ([ADR-0010](./adrs/core/0010-estrategia-arquitectura-multitenant.es.md)). |
 
 ---
 
@@ -29,11 +29,11 @@ graph TD
  AGW["App Gateway (TLS Term)"]
  end
  subgraph AppTier["AKS Cluster Subnet"]
- AKS["AKS Pods\n(Config: SECURITY_STRATEGY_MODE=INFRA_NATIVE)"]
+ AKS["AKS Pods"]
  ACFG["App Config + Key Vault"]
  end
  subgraph DataTier["Private Link Subnet"]
- SQL["Azure SQL Hyperscale\n(Always Encrypted + RLS)"]
+ SQL["Azure SQL Hyperscale\n(Always Encrypted)"]
  end
  end
 
@@ -45,12 +45,13 @@ graph TD
 ```
 
 ### 2.2 Implementación de Seguridad
-- **Modo:** `INFRA_NATIVE` forzoso. La seguridad a nivel de fila se delega a políticas de SQL Server nativas, asegurando que incluso los administradores de DB sin la clave maestra no vean datos de inquilinos.
-- **Gestión de Flag:** Las etiquetas de entorno en **Azure App Configuration** inyectan dinámicamente el valor al contenedor en tiempo de arranque.
+
+- **Acceso por sucursal:** validación de autorización en la capa de aplicación ([ADR-0010](./adrs/core/0010-estrategia-arquitectura-multitenant.es.md)). No se usan políticas RLS de SQL Server: UNIMAR no es multi-tenant y el aislamiento estricto impediría operaciones cross-sucursal legítimas.
+- **Protección frente al administrador de BD:** **Always Encrypted** con claves en Key Vault — el DBA sin la clave maestra no lee los datos sensibles. Este control es de cifrado, no de aislamiento por sucursal, y es independiente de la autorización.
 
 ### 2.3 Infraestructura como Código (Bicep Sample)
 ```bicep
-// Habilitación de RLS y Cifrado Avanzado en Azure SQL
+// Habilitación de Cifrado Avanzado en Azure SQL
 resource sqlServer 'Microsoft.Sql/servers@2023-05-01-preview' = {
  name: 'sql-bmad-prod'
  location: 'westeurope' // Cumplimiento de Región UE
@@ -132,7 +133,7 @@ graph TD
 
 ### 3.2 Implementación de Seguridad
 - **Privacidad de Red:** Los pods de la aplicación no tienen acceso directo a Internet. Toda comunicación con servicios AWS (KMS para llaves de cifrado) se realiza mediante **VPC Endpoint Services (PrivateLink)**.
-- **Estrategia Híbrida:** Permite rotar a `APP_AGNOSTIC` para bases de datos secundarias NoSQL (como DynamoDB) donde RLS no sea nativo, manteniendo el cifrado transparente vía CMK.
+- **Portabilidad:** el control de acceso vive en la capa de aplicación ([ADR-0010](./adrs/core/0010-estrategia-arquitectura-multitenant.es.md)), de modo que el modelo funciona igual sobre bases de datos secundarias NoSQL (como DynamoDB) sin depender de capacidades nativas del motor. El cifrado transparente se mantiene vía CMK.
 
 ### 3.3 Infraestructura como Código (Terraform Sample)
 ```hcl
@@ -202,7 +203,7 @@ graph TD
 ```
 
 ### 4.2 Implementación de Seguridad
-- **Modo:** Generalmente configurado en `APP_AGNOSTIC` inyectado mediante **HashiCorp Vault**, ya que permite una auditoría criptográfica de accesos en capas superiores antes de llegar a motores DB que puedan no soportar RLS dinámico corporativo avanzado.
+- **Acceso por sucursal:** validación de autorización en la capa de aplicación ([ADR-0010](./adrs/core/0010-estrategia-arquitectura-multitenant.es.md)), con secretos inyectados mediante **HashiCorp Vault**. Al resolverse en capas superiores, la auditoría criptográfica de accesos ocurre antes de llegar al motor de base de datos y no depende de sus capacidades nativas.
 - **Respaldo:** Estrategia de backups inmutables con retención estricta de 5 años localmente para cumplir con leyes de auditoría de datos financieros.
 
 ### 4.3 Infraestructura como Código (Terraform for Vault)
@@ -220,7 +221,6 @@ resource "vault_kv_secret_v2" "app_config" {
  name = "production/application-settings"
 
  data_json = jsonencode({
- SECURITY_STRATEGY_MODE = "APP_AGNOSTIC"
  DB_ENCRYPTION_KEY = var.master_onprem_key
  })
 }
@@ -278,9 +278,9 @@ graph TD
 ### 5.2 Flujo de Datos y Optimización de Latencia
 Al operar en un entorno híbrido, la latencia de red introduce cuellos de botella significativos en el intercambio de datos SQL.
 
-**Optimización bajo `APP_AGNOSTIC`:**
+**Optimización del filtrado:**
 1. El adaptador de infraestructura de la aplicación en la nube **no** realiza consultas genéricas seguidas de filtrado en memoria (lo cual inundaría la VPN con datos innecesarios).
-2. El selector inyecta el contexto de seguridad (`tenant_id`, `user_roles`) directamente en la cláusula `WHERE` de la sentencia SQL enviada.
+2. El adaptador traslada el contexto de acceso (`sucursales_autorizadas`, `user_roles`) directamente a la cláusula `WHERE` de la sentencia SQL enviada. La autorización ya se validó antes en el caso de uso: esto es optimización de transporte, no un control de seguridad.
 3. **Beneficio de Latencia:** Solo viaja por la VPN el set de datos estrictamente filtrado y autorizado. La auditoría se realiza en la capa de aplicación Cloud y se escribe asíncronamente a un log local redundante.
 
 ### 5.3 Matrices Operativas

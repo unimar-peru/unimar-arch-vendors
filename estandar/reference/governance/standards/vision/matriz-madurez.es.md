@@ -44,7 +44,7 @@ Evaluamos la arquitectura del Esqueleto de Referencia contra los 5 pilares crít
 * **Evidencia:**
  * Pipeline de Seguridad Zero-Cost implementado vía CodeQL ([ADR-0005](../../../architecture/adrs/core/0005-ci-cd-calidad-codeql.es.md)).
  * Fijación Estricta de Dependencias previene ataques de Supply Chain ([ADR-0009](../../../architecture/adrs/core/0009-gestion-vulnerabilidades-dependencias-estrictas.es.md)).
- * Aislamiento de Datos aplicado a nivel de BD usando Row-Level Security (RLS) para multi-tenancy ([ADR-0010](../../../architecture/adrs/core/0010-estrategia-arquitectura-multitenant.es.md)).
+ * Acceso por sucursal controlado por autorización RBAC/ABAC en la capa de aplicación, con el claim `sucursales_autorizadas` como punto de decisión auditable ([ADR-0010](../../../architecture/adrs/core/0010-estrategia-arquitectura-multitenant.es.md), [ADR-0012](../../../architecture/adrs/nodejs/0012-autorizacion-avanzada-rbac-abac.es.md)).
  * Auditoría Inmutable mediante CDC ([ADR-0016](../../../architecture/adrs/core/0016-pista-auditoria-inmutable-negocio.es.md)).
 * **Camino al Nivel 5:** Implementar pruebas de penetración automatizadas en CI y rotación dinámica de secretos vía HashiCorp Vault.
 

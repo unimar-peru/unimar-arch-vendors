@@ -168,12 +168,12 @@ public class ReportRepository : IReportPort
 }
 ```
 
-### 4.2 Aislamiento por Sucursal (Multi-Tenancy)
+### 4.2 Acceso por Sucursal
 
-Siguiendo el [ADR-0010](./adrs/core/0010-estrategia-arquitectura-multitenant.es.md) y el [ADR-0044](./adrs/core/0044-estrategia-persistencia-seguridad-configurable.es.md), el aislamiento por sucursal se implementa en dos capas:
+Siguiendo el [ADR-0010](./adrs/core/0010-estrategia-arquitectura-multitenant.es.md), el control de acceso por sucursal es **exclusivamente de autorización**. No hay segunda capa: SQL Server Row-Level Security **no se implementa** — impondría un aislamiento estricto que impide operaciones cross-sucursal legítimas (un contenedor transferido de Paita a Callao debe conservar su historial visible).
 
-1. **Aplicación (primario):** Filtros de consulta de EF Core o composición de queries scoped que inyectan automáticamente el discriminador `sucursal_id`.
-2. **Base de Datos (secundario):** SQL Server Row-Level Security como red de seguridad frente a SQL puro u omisiones de desarrolladores.
+1. **Autorización (único mecanismo de control):** el caso de uso valida que `sucursal_id` esté en el claim `sucursales_autorizadas` del `ClaimsPrincipal`. Si no lo está, `403 Forbidden`.
+2. **Filtro por defecto (usabilidad, no seguridad):** los filtros de consulta de EF Core evitan que el operador tenga que indicar su sucursal en cada consulta. **Deben ser anulables**: los casos de uso con visibilidad cross-sucursal los desactivan y lo documentan en su Historia Técnica.
 
 ```csharp
 // EF Core Query Filter

@@ -28,7 +28,7 @@ Implementar una Arquitectura Híbrida tendiendo un puente entre el control de ac
 
 ## Referencias
 - [Documentación de NestJS Guard](https://docs.nestjs.com/guards)
-- [ADR-0010: Multi-Tenancy (RLS)](../core/0010-estrategia-arquitectura-multitenant.es.md)
+- [ADR-0010: Sucursal como Dimensión de Negocio y Contexto de Autorización](../core/0010-estrategia-arquitectura-multitenant.es.md) — designa a este ADR como el único mecanismo de control de acceso por sucursal.
 
 ---
 [Volver al Índice](README.md)

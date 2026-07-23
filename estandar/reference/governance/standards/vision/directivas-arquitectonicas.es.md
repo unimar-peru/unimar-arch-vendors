@@ -43,7 +43,7 @@ El sistema DEBE sostener ráfagas de carga súbitas y no uniformes. Esto se logr
 * Abstracción de Bus de Eventos no bloqueante ([ADR-0015](../../../architecture/adrs/core/0015-arquitectura-eventos-intradominio.es.md))
 
 ### 2.3 Integridad Transaccional
-Toda mutación de estado debe ser estrictamente atómica. Los estados de escritura inconsistentes se previenen mediante controles explícitos de Unit of Work y, donde se requiera propagación asíncrona, el patrón Transactional Outbox ([ADR-0033](../../../architecture/adrs/core/0033-patron-transactional-outbox.es.md)).
+Toda mutación de estado debe ser estrictamente atómica. Los estados de escritura inconsistentes se previenen mediante controles explícitos de Unit of Work y, donde se requiera propagación asíncrona, un mecanismo que garantice no perder los eventos irreparables. El patrón Transactional Outbox ([ADR-0033](../../../architecture/adrs/core/0033-patron-transactional-outbox.es.md)) es una opción disponible, no un mandato.
 
 ### 2.4 Seguro, Dinámico y Extensible
 Los principios de arquitectura Zero-Trust aplican desde la Fase 1. Los adaptadores de infraestructura están completamente desacoplados de la lógica de dominio, permitiendo que nuevas herramientas o servicios externos se intercambien en caliente sin impactar los flujos de valor centrales. Los proveedores de identidad, buses de eventos, cachés y motores de almacenamiento son todos inyectables a través de la frontera Puerto/Adaptador.
@@ -64,7 +64,7 @@ La capa de Dominio debe contener cero referencias a SDKs de nube, librerías ORM
 | Portabilidad de infraestructura | Almacenamiento compatible con S3, selección de herramientas OSS-first | [ADR-0028](../../../architecture/adrs/core/0028-infraestructura-hibrida-autogestionada.es.md) |
 | Cobertura mínima de pruebas | 70% aplicada en CI; Testcontainers para pruebas de integración | [ADR-0018](../../../architecture/adrs/core/0018-piramide-pruebas-gates-calidad.es.md) |
 | Trazado distribuido unificado | OpenTelemetry W3C TraceContext, sin agentes APM propietarios | [ADR-0007](../../../architecture/adrs/nodejs/0007-observabilidad-telemetria-loki-opentelemetry.es.md) |
-| Estándares de nomenclatura | Lenguaje Ubicuo como fuente de verdad, lint automatizado | [ADR-0056](../../../architecture/adrs/core/0056-convenciones-nombre-diseno-empresarial.es.md) |
+| Clean Code como base de ingeniería | Reglas de código limpio con aplicación declarada y desigual por runtime | [ADR-0056](../../../architecture/adrs/core/0056-convenciones-nombre-diseno-empresarial.es.md) |
 
 ---
 

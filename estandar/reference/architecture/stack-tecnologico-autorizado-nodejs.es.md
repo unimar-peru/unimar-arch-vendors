@@ -46,7 +46,7 @@ Todas las escuadras de ingeniería que desarrollen dentro del ecosistema Node.js
 | **TypeScript (Modo Estricto)** | Todas | Tipado estático, contratos en compilación, autocompletado IDE | Todo archivo .ts en el ecosistema | Evita clases enteras de bugs en runtime; obliga a manejar null/undefined | ADR-0003 | [TypeScript Strict Mode (typescriptlang.org)](https://www.typescriptlang.org/tsconfig#strict); tendencia 2022-2026: strict mode es estándar de facto |
 | **NestJS + Express** | Presentación (API) | Framework opinado con decoradores, DI nativo, modular | APIs REST, GraphQL BFF, WebSockets, microservicios gRPC | Arquitectura modular similar a Angular; inyección de dependencias nativa; soporte oficial de OpenAPI, GraphQL, gRPC, colas | ADR-0002 | [NestJS docs](https://docs.nestjs.com/); [Estado 2025-2026: NestJS lidera frameworks Node.js empresariales](https://survey.stackoverflow.co/) |
 | **TypeORM / Drizzle** | Infraestructura | ORM relacional type-safe con migraciones y query builder | CRUD transaccional, consultas complejas, migraciones | TypeORM: madurez y decoradores; Drizzle: rendimiento y tipo inferido | ADR-0043 | [TypeORM](https://typeorm.io/), [Drizzle](https://orm.drizzle.team/); tendencia 2024-2026: Drizzle gana adopción por DX y rendimiento |
-| **PostgreSQL** | Infraestructura | Motor relacional open-source con extensibilidad (JSONB, RLS, full-text search) | Persistencia primaria de todos los servicios Node.js | Rendimiento, extensiones (PostGIS, pgvector), RLS nativo, sin costo de licencia | ADR-0051 | [PostgreSQL docs](https://www.postgresql.org/docs/); [DB-Engines Ranking 2026: PostgreSQL #4 global](https://db-engines.com/en/ranking) |
+| **PostgreSQL** | Infraestructura | Motor relacional open-source con extensibilidad (JSONB, full-text search) | Persistencia primaria de todos los servicios Node.js | Rendimiento, extensiones (PostGIS, pgvector), sin costo de licencia | ADR-0051 | [PostgreSQL docs](https://www.postgresql.org/docs/); [DB-Engines Ranking 2026: PostgreSQL #4 global](https://db-engines.com/en/ranking) |
 | **RabbitMQ** | Infraestructura | Bróker de mensajes AMQP con garantía de entrega, DLQ, FIFO | Eventos de dominio, comunicación asíncrona entre contextos acotados | Madurez, soporte multiplataforma, integración nativa con NestJS | ADR-0036 | [RabbitMQ docs](https://www.rabbitmq.com/documentation.html); tendencia empresarial consolidada |
 | **Redis** | Infraestructura | Caché distribuida en memoria con estructuras de datos avanzadas | Caché de consultas, sesiones, rate limiting, colas ligeras | Velocidad, versatilidad, persistencia opcional | ADR-0014 | [Redis docs](https://redis.io/docs/); [DB-Engines Ranking: #1 key-value store 2026](https://db-engines.com/en/ranking/) |
 | **class-validator** | Aplicación | Validación declarativa vía decoradores en DTOs | Validación de entrada en controladores NestJS y pipes | Integración nativa con NestJS Pipes; decoradores reutilizables | ADR-0002 | [class-validator GitHub](https://github.com/typestack/class-validator); estándar NestJS |
@@ -114,15 +114,15 @@ Siguiendo el [ADR-0043](./adrs/nodejs/0043-estrategia-acceso-datos-orm.es.md), s
 | **TypeORM** | CRUD transaccional, proyectos existentes NestJS, uso de decoradores `@Entity`, `@Column` | Mayor madurez y ecosistema; decoradores intuitivos; Active Record / Data Mapper |
 | **Drizzle** | Nuevos proyectos, equipos con preferencia type-safe, queries de alto rendimiento | Inferencia de tipos más precisa; bundle más pequeño; SQL-like DX |
 
-### 4.2 Aislamiento por Sucursal (Multi-Tenancy)
+### 4.2 Acceso por Sucursal
 
-Siguiendo el [ADR-0010](./adrs/core/0010-estrategia-arquitectura-multitenant.es.md) y el [ADR-0044](./adrs/core/0044-estrategia-persistencia-seguridad-configurable.es.md):
+Siguiendo el [ADR-0010](./adrs/core/0010-estrategia-arquitectura-multitenant.es.md), el control de acceso por sucursal es **exclusivamente de autorización**. No hay segunda capa: PostgreSQL Row-Level Security **no se implementa** — impondría un aislamiento estricto que impide operaciones cross-sucursal legítimas (un contenedor transferido de Paita a Callao debe conservar su historial visible).
 
-1. **Aplicación (primario):** `SucursalFilter` en TypeORM QueryBuilder o middleware Drizzle que inyecta `sucursal_id` desde claims JWT.
-2. **PostgreSQL (secundario):** Row-Level Security.
+1. **Autorización (único mecanismo de control):** el caso de uso valida que `sucursal_id` esté en el claim `sucursales_autorizadas` del JWT. Si no lo está, `403 Forbidden`.
+2. **Filtro por defecto (usabilidad, no seguridad):** `SucursalFilter` en TypeORM QueryBuilder o middleware Drizzle evita que el operador indique su sucursal en cada consulta. **Debe ser anulable**: los casos de uso con visibilidad cross-sucursal lo desactivan y lo documentan en su Historia Técnica.
 
 ```typescript
-// Aislamiento primario vía QueryBuilder
+// Filtro por defecto: comodidad del operador, NO barrera de seguridad
 const orders = await orderRepository
   .createQueryBuilder('order')
   .andWhere('order.sucursal_id = :sucursalId', { sucursalId })

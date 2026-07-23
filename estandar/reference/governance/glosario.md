@@ -195,7 +195,7 @@ Terminología controlada del corpus Unimar Arch. Para las reglas de validación 
 | **BFF** | _Backend for Frontend_ — API de borde especializada por canal cliente (web, móvil). |
 | **API Gateway (2 niveles)** | Ingress Edge + NestJS BFF como arquitectura de gateway en dos niveles. |
 | **Cache de 4 Niveles** | Cliente → CDN → BFF → Core. |
-| **Aislamiento de Doble Capa** | Filtros de aplicación + RLS nativo de base de datos como failsafe de seguridad. |
+| **Aislamiento de Doble Capa** | ⛔ **Término retirado (2026-07-16).** Describía filtros de aplicación + RLS nativo como failsafe. [ADR-0010](../architecture/adrs/core/0010-estrategia-arquitectura-multitenant.es.md) desestimó ese modelo el 2026-06-08. Si lo encuentras en un documento, ese documento está desactualizado: la norma es «Sucursal como Dimensión». |
 | **Sucursal como Dimensión** | `sucursal_id` como atributo de negocio, no como tenant. |
 | **Feature Flag** | Mecanismo para activar o desactivar funcionalidades sin desplegar código. |
 
@@ -259,7 +259,7 @@ Terminología controlada del corpus Unimar Arch. Para las reglas de validación 
 | **CVE** | _Common Vulnerabilities and Exposures_ — vulnerabilidad de seguridad pública conocida. |
 | **CVSS** | _Common Vulnerability Scoring System_ — sistema de puntuación de severidad de vulnerabilidades (v3.1). |
 | **NVD** | _National Vulnerability Database_ — base de datos del gobierno de EE.UU. que almacena CVEs. |
-| **RLS** | _Row-Level Security_ — seguridad a nivel de fila en base de datos. |
+| **RLS** | _Row-Level Security_ — seguridad a nivel de fila en base de datos. **No se usa en UNIMAR**: [ADR-0010](../architecture/adrs/core/0010-estrategia-arquitectura-multitenant.es.md) §3 lo suprimió porque impide operaciones cross-sucursal legítimas. El término se conserva aquí solo para que se entienda qué se descartó. |
 | **SAST** | _Static Application Security Testing_ — análisis estático de seguridad en CI, detecta vulnerabilidades en código fuente sin ejecutarlo. |
 | **DAST** | _Dynamic Application Security Testing_ — análisis dinámico que ejecuta ataques simulados contra la aplicación en funcionamiento. |
 | **SCA** | _Software Composition Analysis_ — análisis de dependencias que detecta CVEs conocidos en librerías de terceros. |

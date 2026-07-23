@@ -60,7 +60,7 @@ La Matriz de ADRs es el catálogo de estado de todas las decisiones arquitectón
 | [ADR-0042](android/0042-arquitectura-movil-canonica-android.es.md) | Canonical Android Mobile Architecture | `Aceptado` | Android |
 | [ADR-0045](core/0045-criterios-extraccion-microservicios.es.md) | Microservice Extraction Readiness Criteria | `Aceptado` | Agnóstico |
 | [ADR-0047](core/0047-patrones-arquitectonicos-monolito-soa-microservicios.es.md) | Architectural Patterns — Monolith / SOA / Microservices | `Aceptado` | Agnóstico |
-| [ADR-0055](core/0055-estrategia-arquitectura-microfrontends.es.md) | Estrategia de Arquitectura de Microfrontends | `Aceptado` | Agnóstico |
+| [ADR-0055](core/0055-estrategia-arquitectura-microfrontends.es.md) | Estrategia de Arquitectura de Microfrontends | `Borrador` | Agnóstico |
 
 ### APIs y Protocolos
 
@@ -80,7 +80,7 @@ La Matriz de ADRs es el catálogo de estado de todas las decisiones arquitectón
 | [ADR-0021](nodejs/0021-compilacion-graph-auth-alto-rendimiento.es.md) | High-Performance Auth & Graph Compilation | `Aceptado` | Node.js |
 | [ADR-0022](nodejs/0022-auth-contextual-proyecciones-plugables.es.md) | Contextual Auth & Pluggable Projections | `Aceptado` | Node.js |
 | [ADR-0026](nodejs/0026-autenticacion-adaptativa-mfa-passwordless.es.md) | MFA, Passwordless & Adaptive Authentication | `Aceptado` | Node.js |
-| [ADR-0044](core/0044-estrategia-persistencia-seguridad-configurable.es.md) | Configurable Security Persistence Strategy | `Aceptado` | Agnóstico |
+| [ADR-0044](core/0044-estrategia-persistencia-seguridad-configurable.es.md) | Configurable Security Persistence Strategy | `Deprecado` | Agnóstico |
 
 ### Persistencia y Base de Datos
 
@@ -89,20 +89,20 @@ La Matriz de ADRs es el catálogo de estado de todas las decisiones arquitectón
 | [ADR-0031](core/0031-esquema-por-contexto-catalogo-eventos-dominio.es.md) | Schema per Context — Domain Event Catalog | `Aceptado` | Agnóstico |
 | [ADR-0043](nodejs/0043-estrategia-acceso-datos-orm.es.md) | Data Access — ORM Strategy | `Aceptado` | Node.js |
 | [ADR-0051](core/0051-estrategia-motor-base-datos-empresarial.es.md) | Estrategia de Motor de Base de Datos Empresarial | `Aceptado` | Agnóstico |
-| ADR-0054 | Estándares de Diseño y Normalización de Base de Datos | `Aceptado` | Agnóstico |
+| [ADR-0054](core/0054-estandares-diseno-normalizacion-base-datos.es.md) | Estándares de Diseño y Normalización de Base de Datos | `Aceptado` | Agnóstico |
 
 ### Multi-Tenancy
 
 | ADR | Título | Estado | Runtime |
 |---|---|---|---|
-| [ADR-0010](core/0010-estrategia-arquitectura-multitenant.es.md) | Multi-Tenancy — Aislamiento por Sucursal | `Aceptado` | Agnóstico |
+| [ADR-0010](core/0010-estrategia-arquitectura-multitenant.es.md) | Sucursal como Dimensión de Negocio y Contexto de Autorización | `Aceptado` | Agnóstico |
 
 ### Eventos y Mensajería
 
 | ADR | Título | Estado | Runtime |
 |---|---|---|---|
 | [ADR-0015](core/0015-arquitectura-eventos-intradominio.es.md) | Event-Driven Architecture (Intra-Domain) | `Aceptado` | Agnóstico |
-| [ADR-0033](core/0033-patron-transactional-outbox.es.md) | Transactional Outbox Pattern | `Pendiente de Importación` | Agnóstico |
+| [ADR-0033](core/0033-patron-transactional-outbox.es.md) | Transactional Outbox Pattern — catálogo del patrón | `Aceptado` | Agnóstico |
 | [ADR-0034](core/0034-matriz-aplicabilidad-patron-cqrs.es.md) | CQRS Pattern Applicability Matrix | `Pendiente de Importación` | Agnóstico |
 | [ADR-0035](core/0035-estrategia-sagas-distribuidas.es.md) | Distributed Saga Pattern Strategy | `Pendiente de Importación` | Agnóstico |
 | [ADR-0036](core/0036-estrategia-entrega-bus-mensajes-fifo-dlq.es.md) | Message Bus Delivery Strategy — FIFO/DLQ | `Aceptado` | Agnóstico |
@@ -159,14 +159,14 @@ La Matriz de ADRs es el catálogo de estado de todas las decisiones arquitectón
 |---|---|---|---|
 | [ADR-0003](nodejs/0003-estandares-estrictos-typescript.es.md) | Strict TypeScript Standards | `Aceptado` | Node.js |
 | [ADR-0038](nodejs/0038-estrategia-manejo-errores-patron-result.es.md) | Error Handling — Result Pattern Strategy | `Aceptado` | Node.js |
-| [ADR-0049](core/0049-politica-naming-semantica-codigo-limpio.es.md) | Naming Semantics & Clean Code Policy | `Pendiente de Importación` | Agnóstico |
-| [ADR-0056](core/0056-convenciones-nombre-diseno-empresarial.es.md) | Enterprise Naming & Design Conventions | `Pendiente de Importación` | Agnóstico |
+| [ADR-0049](core/0049-politica-naming-semantica-codigo-limpio.es.md) | Naming Semantics & Clean Code Policy — superseído por ADR-0056 | `Supersedido` | Agnóstico |
+| [ADR-0056](core/0056-convenciones-nombre-diseno-empresarial.es.md) | Clean Code como Base de Ingeniería de la Suite | `Aceptado` | Agnóstico |
 
 ### Flujo de Trabajo y Branching
 
 | ADR | Título | Estado | Runtime |
 |---|---|---|---|
-| [ADR-0050](core/0050-estrategia-ramificacion-gitflow.es.md) | GitFlow Branching Strategy | `Pendiente de Importación` | Agnóstico |
+| [ADR-0050](core/0050-estrategia-ramificacion-gitflow.es.md) | GitFlow Branching Strategy | `Aceptado` | Agnóstico |
 
 ---
 
@@ -180,7 +180,7 @@ La Matriz de ADRs es el catálogo de estado de todas las decisiones arquitectón
 | ADR-0005 | CI/CD Quality — CodeQL | `Aceptado` | Infraestructura |
 | ADR-0006 | Future Microservices Transition — Dapr | `Aceptado` | Arquitectura |
 | ADR-0009 | Strict Dependency Pinning | `Aceptado` | Seguridad |
-| ADR-0010 | Multi-Tenancy — Aislamiento Sucursal | `Aceptado` | Multi-Tenancy |
+| ADR-0010 | Sucursal como Dimensión de Negocio y Contexto de Autorización | `Aceptado` | Multi-Tenancy |
 | ADR-0011 | Fault Tolerance & Resiliency Patterns | `Aceptado` | Resiliencia |
 | ADR-0013 | Cloud Infrastructure Topology — DR | `Aceptado` | Infraestructura |
 | ADR-0014 | Distributed Caching — Redis | `Aceptado` | Rendimiento |
@@ -197,25 +197,25 @@ La Matriz de ADRs es el catálogo de estado de todas las decisiones arquitectón
 | ADR-0030 | API Gateway — Ingress vs NestJS | `Aceptado` | APIs |
 | ADR-0031 | Schema per Context | `Aceptado` | Persistencia |
 | ADR-0032 | API Protocol Decision Matrix | `Aceptado` | APIs |
-| ADR-0033 | Transactional Outbox Pattern | `Pendiente de Importación` | Mensajería |
+| ADR-0033 | Transactional Outbox Pattern — catálogo del patrón | `Aceptado` | Mensajería |
 | ADR-0034 | CQRS Applicability Matrix | `Pendiente de Importación` | Mensajería |
 | ADR-0035 | Distributed Saga Strategy | `Pendiente de Importación` | Mensajería |
 | ADR-0036 | Message Bus Delivery — FIFO/DLQ | `Aceptado` | Mensajería |
 | ADR-0037 | Performance, Concurrency & Chaos | `Pendiente de Importación` | Rendimiento |
 | ADR-0039 | Deployment Topology Switcher | `Aceptado` | Infraestructura |
 | ADR-0040 | Multi-Runtime Selection Contracts | `Aceptado` | Arquitectura |
-| ADR-0044 | Configurable Security Persistence | `Aceptado` | Seguridad |
+| ADR-0044 | Configurable Security Persistence | `Deprecado` | Seguridad |
 | ADR-0045 | Microservice Extraction Criteria | `Aceptado` | Arquitectura |
 | ADR-0046 | Dapr Unified Observability | `Aceptado` | Observabilidad |
 | ADR-0047 | Architectural Patterns Selection | `Aceptado` | Arquitectura |
-| ADR-0049 | Naming Semantics & Clean Code | `Pendiente de Importación` | Estándares |
-| ADR-0050 | GitFlow Branching Strategy | `Pendiente de Importación` | Flujo de trabajo |
+| ADR-0049 | Naming Semantics & Clean Code — superseído por ADR-0056 | `Supersedido` | Estándares |
+| ADR-0050 | GitFlow Branching Strategy | `Aceptado` | Flujo de trabajo |
 | ADR-0051 | Database Engine Strategy | `Aceptado` | Persistencia |
 | ADR-0052 | Unit Testing Isolation Strategy | `Aceptado` | Calidad |
 | ADR-0053 | Integration & E2E Testing Strategy | `Aceptado` | Calidad |
 | ADR-0054 | DB Design & Normalization Standards | `Aceptado` | Persistencia |
-| ADR-0055 | Microfrontends Architecture | `Aceptado` | Arquitectura |
-| ADR-0056 | Enterprise Naming & Design Conventions | `Pendiente de Importación` | Estándares |
+| ADR-0055 | Microfrontends Architecture | `Borrador` | Arquitectura |
+| ADR-0056 | Clean Code como Base de Ingeniería de la Suite | `Aceptado` | Estándares |
 
 ### Node.js / TypeScript
 
@@ -281,5 +281,5 @@ La Matriz de ADRs es el catálogo de estado de todas las decisiones arquitectón
 
 <p align="center">
   <strong>© Unimar S.A.</strong> · RUC 20100412447 · Operador Logístico Aduanero desde 1978<br>
-  Última revisión: 2026-06-08
+  Última revisión: 2026-07-17
 </p>
