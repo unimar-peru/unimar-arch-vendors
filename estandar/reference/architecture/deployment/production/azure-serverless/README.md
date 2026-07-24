@@ -10,7 +10,7 @@ Diagrama hermano: deployment-diagram.md
   <img src="https://img.shields.io/badge/UNIMAR%20S.A.-Operador_Log%C3%ADstico_Aduanero-0f3e67?style=for-the-badge&logoColor=white" alt="Unimar S.A.">
   <img src="https://img.shields.io/badge/Unimar%20Arch-Deployment-003c6b?style=for-the-badge&logoColor=white" alt="Unimar Arch">
   <img src="https://img.shields.io/badge/Estado-Proposed-f39c12?style=flat-square" alt="Estado">
-  <img src="https://img.shields.io/badge/Versi%C3%B3n-0.1.0-042139?style=flat-square" alt="Versión">
+  <img src="https://img.shields.io/badge/Versi%C3%B3n-1.0.0-042139?style=flat-square" alt="Versión">
 </p>
 
 **← [Inicio](../../../../../../README.md) / [Hub de Arquitectura](../../../README.md) / [Deployment Hub](../../hub/deployment-architecture-hub.md) / Azure Serverless**
@@ -30,7 +30,7 @@ Diagrama hermano: deployment-diagram.md
 | Type | Serverless / PaaS |
 | Status | Proposed |
 | Owner | Architecture Board |
-| Version | 0.1.0 |
+| Version | 1.0.0 |
 | Created / Updated | 2026-07-22 / 2026-07-22 |
 | Applicable Products | DT, TMS, WMS, MMS, SIL, UMS, XMS |
 | Decision Records | [ADR-0013](../../../adrs/core/0013-topologia-infraestructura-cloud-dr.es.md) · [ADR-0028](../../../adrs/core/0028-infraestructura-hibrida-autogestionada.es.md) · [ADR-0039](../../../adrs/core/0039-switcher-abstraccion-topologia-despliegue.es.md) · [ADR-0010](../../../adrs/core/0010-estrategia-arquitectura-multitenant.es.md) · [ADR-0014](../../../adrs/core/0014-estrategia-cache-distribuido-redis.es.md) · [ADR-0030](../../../adrs/core/0030-api-gateway-ingress-vs-nestjs.es.md) |
@@ -62,7 +62,7 @@ Ver **[deployment-diagram.md](./deployment-diagram.md)** — Mermaid por capas: 
 
 ## 3. Componentes requeridos
 
-Anclado al [stack autorizado agnóstico §6](../../../stack-tecnologico-autorizado-agnostico.es.md); la columna «Servicio Azure» es el adaptador serverless justificado.
+Anclado al [stack autorizado agnóstico §7](../../../stack-tecnologico-autorizado-agnostico.es.md); la columna «Servicio Azure» es el adaptador serverless justificado.
 
 | Componente | Servicio Azure (justificado) | Propósito | Alternativa / Puerto | Nota DR |
 | :-- | :-- | :-- | :-- | :-- |
@@ -74,9 +74,9 @@ Anclado al [stack autorizado agnóstico §6](../../../stack-tecnologico-autoriza
 | Messaging | **Azure Service Bus** (AMQP) + **Event Grid** | Bus de comandos/eventos con Outbox; Event Grid para pub/sub de plataforma. Adaptador tras `IBusPort`. | RabbitMQ (Puerto) | Service Bus geo-DR |
 | Caché | **Azure Cache for Redis** | Caché multi-capa BFF/núcleo ([ADR-0014](../../../adrs/core/0014-estrategia-cache-distribuido-redis.es.md)) tras `ICachePort`. | Redis en clúster (Puerto) | Premium geo |
 | Object Storage | **Blob Storage** tras adaptador **S3-API** / MinIO | Documentos y adjuntos vía protocolo S3 ([stack §4.3](../../../stack-tecnologico-autorizado-agnostico.es.md)). | MinIO | RA-GRS |
-| Secretos | **Azure Key Vault** + referencias/CSI | Secretos y cadenas de conexión; inyección gestionada, nunca en Git ([stack §4.2](../../../stack-tecnologico-autorizado-agnostico.es.md)). | Vault | Backup + soft-delete |
+| Secretos | **Azure Key Vault** + referencias/CSI | Secretos y cadenas de conexión; inyección gestionada, nunca en Git ([stack §5.2](../../../stack-tecnologico-autorizado-agnostico.es.md)). | Vault | Backup + soft-delete |
 | Identidad | **Microsoft Entra ID** (Managed Identity) + UMS IdP de suite | Identidad de plataforma y OIDC; UMS sigue siendo el proveedor auth/authz nativo. | Keycloak | Global |
-| Observabilidad | **OTel → Application Insights** (+ Azure Monitor) | Logs JSON, métricas y trazas W3C ([stack §5](../../../stack-tecnologico-autorizado-agnostico.es.md)); OTel mantiene neutralidad. | Prometheus/Loki | Workspace por región |
+| Observabilidad | **OTel → Application Insights** (+ Azure Monitor) | Logs JSON, métricas y trazas W3C ([stack §6](../../../stack-tecnologico-autorizado-agnostico.es.md)); OTel mantiene neutralidad. | Prometheus/Loki | Workspace por región |
 | Seguridad de borde | **Azure Front Door + WAF v2** | Ingreso global, reroute inter-región ([ADR-0013](../../../adrs/core/0013-topologia-infraestructura-cloud-dr.es.md)), WAF OWASP. | Cloudflare (CDN opcional) | Anycast global |
 
 ## 4. Requerimientos técnicos

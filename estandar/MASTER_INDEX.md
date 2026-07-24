@@ -4,7 +4,7 @@
   <img src="https://img.shields.io/badge/UNIMAR%20S.A.-Operador_Log%C3%ADstico_Aduanero-0f3e67?style=for-the-badge&logoColor=white" alt="Unimar S.A.">
   <img src="https://img.shields.io/badge/Unimar%20Arch-MASTER_INDEX-003c6b?style=for-the-badge&logoColor=white" alt="Unimar Arch">
   <img src="https://img.shields.io/badge/Estado-Activo-27ae60?style=flat-square" alt="Estado">
-  <img src="https://img.shields.io/badge/Versi%C3%B3n-0.1.0-042139?style=flat-square" alt="Versión">
+  <img src="https://img.shields.io/badge/Versi%C3%B3n-1.0.0-042139?style=flat-square" alt="Versión">
 </p>
 
 **[Abrir el Master Index organizado por fase SDLC →](./reference/navigation/MASTER_INDEX.md)**

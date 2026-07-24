@@ -4,7 +4,7 @@
   <img src="https://img.shields.io/badge/UNIMAR%20S.A.-Operador_Log%C3%ADstico_Aduanero-0f3e67?style=for-the-badge&logoColor=white" alt="Unimar S.A.">
   <img src="https://img.shields.io/badge/Unimar%20Arch-Deployment-003c6b?style=for-the-badge&logoColor=white" alt="Unimar Arch">
   <img src="https://img.shields.io/badge/Estado-Approved-27ae60?style=flat-square" alt="Estado">
-  <img src="https://img.shields.io/badge/Versi%C3%B3n-0.1.0-042139?style=flat-square" alt="Versión">
+  <img src="https://img.shields.io/badge/Versi%C3%B3n-1.0.0-042139?style=flat-square" alt="Versión">
 </p>
 
 **← [Inicio](../../../../../../README.md) / [Hub de Arquitectura](../../../README.md) / [Deployment Hub](../../hub/deployment-architecture-hub.md) / Docker**
@@ -24,7 +24,7 @@
 | Type | Contenedores (OCI) sobre Docker Compose |
 | Status | Approved |
 | Owner | Architecture Board |
-| Version | 0.1.0 |
+| Version | 1.0.0 |
 | Created / Updated | 2026-07-22 / 2026-07-22 |
 | Applicable Products | DT, TMS, WMS, MMS, SIL, UMS, XMS |
 | Decision Records | [ADR-0039](../../../adrs/core/0039-switcher-abstraccion-topologia-despliegue.es.md) · [ADR-0028](../../../adrs/core/0028-infraestructura-hibrida-autogestionada.es.md) · [ADR-0013](../../../adrs/core/0013-topologia-infraestructura-cloud-dr.es.md) · [ADR-0106](../../../adrs/core/0106-seguridad-calidad-local-first.es.md) |
@@ -34,7 +34,7 @@
 
 **Dónde corre:** íntegramente en la máquina del desarrollador, dentro de la VM de Docker (Docker Desktop en macOS/Windows o Docker Engine en Linux). No hay nube, ni clúster, ni orquestador: los contenedores se declaran en un archivo Compose y se conectan por una red *bridge* privada.
 
-**Cómo se conecta:** es la topología de **Fase 1** del despliegue progresivo ([stack agnóstico §6](../../../stack-tecnologico-autorizado-agnostico.es.md), [ADR-0013](../../../adrs/core/0013-topologia-infraestructura-cloud-dr.es.md)). El mismo binario OCI que en producción arranca aquí con `DEPLOYMENT_TOPOLOGY` seleccionando adaptadores locales en el contenedor DI ([ADR-0039](../../../adrs/core/0039-switcher-abstraccion-topologia-despliegue.es.md)); toda dependencia de infraestructura vive tras un Puerto ([ADR-0028](../../../adrs/core/0028-infraestructura-hibrida-autogestionada.es.md)), de modo que Postgres, Redis y el colector OTel locales son adaptadores intercambiables.
+**Cómo se conecta:** es la topología de **Fase 1** del despliegue progresivo ([stack agnóstico §7](../../../stack-tecnologico-autorizado-agnostico.es.md), [ADR-0013](../../../adrs/core/0013-topologia-infraestructura-cloud-dr.es.md)). El mismo binario OCI que en producción arranca aquí con `DEPLOYMENT_TOPOLOGY` seleccionando adaptadores locales en el contenedor DI ([ADR-0039](../../../adrs/core/0039-switcher-abstraccion-topologia-despliegue.es.md)); toda dependencia de infraestructura vive tras un Puerto ([ADR-0028](../../../adrs/core/0028-infraestructura-hibrida-autogestionada.es.md)), de modo que Postgres, Redis y el colector OTel locales son adaptadores intercambiables.
 
 **Referencia real (satélite UMS):** el Compose canónico de UMS ([`src/infra/local/compose/docker-compose.yml`](https://github.com/unimar-peru/unimar-ums)) declara doce servicios en la red `ums-network`:
 
@@ -63,13 +63,13 @@ Ver **[deployment-diagram.md](./deployment-diagram.md)** — Mermaid por capas: 
 | Object storage | MinIO (S3-API) | Documentos/archivos | AWS S3 / Azure Blob (tras Puerto) | Opcional en local |
 | Secretos de build | BuildKit secret (`gh_token`) | Feed privado NuGet sin filtrarse en capas | — | Nunca en imagen |
 
-Anclado al [stack tecnológico autorizado — agnóstico §6](../../../stack-tecnologico-autorizado-agnostico.es.md).
+Anclado al [stack tecnológico autorizado — agnóstico §7](../../../stack-tecnologico-autorizado-agnostico.es.md).
 
 ## 4. Requerimientos técnicos
 
 - **Infraestructura:** CPU 4–8 vCPU · RAM 8–16 GB (asignar ≥ 8 GB a la VM de Docker; el stack completo con observabilidad ronda 6–8 GB) · Storage 20–40 GB SSD para imágenes y volúmenes · Networking: red `bridge` privada, puertos publicados a `localhost`.
 - **Software:** Docker v25+, Docker Compose v2, Postgres 15, Redis 7, colector OpenTelemetry. Sin Kubernetes.
-- **Seguridad:** sin IAM externo; credenciales de desarrollo en variables de entorno del Compose (no aptas para prod). Secretos de *build* inyectados por **BuildKit secret** (`GH_TOKEN=$(gh auth token)`), nunca horneados en capas de imagen. Aislamiento por red *bridge*; sin WAF ni TLS (HTTP en `localhost`). El patrón de secretos vía sidecar/Vault del [stack §6](../../../stack-tecnologico-autorizado-agnostico.es.md) **no aplica** aquí: es una simplificación consciente del ambiente de desarrollo.
+- **Seguridad:** sin IAM externo; credenciales de desarrollo en variables de entorno del Compose (no aptas para prod). Secretos de *build* inyectados por **BuildKit secret** (`GH_TOKEN=$(gh auth token)`), nunca horneados en capas de imagen. Aislamiento por red *bridge*; sin WAF ni TLS (HTTP en `localhost`). El patrón de secretos vía sidecar/Vault del [stack §7](../../../stack-tecnologico-autorizado-agnostico.es.md) **no aplica** aquí: es una simplificación consciente del ambiente de desarrollo.
 - **Observabilidad:** trazas y métricas del backend por OTLP gRPC (`otel-collector:4317`); logs a Loki; tableros en Grafana (`localhost:3000`). Es el **mismo pipeline OpenTelemetry** que en Kind y en producción, lo que da paridad de instrumentación desde el día 1.
 - **DevOps:** sin CI de servidor; las puertas de calidad corren en local vía husky (build + unitarias + coverage + escaneo de secretos) según [ADR-0106](../../../adrs/core/0106-seguridad-calidad-local-first.es.md). Registro de contenedores no requerido (build local). IaC: el propio `docker-compose.yml` versionado.
 - **Operación:** autoservicio del desarrollador — `docker compose up/down`, `logs`, `ps`. Sin SRE, sin backup formal (los volúmenes son descartables), sin DR.

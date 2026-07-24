@@ -12,9 +12,9 @@ Este documento define **reglas arquitectónicas agnósticas al runtime**. No deb
 
 Las herramientas concretas pertenecen a los perfiles por runtime:
 
-- [Perfil .NET / C#](stack-tecnologico-autorizado-dotnet.es.md)
-- [Perfil Node.js / TypeScript](stack-tecnologico-autorizado-nodejs.es.md)
-- [Perfil Android / Kotlin](stack-tecnologico-autorizado-android.es.md)
+* [Perfil .NET / C#](stack-tecnologico-autorizado-dotnet.es.md)
+* [Perfil Node.js / TypeScript](stack-tecnologico-autorizado-nodejs.es.md)
+* [Perfil Android / Kotlin](stack-tecnologico-autorizado-android.es.md)
 
 Este repositorio conserva únicamente estándares, ADRs, blueprints, reglas de gobierno y documentación reutilizable. Los detalles ejecutables, herramientas concretas de producto y código de ejemplo aplicado pertenecen a repositorios satélite, no a este corpus de referencia.
 
@@ -31,7 +31,7 @@ Independientemente del stack tecnológico concreto elegido (Node.js, .NET o Kotl
 
 ## 2. Estándares de Comunicación y Contratos
 
-La integración entre servicios sigue la doctrina "Primero el Contrato" (*Contract First*) para garantizar la interoperabilidad políglota.
+La integración entre servicios sigue la doctrina "Primero el Contrato" (_Contract First_) para garantizar la interoperabilidad políglota.
 
 | Dominio del Estándar | Definición Requerida | Justificación |
 | :--- | :--- | :--- |
@@ -59,39 +59,44 @@ Obligatorio para todas las aplicaciones cliente para garantizar una evolución y
 Primitivas centralizadas aprobadas que sirven a la red políglota. Los adaptadores concretos del entorno de ejecución simplemente deben apuntar a estos protocolos estándar.
 
 ### 4.1 Persistencia Relacional (SQL)
+
 * **Estrategia de Motores:** Selección dependiente del runtime gobernada por [ADR-0051](./adrs/core/0051-estrategia-motor-base-datos-empresarial.es.md). La regla universal es consistencia relacional, ownership por esquema/contexto, seguridad transaccional y aislamiento del dominio; el motor concreto se selecciona por perfil de runtime o ADR de producto.
- * **Perfil .NET de referencia:** Microsoft SQL Server.
- * **Perfil Node.js de referencia:** PostgreSQL.
+* **Perfil .NET de referencia:** Microsoft SQL Server.
+* **Perfil Node.js de referencia:** PostgreSQL.
 * **Restricción de Madurez:** REQUERIDO aislamiento de Esquema por Contexto. ESTÁN PROHIBIDOS los SQL Joins directos a través de las fronteras de esquemas de contextos delimitados.
 * **Estándares de Diseño:** Todo el modelado de datos DEBE cumplir con los estándares definidos en el [ADR-0054](./adrs/core/0054-estandares-diseno-normalizacion-base-datos.es.md) (línea base 3NF para SQL).
 * **Acceso por Sucursal:** El acceso por sucursal lo controla la autorización en la capa de aplicación (RBAC/ABAC) mediante el claim `sucursales_autorizadas` ([ADR-0010](./adrs/core/0010-estrategia-arquitectura-multitenant.es.md)). La Seguridad a Nivel de Fila (RLS) de base de datos no se implementa como mecanismo de aislamiento.
 
 ### 4.2 Caché Distribuida
+
 * **Contrato:** Caché distribuida accedida mediante un puerto de caché. Las implementaciones compatibles con Redis son la opción de referencia, no una dependencia de la capa de dominio.
 * **Rol:** Aceleración de grafos efímeros, optimización de lecturas cercanas a sesión y estado de rate limiting.
 
 ### 4.3 Almacenamiento de Objetos
+
 * **Contrato Homologado:** **Protocolo Compatible con S3** (Estándar de facto de la industria) vía MinIO autohospedado.
 * **Justificación:** El S3-API actúa como protocolo de cable universal, facilitando la soberanía e independencia de la nube.
 * **Regla:** Prohibido el uso directo de SDKs propietarios de proveedores cloud. La lógica de almacenamiento DEBE interactuar exclusivamente vía Puertos de Dominio apuntando a endpoints que cumplan con la especificación S3.
 
 ---
 
-## 4. Seguridad Reforzada y Perímetro
+## 5. Seguridad Reforzada y Perímetro
 
-### 4.1 Identidad y Autorización
+### 5.1 Identidad y Autorización
+
 * **Protocolo:** Federación OpenID Connect (OIDC) / OAuth 2.0 / SAML 2.0.
 * **Tipo de Token:** Verificación estadística de JWTs firmados con RS256.
 * **Modo Nativo de la Suite:** El Sistema de Usuarios de la Suite UNIMAR es el proveedor de autenticación y autorización nativo. Todos los sistemas de la suite DEBEN integrarse a este sistema como mecanismo ideal de identidad, centralizando roles, permisos y SSO. Consultar la Visión Técnica de UMS como referencia de implementación.
 * **Cumplimiento:** Red Zero Trust. Se requiere TLS mutuo (mTLS) obligatorio solo al activar la malla de red distribuida (Fase 3+).
 
-### 4.2 Higiene de Secretos
+### 5.2 Higiene de Secretos
+
 * **Motor:** HashiCorp Vault (Empresarial o Comunitario Autohospedado).
 * **Regla:** Prohibidos los secretos en texto plano en charts de Helm, repositorios Git o ConfigMaps de K8s. La inyección vía sidecar es el único patrón de consumo aprobado.
 
 ---
 
-## 5. Observabilidad Empresarial Nativa
+## 6. Observabilidad Empresarial Nativa
 
 La telemetría agnóstica al entorno de ejecución es obligatoria. Se prohíbe a los equipos bloquear su lógica en agentes de proveedores SaaS específicos.
 
@@ -101,7 +106,7 @@ La telemetría agnóstica al entorno de ejecución es obligatoria. Se prohíbe a
 
 ---
 
-## 6. Contenerización y Estrategia de Despliegue
+## 7. Contenerización y Estrategia de Despliegue
 
 Estandarización del empaquetado y ejecución para garantizar paridad entre nube y on-premise.
 
@@ -111,7 +116,7 @@ Estandarización del empaquetado y ejecución para garantizar paridad entre nube
 
 ---
 
-## 7. Pirámide de Verificación Holística
+## 8. Pirámide de Verificación Holística
 
 Obligatorio para garantizar que el software políglota respeta los contratos antes de desplegar.
 
@@ -121,7 +126,7 @@ Obligatorio para garantizar que el software políglota respeta los contratos ant
 
 ---
 
-## 8. Directrices de Servicios de Terceros
+## 9. Directrices de Servicios de Terceros
 
 Para entornos desconectados (air-gapped), las integraciones externas DEBEN ser opcionales y abstraídas.
 
@@ -132,7 +137,7 @@ Para entornos desconectados (air-gapped), las integraciones externas DEBEN ser o
 
 ---
 
-## 9. Registro de Riesgos de Bloqueo del Proveedor (Vendor Lock-in)
+## 10. Registro de Riesgos de Bloqueo del Proveedor (Vendor Lock-in)
 
 Todas las decisiones de infraestructura base son auditadas bajo el prisma de soberanía tecnológica.
 
@@ -145,7 +150,7 @@ Todas las decisiones de infraestructura base son auditadas bajo el prisma de sob
 
 ---
 
-## 10. Próximos Pasos Estructurales para la Lectura
+## 11. Próximos Pasos Estructurales para la Lectura
 
 Este documento cubre solo las **leyes universales**. AHORA DEBE identificar su Entorno de Ejecución activo y consumir el mapeo de cumplimiento técnico concreto:
 

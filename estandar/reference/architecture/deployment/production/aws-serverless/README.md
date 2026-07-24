@@ -9,7 +9,7 @@ Diagrama hermano: ./deployment-diagram.md
   <img src="https://img.shields.io/badge/UNIMAR%20S.A.-Operador_Log%C3%ADstico_Aduanero-0f3e67?style=for-the-badge&logoColor=white" alt="Unimar S.A.">
   <img src="https://img.shields.io/badge/Unimar%20Arch-Deployment-003c6b?style=for-the-badge&logoColor=white" alt="Unimar Arch">
   <img src="https://img.shields.io/badge/Estado-Proposed-f39c12?style=flat-square" alt="Estado">
-  <img src="https://img.shields.io/badge/Versi%C3%B3n-0.1.0-042139?style=flat-square" alt="Versión">
+  <img src="https://img.shields.io/badge/Versi%C3%B3n-1.0.0-042139?style=flat-square" alt="Versión">
 </p>
 
 **← [Inicio](../../../../../../README.md) / [Hub de Arquitectura](../../../README.md) / [Deployment Hub](../../hub/deployment-architecture-hub.md) / AWS Serverless**
@@ -29,7 +29,7 @@ Diagrama hermano: ./deployment-diagram.md
 | Type | Serverless / PaaS |
 | Status | Proposed |
 | Owner | Architecture Board |
-| Version | 0.1.0 |
+| Version | 1.0.0 |
 | Created / Updated | 2026-07-22 / 2026-07-22 |
 | Applicable Products | DT, TMS, WMS, MMS, SIL, UMS, XMS |
 | Decision Records | [ADR-0013](../../../adrs/core/0013-topologia-infraestructura-cloud-dr.es.md) · [ADR-0028](../../../adrs/core/0028-infraestructura-hibrida-autogestionada.es.md) · [ADR-0039](../../../adrs/core/0039-switcher-abstraccion-topologia-despliegue.es.md) · [ADR-0010](../../../adrs/core/0010-estrategia-arquitectura-multitenant.es.md) · [ADR-0014](../../../adrs/core/0014-estrategia-cache-distribuido-redis.es.md) · [ADR-0030](../../../adrs/core/0030-api-gateway-ingress-vs-nestjs.es.md) |
@@ -57,7 +57,7 @@ Ver **[deployment-diagram.md](./deployment-diagram.md)** — Mermaid por capas: 
 
 ## 3. Componentes requeridos
 
-Anclados al [stack autorizado agnóstico §6](../../../stack-tecnologico-autorizado-agnostico.es.md). La columna «Alternativa» documenta la estrategia de salida (portabilidad).
+Anclados al [stack autorizado agnóstico §7](../../../stack-tecnologico-autorizado-agnostico.es.md). La columna «Alternativa» documenta la estrategia de salida (portabilidad).
 
 | Componente | Tecnología (AWS) | Propósito | Alternativa (portabilidad) | Nota DR |
 | :-- | :-- | :-- | :-- | :-- |

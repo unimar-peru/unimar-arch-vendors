@@ -4,7 +4,7 @@
   <img src="https://img.shields.io/badge/UNIMAR%20S.A.-Operador_Log%C3%ADstico_Aduanero-0f3e67?style=for-the-badge&logoColor=white" alt="Unimar S.A.">
   <img src="https://img.shields.io/badge/Unimar%20Arch-Deployment-003c6b?style=for-the-badge&logoColor=white" alt="Unimar Arch">
   <img src="https://img.shields.io/badge/Estado-Proposed-f39c12?style=flat-square" alt="Estado">
-  <img src="https://img.shields.io/badge/Versi%C3%B3n-0.1.0-042139?style=flat-square" alt="Versión">
+  <img src="https://img.shields.io/badge/Versi%C3%B3n-1.0.0-042139?style=flat-square" alt="Versión">
 </p>
 
 **← [Inicio](../../../../../../README.md) / [Hub de Arquitectura](../../../README.md) / [Deployment Hub](../../hub/deployment-architecture-hub.md) / Kubernetes Local**
@@ -24,7 +24,7 @@
 | Type | Kubernetes autogestionado local |
 | Status | Proposed |
 | Owner | Architecture Board |
-| Version | 0.1.0 |
+| Version | 1.0.0 |
 | Created / Updated | 2026-07-22 / 2026-07-22 |
 | Applicable Products | DT, TMS, WMS, MMS, SIL, UMS, XMS |
 | Decision Records | [ADR-0039](../../../adrs/core/0039-switcher-abstraccion-topologia-despliegue.es.md) · [ADR-0028](../../../adrs/core/0028-infraestructura-hibrida-autogestionada.es.md) · [ADR-0013](../../../adrs/core/0013-topologia-infraestructura-cloud-dr.es.md) · [ADR-0106](../../../adrs/core/0106-seguridad-calidad-local-first.es.md) |
@@ -41,7 +41,7 @@
 | **Rancher Desktop** | k3s + moby/containerd | GUI; reemplaza Docker Desktop; k3s de fábrica |
 | **Docker Desktop K8s** | K8s embebido | "Un clic"; retiene puertos 80/443; menos configurable |
 
-**El mismo binario, la misma topología:** cualquiera de estas distribuciones ejecuta el chart Helm agnóstico al sabor ([stack §6](../../../stack-tecnologico-autorizado-agnostico.es.md), principio 4 del [Hub](../../hub/deployment-architecture-hub.md)), con `DEPLOYMENT_TOPOLOGY` local ([ADR-0039](../../../adrs/core/0039-switcher-abstraccion-topologia-despliegue.es.md)) e infraestructura tras Puertos ([ADR-0028](../../../adrs/core/0028-infraestructura-hibrida-autogestionada.es.md)). El objetivo declarado es **validar localmente exactamente los mismos manifests/Helm que AKS/EKS/on-prem**.
+**El mismo binario, la misma topología:** cualquiera de estas distribuciones ejecuta el chart Helm agnóstico al sabor ([stack §7](../../../stack-tecnologico-autorizado-agnostico.es.md), principio 4 del [Hub](../../hub/deployment-architecture-hub.md)), con `DEPLOYMENT_TOPOLOGY` local ([ADR-0039](../../../adrs/core/0039-switcher-abstraccion-topologia-despliegue.es.md)) e infraestructura tras Puertos ([ADR-0028](../../../adrs/core/0028-infraestructura-hibrida-autogestionada.es.md)). El objetivo declarado es **validar localmente exactamente los mismos manifests/Helm que AKS/EKS/on-prem**.
 
 ### Recomendación para UNIMAR: **k3d**
 
@@ -74,13 +74,13 @@ Ver **[deployment-diagram.md](./deployment-diagram.md)** — Mermaid por capas: 
 | Secretos | K8s Secret plantillado → sidecar/Vault (prod) | Credenciales | — | `secrets.create=false` en prod |
 | Observabilidad | OTel Collector · Prometheus · Grafana · Loki · Tempo | Logs, métricas, trazas | — | Mismo stack que kind/prod |
 
-Anclado al [stack tecnológico autorizado — agnóstico §6](../../../stack-tecnologico-autorizado-agnostico.es.md).
+Anclado al [stack tecnológico autorizado — agnóstico §7](../../../stack-tecnologico-autorizado-agnostico.es.md).
 
 ## 4. Requerimientos técnicos
 
 - **Infraestructura:** CPU 6–14 vCPU · RAM 12–16 GB (k3d es más frugal que kind, pero un multi-nodo con observabilidad sigue siendo exigente) · Storage 30–50 GB SSD · Networking: `--port 8080:80@loadbalancer` de k3d publica el ingress al host.
 - **Software:** Docker v25+, k3d + kubectl + Helm v3 (o la distribución elegida). Traefik/Ingress-NGINX según values.
-- **Seguridad:** Secrets de K8s plantillados (desarrollo); en producción, patrón **sidecar/Vault** del [stack §6](../../../stack-tecnologico-autorizado-agnostico.es.md). Namespace aislado; sin TLS externo local.
+- **Seguridad:** Secrets de K8s plantillados (desarrollo); en producción, patrón **sidecar/Vault** del [stack §7](../../../stack-tecnologico-autorizado-agnostico.es.md). Namespace aislado; sin TLS externo local.
 - **Observabilidad:** idéntico pipeline OpenTelemetry que kind y producción (OTLP → colector; logs a Loki; tableros Grafana).
 - **DevOps:** local-first ([ADR-0106](../../../adrs/core/0106-seguridad-calidad-local-first.es.md)); `k3d image import` o *registry* local integrado en vez de registro externo. IaC = chart Helm versionado + script `k3d cluster create` **versionado** (mejora sobre la config no versionada de kind en UMS).
 - **Operación:** `k3d cluster create/delete`, `helm upgrade`, `rollout restart`. `local-path-provisioner` de k3s ofrece PVC dinámico, habilitando persistencia estable de Postgres sin `emptyDir`.

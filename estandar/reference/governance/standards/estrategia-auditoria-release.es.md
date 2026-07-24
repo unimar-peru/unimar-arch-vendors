@@ -4,7 +4,7 @@
   <img src="https://img.shields.io/badge/UNIMAR%20S.A.-Operador_Log%C3%ADstico_Aduanero-0f3e67?style=for-the-badge&logoColor=white" alt="Unimar S.A.">
   <img src="https://img.shields.io/badge/Unimar%20Arch-Estrategia%20de%20Auditor%C3%ADa%20Continu%E2%80%A6-003c6b?style=for-the-badge&logoColor=white" alt="Unimar Arch">
   <img src="https://img.shields.io/badge/Estado-Activo-27ae60?style=flat-square" alt="Estado">
-  <img src="https://img.shields.io/badge/Versi%C3%B3n-0.1.0-042139?style=flat-square" alt="Versión">
+  <img src="https://img.shields.io/badge/Versi%C3%B3n-1.0.0-042139?style=flat-square" alt="Versión">
 </p>
 
 Para mantener un registro de auditoría estricto y rastreable sincronizado con GitHub, este repositorio puede usar el método spec-driven AI-DD [BMAD-METHOD](https://github.com/bmad-code-org/BMAD-METHOD) sin convertirlo en la identidad de la documentación. El proceso de release no se basa en la redacción manual de documentos. En su lugar, aprovechamos el flujo de ingeniería ya establecido (**Conventional Commits**) combinado con el poder nativo de nuestro orquestador: **Nx Release**.

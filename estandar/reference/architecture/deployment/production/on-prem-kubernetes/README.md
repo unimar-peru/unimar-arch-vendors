@@ -4,7 +4,7 @@
   <img src="https://img.shields.io/badge/UNIMAR%20S.A.-Operador_Log%C3%ADstico_Aduanero-0f3e67?style=for-the-badge&logoColor=white" alt="Unimar S.A.">
   <img src="https://img.shields.io/badge/Unimar%20Arch-Deployment-003c6b?style=for-the-badge&logoColor=white" alt="Unimar Arch">
   <img src="https://img.shields.io/badge/Estado-Proposed-f39c12?style=flat-square" alt="Estado">
-  <img src="https://img.shields.io/badge/Versi%C3%B3n-0.1.0-042139?style=flat-square" alt="Versión">
+  <img src="https://img.shields.io/badge/Versi%C3%B3n-1.0.0-042139?style=flat-square" alt="Versión">
 </p>
 
 **← [Inicio](../../../../../../README.md) / [Hub de Arquitectura](../../../README.md) / [Deployment Hub](../../hub/deployment-architecture-hub.md) / Producción On-Premise con Kubernetes**
@@ -24,7 +24,7 @@
 | Type | Kubernetes autogestionado |
 | Status | Proposed |
 | Owner | Architecture Board |
-| Version | 0.1.0 |
+| Version | 1.0.0 |
 | Created / Updated | 2026-07-22 / 2026-07-22 |
 | Applicable Products | DT, TMS, WMS, MMS, SIL, UMS, XMS |
 | Decision Records | [ADR-0028](../../../adrs/core/0028-infraestructura-hibrida-autogestionada.es.md) · [ADR-0039](../../../adrs/core/0039-switcher-abstraccion-topologia-despliegue.es.md) · [ADR-0013](../../../adrs/core/0013-topologia-infraestructura-cloud-dr.es.md) · [ADR-0010](../../../adrs/core/0010-estrategia-arquitectura-multitenant.es.md) · [ADR-0051](../../../adrs/core/0051-estrategia-motor-base-datos-empresarial.es.md) · [ADR-0106](../../../adrs/core/0106-seguridad-calidad-local-first.es.md) |
@@ -34,7 +34,7 @@
 
 Esta alternativa materializa el **Escenario 4 — On-Premise, Soberanía Extrema** de los [escenarios de despliegue multinube](../../../escenarios-despliegue-multinube.es.md#4-escenario-on-premise-control-total-y-soberanía-extrema): la suite corre íntegramente dentro del datacenter físico corporativo, sin dependencia de ninguna nube pública, apta para operación desconectada (air-gapped). No sustituye ese material: lo **consolida** como arquitectura de despliegue gobernada.
 
-*(¿Dónde corre?)* Sobre un **clúster Kubernetes autogestionado con distribución RKE2** montado en servidores físicos (bare metal) o virtualizados propios. El mismo Helm chart agnóstico que corre en AKS/EKS corre aquí sin refactorización ([stack agnóstico §6](../../../stack-tecnologico-autorizado-agnostico.es.md)), y la topología se selecciona con `DEPLOYMENT_TOPOLOGY=ON_PREMISE_ISOLATED` en el contenedor DI de arranque ([ADR-0039](../../../adrs/core/0039-switcher-abstraccion-topologia-despliegue.es.md)).
+*(¿Dónde corre?)* Sobre un **clúster Kubernetes autogestionado con distribución RKE2** montado en servidores físicos (bare metal) o virtualizados propios. El mismo Helm chart agnóstico que corre en AKS/EKS corre aquí sin refactorización ([stack agnóstico §7](../../../stack-tecnologico-autorizado-agnostico.es.md)), y la topología se selecciona con `DEPLOYMENT_TOPOLOGY=ON_PREMISE_ISOLATED` en el contenedor DI de arranque ([ADR-0039](../../../adrs/core/0039-switcher-abstraccion-topologia-despliegue.es.md)).
 
 *(¿Con qué?)* Todo el plano de infraestructura es 100% open-source autohospedable, tras **Puertos** de dominio ([ADR-0028](../../../adrs/core/0028-infraestructura-hibrida-autogestionada.es.md)): PostgreSQL/SQL Server/MongoDB para persistencia, RabbitMQ como bus, Redis como caché, MinIO como almacenamiento S3-compatible, HashiCorp Vault para secretos y Keycloak/UMS para identidad.
 
@@ -48,7 +48,7 @@ Ver **[deployment-diagram.md](./deployment-diagram.md)** — Mermaid por capas: 
 
 ## 3. Componentes requeridos
 
-Anclado al [stack tecnológico autorizado agnóstico §6](../../../stack-tecnologico-autorizado-agnostico.es.md) y a [ADR-0028](../../../adrs/core/0028-infraestructura-hibrida-autogestionada.es.md) / [ADR-0051](../../../adrs/core/0051-estrategia-motor-base-datos-empresarial.es.md).
+Anclado al [stack tecnológico autorizado agnóstico §7](../../../stack-tecnologico-autorizado-agnostico.es.md) y a [ADR-0028](../../../adrs/core/0028-infraestructura-hibrida-autogestionada.es.md) / [ADR-0051](../../../adrs/core/0051-estrategia-motor-base-datos-empresarial.es.md).
 
 | Componente | Tecnología (autorizada) | Propósito | Alternativa | Nota DR |
 | :-- | :-- | :-- | :-- | :-- |
@@ -72,7 +72,7 @@ Anclado al [stack tecnológico autorizado agnóstico §6](../../../stack-tecnolo
 ## 4. Requerimientos técnicos
 
 - **Infraestructura:** servidores físicos o virtualizados propios; separación en tiers de cómputo (worker nodes), control plane y datos. Ver **estimación de capacidad** en §5. Red de datacenter redundante (bonding NIC, switches en par), almacenamiento local NVMe/SSD para el tier de datos y almacenamiento replicado (Longhorn/Ceph) para PV de aplicación.
-- **Software:** RKE2 (Kubernetes v1.28+), contenedores OCI Distroless ([stack agnóstico §6](../../../stack-tecnologico-autorizado-agnostico.es.md)), Helm v3, SQL Server / PostgreSQL+Patroni / MongoDB, RabbitMQ, Redis, MinIO.
+- **Software:** RKE2 (Kubernetes v1.28+), contenedores OCI Distroless ([stack agnóstico §7](../../../stack-tecnologico-autorizado-agnostico.es.md)), Helm v3, SQL Server / PostgreSQL+Patroni / MongoDB, RabbitMQ, Redis, MinIO.
 - **Seguridad:** identidad OIDC vía UMS/Keycloak; secretos exclusivamente por sidecar de **Vault** (prohibido texto plano en charts/Git/ConfigMaps); cifrado en reposo (AES-256) y tránsito (TLS 1.3); perímetro NGFW + VPN site-to-site + segmentación de red (DMZ / App / Data); *NetworkPolicies* entre namespaces; RLS nativa prohibida — aislamiento por sucursal en aplicación ([ADR-0010](../../../adrs/core/0010-estrategia-arquitectura-multitenant.es.md)).
 - **Observabilidad:** logs JSON estructurados a Loki, métricas a Prometheus, trazas a Tempo, todo vía **OpenTelemetry Collector** (W3C Trace Context); dashboards y alertas en Grafana.
 - **DevOps:** CI/CD con puertas **local-first** ([ADR-0106](../../../adrs/core/0106-seguridad-calidad-local-first.es.md)); **registro de contenedores privado** dentro del perímetro (Harbor/registry) obligatorio para air-gap; IaC en Terraform + Helm; GitOps opcional (Argo CD/Flux) con repositorio Git interno.
@@ -164,11 +164,11 @@ Anclado al [stack tecnológico autorizado agnóstico §6](../../../stack-tecnolo
 | OpenShift | Plataforma integral (CI/CD, registry, consola) | **Licenciamiento por core costoso**, más pesado, mayor lock-in de plataforma | Descartada por costo/soberanía |
 | Kubernetes vanilla | Máximo control y neutralidad | Todo el hardening, air-gap y HA del control plane es trabajo manual; mayor riesgo operativo | Descartada por sobrecarga |
 
-**Selección: RKE2** (justificación). Es la distribución del Escenario 4 y la que mejor equilibra los principios del Hub: viene **hardened** de fábrica (reduce el trabajo de seguridad manual), es **ligero** (menor huella que OpenShift, cabe en hardware modesto), es **air-gap friendly** (instalación por *tarball* sin salida a Internet, requisito de la operación soberana), mantiene el chart **agnóstico al sabor** ([stack §6](../../../stack-tecnologico-autorizado-agnostico.es.md)) y ofrece **soporte comercial opcional** de SUSE sin imponer licencia por core como OpenShift. Rancher se adopta solo como consola de flota si se justifica gestionar Primario+DR.
+**Selección: RKE2** (justificación). Es la distribución del Escenario 4 y la que mejor equilibra los principios del Hub: viene **hardened** de fábrica (reduce el trabajo de seguridad manual), es **ligero** (menor huella que OpenShift, cabe en hardware modesto), es **air-gap friendly** (instalación por *tarball* sin salida a Internet, requisito de la operación soberana), mantiene el chart **agnóstico al sabor** ([stack §7](../../../stack-tecnologico-autorizado-agnostico.es.md)) y ofrece **soporte comercial opcional** de SUSE sin imponer licencia por core como OpenShift. Rancher se adopta solo como consola de flota si se justifica gestionar Primario+DR.
 
 ## 9. Relación con el SDLC de UNIMAR-ARCH
 
-- **Fase SDLC:** 5 — Entrega y Operaciones. Kubernetes se adopta desde **Fase 3+** ([ADR-0013](../../../adrs/core/0013-topologia-infraestructura-cloud-dr.es.md), [stack §6](../../../stack-tecnologico-autorizado-agnostico.es.md)); antes basta Compose/VM.
+- **Fase SDLC:** 5 — Entrega y Operaciones. Kubernetes se adopta desde **Fase 3+** ([ADR-0013](../../../adrs/core/0013-topologia-infraestructura-cloud-dr.es.md), [stack §7](../../../stack-tecnologico-autorizado-agnostico.es.md)); antes basta Compose/VM.
 - **ADRs que la gobiernan:** [ADR-0028](../../../adrs/core/0028-infraestructura-hibrida-autogestionada.es.md) (open-source autohospedable, infra como puerto), [ADR-0039](../../../adrs/core/0039-switcher-abstraccion-topologia-despliegue.es.md) (`DEPLOYMENT_TOPOLOGY=ON_PREMISE_ISOLATED`), [ADR-0013](../../../adrs/core/0013-topologia-infraestructura-cloud-dr.es.md) (DR y 24/7), [ADR-0010](../../../adrs/core/0010-estrategia-arquitectura-multitenant.es.md) (multi-tenant en aplicación), [ADR-0051](../../../adrs/core/0051-estrategia-motor-base-datos-empresarial.es.md) (motores de BD), [ADR-0106](../../../adrs/core/0106-seguridad-calidad-local-first.es.md) (local-first).
 - **Adopción por producto:** cada satélite registra la decisión de adoptar esta alternativa en su `DECISIONS.md` y cualquier hallazgo en su `GAPS.md`.
 - **Hallazgo abierto relacionado:** **G-063** (verificado por ejecución) — la app de referencia ya corre en K8s sobre PostgreSQL, pero **sin autenticación ni respaldo** (ningún `CronJob` de backup). Esta alternativa cierra la brecha en el papel (Vault + OIDC + Velero/Veeam + retención); su cierre efectivo se prueba al implementarla. Queda como pendiente hasta la verificación.

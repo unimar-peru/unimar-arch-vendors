@@ -9,7 +9,7 @@ Diagrama hermano: ./deployment-diagram.md
   <img src="https://img.shields.io/badge/UNIMAR%20S.A.-Operador_Log%C3%ADstico_Aduanero-0f3e67?style=for-the-badge&logoColor=white" alt="Unimar S.A.">
   <img src="https://img.shields.io/badge/Unimar%20Arch-Deployment-003c6b?style=for-the-badge&logoColor=white" alt="Unimar Arch">
   <img src="https://img.shields.io/badge/Estado-Proposed-f39c12?style=flat-square" alt="Estado">
-  <img src="https://img.shields.io/badge/Versi%C3%B3n-0.1.0-042139?style=flat-square" alt="Versión">
+  <img src="https://img.shields.io/badge/Versi%C3%B3n-1.0.0-042139?style=flat-square" alt="Versión">
 </p>
 
 **← [Inicio](../../../../../../README.md) / [Hub de Arquitectura](../../../README.md) / [Deployment Hub](../../hub/deployment-architecture-hub.md) / AWS EKS**
@@ -29,7 +29,7 @@ Diagrama hermano: ./deployment-diagram.md
 | Type | Kubernetes gestionado (cloud) |
 | Status | Proposed |
 | Owner | Architecture Board |
-| Version | 0.1.0 |
+| Version | 1.0.0 |
 | Created / Updated | 2026-07-22 / 2026-07-22 |
 | Applicable Products | DT, TMS, WMS, MMS, SIL, UMS, XMS |
 | Decision Records | [ADR-0013](../../../adrs/core/0013-topologia-infraestructura-cloud-dr.es.md) · [ADR-0028](../../../adrs/core/0028-infraestructura-hibrida-autogestionada.es.md) · [ADR-0039](../../../adrs/core/0039-switcher-abstraccion-topologia-despliegue.es.md) · [ADR-0010](../../../adrs/core/0010-estrategia-arquitectura-multitenant.es.md) · [ADR-0014](../../../adrs/core/0014-estrategia-cache-distribuido-redis.es.md) · [ADR-0030](../../../adrs/core/0030-api-gateway-ingress-vs-nestjs.es.md) |
@@ -39,7 +39,7 @@ Diagrama hermano: ./deployment-diagram.md
 
 Esta alternativa **consolida y materializa** el [Escenario 3 «AWS — Resiliencia Global y Privacidad Total»](../../../escenarios-despliegue-multinube.es.md#3-escenario-aws-resiliencia-global-y-privacidad-total) de los escenarios multinube. No lo duplica: aterriza ese blueprint (ALB → EKS con IRSA → Aurora Multi-AZ → VPC Endpoints/PrivateLink → CMK) como arquitectura de despliegue gobernada y trazable, empaquetada con el **mismo Helm chart agnóstico** que corre en Kind local ([`ums-helm`](../../local/kind/README.md)) y provisionada con **Terraform**.
 
-**Dónde corre.** Un clúster **Amazon EKS** (Kubernetes v1.28+, exigido desde Fase 3+ según [ADR-0013](../../../adrs/core/0013-topologia-infraestructura-cloud-dr.es.md) y [stack agnóstico §6](../../../stack-tecnologico-autorizado-agnostico.es.md)) desplegado sobre una VPC con subredes privadas en **tres zonas de disponibilidad** (activo-activo). Los pods de aplicación no tienen ruta directa a Internet: toda salida a servicios AWS viaja por **VPC Endpoints (PrivateLink)**.
+**Dónde corre.** Un clúster **Amazon EKS** (Kubernetes v1.28+, exigido desde Fase 3+ según [ADR-0013](../../../adrs/core/0013-topologia-infraestructura-cloud-dr.es.md) y [stack agnóstico §7](../../../stack-tecnologico-autorizado-agnostico.es.md)) desplegado sobre una VPC con subredes privadas en **tres zonas de disponibilidad** (activo-activo). Los pods de aplicación no tienen ruta directa a Internet: toda salida a servicios AWS viaja por **VPC Endpoints (PrivateLink)**.
 
 **Cómo se conecta.** El tráfico entra por **CloudFront** (CDN + TLS 1.3) → **AWS WAF** (reglas OWASP y rate-limiting de borde) → **Application Load Balancer** (terminación TLS, gestionado por el AWS Load Balancer Controller vía Ingress/HTTPRoute del chart) → **Services de EKS** (frontend React, BFF/API Gateway NestJS, servicios de dominio, workers). La mensajería asíncrona usa **Amazon MQ (RabbitMQ)** para preservar el contrato **AMQP/CloudEvents** del stack, con SQS/SNS como opción para desacoplo de eventos nativos. La persistencia es **Aurora PostgreSQL Multi-AZ**; la caché es **ElastiCache (Redis)** ([ADR-0014](../../../adrs/core/0014-estrategia-cache-distribuido-redis.es.md)); los objetos van a **S3** (contrato S3-API del stack §4.3).
 
@@ -51,7 +51,7 @@ Ver **[deployment-diagram.md](./deployment-diagram.md)** — Mermaid por capas: 
 
 ## 3. Componentes requeridos
 
-Anclados al [stack autorizado agnóstico §6](../../../stack-tecnologico-autorizado-agnostico.es.md). Cada servicio AWS es un **adaptador** detrás de un Puerto; la columna «Alternativa» documenta la estrategia de salida (vendor lock-in bajo).
+Anclados al [stack autorizado agnóstico §7](../../../stack-tecnologico-autorizado-agnostico.es.md). Cada servicio AWS es un **adaptador** detrás de un Puerto; la columna «Alternativa» documenta la estrategia de salida (vendor lock-in bajo).
 
 | Componente | Tecnología (AWS) | Propósito | Alternativa (portabilidad) | Nota DR |
 | :-- | :-- | :-- | :-- | :-- |
@@ -79,7 +79,7 @@ Anclados al [stack autorizado agnóstico §6](../../../stack-tecnologico-autoriz
 
 - **Infraestructura:** node groups gestionados sobre EC2 (referencia UMS: `t3.medium`, escalable a `m6i`/`c6i` según carga); 3 AZ; subredes privadas para app y data, públicas solo para ALB/NAT. CPU/RAM dimensionadas por HPA; storage EBS gp3 para nodos, almacenamiento gestionado de Aurora con autoescalado.
 - **Software:** Kubernetes 1.28+, Helm v3 (chart agnóstico), contenedores OCI Distroless (Docker v25+ multi-stage), Aurora PostgreSQL 15, Redis (ElastiCache), RabbitMQ (Amazon MQ).
-- **Seguridad:** IRSA por pod (sin llaves estáticas); secretos vía Secrets Manager + sidecar (patrón único aprobado, stack §4.2); cifrado en reposo con CMK/KMS (AES-256) y en tránsito TLS 1.3; WAF en borde; red Zero-Trust sin salida directa a IGW, tráfico a servicios AWS por PrivateLink; mTLS al activar malla (Fase 3+). Autorización por sucursal en aplicación ([ADR-0010](../../../adrs/core/0010-estrategia-arquitectura-multitenant.es.md)).
+- **Seguridad:** IRSA por pod (sin llaves estáticas); secretos vía Secrets Manager + sidecar (patrón único aprobado, stack §5.2); cifrado en reposo con CMK/KMS (AES-256) y en tránsito TLS 1.3; WAF en borde; red Zero-Trust sin salida directa a IGW, tráfico a servicios AWS por PrivateLink; mTLS al activar malla (Fase 3+). Autorización por sucursal en aplicación ([ADR-0010](../../../adrs/core/0010-estrategia-arquitectura-multitenant.es.md)).
 - **Observabilidad:** OpenTelemetry Collector (W3C Trace Context) como punto de entrega; export a CloudWatch (o Prometheus/Grafana/Loki/Tempo como decisión de despliegue); logs JSON estructurados; el chart incluye `observability.yaml` y dashboard `ums-overview`.
 - **DevOps:** ECR como registro; IaC Terraform con estado remoto en S3 + lock DynamoDB; despliegue GitOps (Argo CD/Flux) o Helm directo; verificación **local-first** ([ADR-0106](../../../adrs/core/0106-seguridad-calidad-local-first.es.md)), las puertas de release no dependen de CI de servidor.
 - **Operación:** equipo de plataforma/SRE; backup automatizado de Aurora (snapshots + PITR); DR regional activo-activo o activo-pasivo según criticidad; runbooks y gestión de incidentes ancladas a [ADR-0013](../../../adrs/core/0013-topologia-infraestructura-cloud-dr.es.md).
@@ -124,7 +124,7 @@ Anclados al [stack autorizado agnóstico §6](../../../stack-tecnologico-autoriz
 
 ## 9. Relación con el SDLC de UNIMAR-ARCH
 
-Aplica en la **Fase 5 — Entrega y Operaciones** y se habilita desde **Fase 3+** (adopción de Kubernetes, [ADR-0013](../../../adrs/core/0013-topologia-infraestructura-cloud-dr.es.md), [stack §6](../../../stack-tecnologico-autorizado-agnostico.es.md)). La gobiernan [ADR-0013](../../../adrs/core/0013-topologia-infraestructura-cloud-dr.es.md), [ADR-0028](../../../adrs/core/0028-infraestructura-hibrida-autogestionada.es.md), [ADR-0039](../../../adrs/core/0039-switcher-abstraccion-topologia-despliegue.es.md), [ADR-0010](../../../adrs/core/0010-estrategia-arquitectura-multitenant.es.md), [ADR-0014](../../../adrs/core/0014-estrategia-cache-distribuido-redis.es.md) y [ADR-0030](../../../adrs/core/0030-api-gateway-ingress-vs-nestjs.es.md). La adopción por producto se registra en el `DECISIONS.md` del satélite y todo hallazgo (gap, riesgo, deuda) en su `GAPS.md`. Estado **Proposed**: pasará a **Approved** con ADR de adopción aceptado y al menos un despliegue verificado. Comparación transversal en la [matriz de opciones](../../comparison/deployment-options-matrix.md).
+Aplica en la **Fase 5 — Entrega y Operaciones** y se habilita desde **Fase 3+** (adopción de Kubernetes, [ADR-0013](../../../adrs/core/0013-topologia-infraestructura-cloud-dr.es.md), [stack §7](../../../stack-tecnologico-autorizado-agnostico.es.md)). La gobiernan [ADR-0013](../../../adrs/core/0013-topologia-infraestructura-cloud-dr.es.md), [ADR-0028](../../../adrs/core/0028-infraestructura-hibrida-autogestionada.es.md), [ADR-0039](../../../adrs/core/0039-switcher-abstraccion-topologia-despliegue.es.md), [ADR-0010](../../../adrs/core/0010-estrategia-arquitectura-multitenant.es.md), [ADR-0014](../../../adrs/core/0014-estrategia-cache-distribuido-redis.es.md) y [ADR-0030](../../../adrs/core/0030-api-gateway-ingress-vs-nestjs.es.md). La adopción por producto se registra en el `DECISIONS.md` del satélite y todo hallazgo (gap, riesgo, deuda) en su `GAPS.md`. Estado **Proposed**: pasará a **Approved** con ADR de adopción aceptado y al menos un despliegue verificado. Comparación transversal en la [matriz de opciones](../../comparison/deployment-options-matrix.md).
 
 ---
 
