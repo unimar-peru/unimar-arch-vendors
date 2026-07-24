@@ -70,7 +70,13 @@ jobs:
       - name: Ninguna referencia G-NNN o ADR-NNNN cuelga (SD-02)
         run: node "$UNIMAR_CORE/scripts/validate-trazabilidad.mjs"
 
-      - name: Estructura de los artefactos SDLC (S-01..S-05, S-13)
+      # Aviso, no puerta: este repo es un paquete documental (plantillas y
+      # ejemplos con placeholders), no un satelite de producto con artefactos
+      # reales. El validador los juzga como artefactos y produce falsos
+      # positivos -- el propio plugin unimar-core falla igual sobre sus
+      # plantillas. Ver DECISIONS.md D-003. Se corre por visibilidad.
+      - name: Estructura de los artefactos SDLC (S-01..S-05, S-13, aviso)
+        continue-on-error: true
         run: node "$UNIMAR_CORE/scripts/validate-satellite-base.mjs"
 
       - name: Las reglas de herencia estan triajadas (S-15, S-16)

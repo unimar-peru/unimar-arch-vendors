@@ -51,7 +51,8 @@ El **tipo de repositorio** (ADR-0069) es `producto` o `libreria`. El defecto es 
 | ID | Decisión | Fecha | Justificación |
 | :--- | :--- | :--- | :--- |
 | D-001 | Adoptar el plugin unimar-core como fuente del estándar y demoler la copia `estandar/.harness/` | 2026-07-24 | Migración de satélite antiguo por copia a consumo por plugin (S-16, ADR-0062). |
-| D-002 | Raíz de contenido en `estandar/` en lugar de `src/` | 2026-07-24 | Repositorio documental provider-facing; se triaja S-18 como Extend. |
+| D-002 | Raíz de contenido en `estandar/` en lugar de `src/` | 2026-07-24 | Repositorio documental provider-facing sin código ejecutable; se triaja S-18 como N/A. |
+| D-003 | `validate-satellite-base` es aviso (no puerta) en pre-commit y CI | 2026-07-24 | Este repo es un paquete documental: su contenido son plantillas y ejemplos con placeholders, no artefactos SDLC reales. El validador los juzga como artefactos y produce falsos positivos — el propio plugin `unimar-core` falla igual sobre sus plantillas. Se ejecuta por visibilidad, no bloquea. Fix de raíz: proponer upstream que el validador omita `fuente/` y `ejemplos/`. |
 
 ---
 
