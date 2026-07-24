@@ -4,7 +4,7 @@
   <img src="https://img.shields.io/badge/UNIMAR%20S.A.-Operador_Log%C3%ADstico_Aduanero-0f3e67?style=for-the-badge&logoColor=white" alt="Unimar S.A.">
   <img src="https://img.shields.io/badge/Unimar%20Arch-Deployment_Hub-003c6b?style=for-the-badge&logoColor=white" alt="Unimar Arch">
   <img src="https://img.shields.io/badge/Estado-Activo-27ae60?style=flat-square" alt="Estado">
-  <img src="https://img.shields.io/badge/Versi%C3%B3n-0.1.0-042139?style=flat-square" alt="Versión">
+  <img src="https://img.shields.io/badge/Versi%C3%B3n-1.0.0-042139?style=flat-square" alt="Versión">
 </p>
 
 **← [Inicio](../../../../../README.md) / [Hub de Arquitectura](../../README.md) / Deployment Architecture Hub**
@@ -28,7 +28,7 @@ El Hub **consolida** (no reemplaza) el material de despliegue ya decidido en el 
 | [ADR-0028 — Infraestructura Híbrida Autogestionada](../../adrs/core/0028-infraestructura-hibrida-autogestionada.es.md) | 100% open-source, autohospedable, *Infraestructura como Puerto* |
 | [ADR-0039 — Switcher / Abstracción de Topología de Despliegue](../../adrs/core/0039-switcher-abstraccion-topologia-despliegue.es.md) | `DEPLOYMENT_TOPOLOGY` (`SAAS_CLOUD` \| `ON_PREMISE_ISOLATED`) por factoría DI |
 | [Hub de Infraestructura](../../../infrastructure/README.md) | Topología de referencia, componentes, estrategia de DR |
-| [Stack tecnológico autorizado — agnóstico §6](../../stack-tecnologico-autorizado-agnostico.es.md) | Contenerización, orquestación, Helm, S3-API, secretos, observabilidad autorizados |
+| [Stack tecnológico autorizado — agnóstico §7](../../stack-tecnologico-autorizado-agnostico.es.md) | Contenerización, orquestación, Helm, S3-API, secretos, observabilidad autorizados |
 | [Matriz NFR de la suite](../../matriz-nfr-suite.es.md) | Umbrales de Disponibilidad, RTO/RPO, Portabilidad por criticidad C1–C4 |
 | Arquetipos | Monolito modular / microservicios / serverless-event-driven |
 
@@ -44,7 +44,7 @@ Derivados de los ADRs de plataforma y del stack autorizado:
 
 1. **Cloud-neutral por diseño** — ningún SDK de nube cruza a Dominio/Aplicación; toda dependencia de infraestructura vive tras un **Puerto** ([ADR-0028](../../adrs/core/0028-infraestructura-hibrida-autogestionada.es.md)). Cambiar de proveedor = editar un adaptador.
 2. **Un binario, muchas topologías** — el mismo contenedor corre en cloud o en datacenter aislado; la topología se selecciona con `DEPLOYMENT_TOPOLOGY` en el contenedor DI de arranque ([ADR-0039](../../adrs/core/0039-switcher-abstraccion-topologia-despliegue.es.md)).
-3. **Orquestación progresiva** — Fase 1: contenedores OCI sobre cómputo simple / Compose; **Kubernetes v1.28+ desde Fase 3+** ([ADR-0013](../../adrs/core/0013-topologia-infraestructura-cloud-dr.es.md), [stack agnóstico §6](../../stack-tecnologico-autorizado-agnostico.es.md)). No se adopta K8s antes de necesitarlo.
+3. **Orquestación progresiva** — Fase 1: contenedores OCI sobre cómputo simple / Compose; **Kubernetes v1.28+ desde Fase 3+** ([ADR-0013](../../adrs/core/0013-topologia-infraestructura-cloud-dr.es.md), [stack agnóstico §7](../../stack-tecnologico-autorizado-agnostico.es.md)). No se adopta K8s antes de necesitarlo.
 4. **Charts agnósticos al sabor** — un único Helm chart parametrizado debe funcionar igual en EKS, AKS, RKE2, MicroK8s o Kind.
 5. **Secretos nunca en claro** — prohibido en charts/Git/ConfigMaps; inyección vía sidecar (Vault) como único patrón aprobado.
 6. **Observabilidad vendor-neutral** — OpenTelemetry Collector; Prometheus/Grafana/Loki/Tempo como decisiones de despliegue.

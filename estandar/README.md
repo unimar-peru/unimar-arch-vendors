@@ -6,7 +6,7 @@
 
 [![Unimar](https://img.shields.io/badge/Unimar_Arch-003c6b?style=for-the-badge)]()
 [![Estado](https://img.shields.io/badge/Estado-Activo-27ae60?style=for-the-badge)]()
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-0.1.0-042139?style=for-the-badge)]()
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-1.0.0-042139?style=for-the-badge)]()
 [![License](https://img.shields.io/badge/License-MIT-informational?style=for-the-badge)]()
 [![Docs](https://img.shields.io/badge/Docs-Validated-brightgreen?style=for-the-badge)]()
 

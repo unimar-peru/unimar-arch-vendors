@@ -4,7 +4,7 @@
   <img src="https://img.shields.io/badge/UNIMAR%20S.A.-Operador_Log%C3%ADstico_Aduanero-0f3e67?style=for-the-badge&logoColor=white" alt="Unimar S.A.">
   <img src="https://img.shields.io/badge/Unimar%20Arch-Deployment-003c6b?style=for-the-badge&logoColor=white" alt="Unimar Arch">
   <img src="https://img.shields.io/badge/Estado-Approved-27ae60?style=flat-square" alt="Estado">
-  <img src="https://img.shields.io/badge/Versi%C3%B3n-0.1.0-042139?style=flat-square" alt="Versión">
+  <img src="https://img.shields.io/badge/Versi%C3%B3n-1.0.0-042139?style=flat-square" alt="Versión">
 </p>
 
 **← [Inicio](../../../../../../README.md) / [Hub de Arquitectura](../../../README.md) / [Deployment Hub](../../hub/deployment-architecture-hub.md) / Kind**
@@ -24,7 +24,7 @@
 | Type | Kubernetes autogestionado (kind, nodos como contenedores) |
 | Status | Approved |
 | Owner | Architecture Board |
-| Version | 0.1.0 |
+| Version | 1.0.0 |
 | Created / Updated | 2026-07-22 / 2026-07-22 |
 | Applicable Products | DT, TMS, WMS, MMS, SIL, UMS, XMS |
 | Decision Records | [ADR-0039](../../../adrs/core/0039-switcher-abstraccion-topologia-despliegue.es.md) · [ADR-0028](../../../adrs/core/0028-infraestructura-hibrida-autogestionada.es.md) · [ADR-0013](../../../adrs/core/0013-topologia-infraestructura-cloud-dr.es.md) · [ADR-0106](../../../adrs/core/0106-seguridad-calidad-local-first.es.md) |
@@ -64,13 +64,13 @@ Ver **[deployment-diagram.md](./deployment-diagram.md)** — Mermaid por capas: 
 | Secretos | K8s Secret plantillado (`.Values.secrets`) | Credenciales de arranque | Sidecar/Vault (prod) | G-019; en prod `secrets.create=false` |
 | Observabilidad | OTel Collector · Prometheus · Alertmanager · Grafana · Loki · Tempo | Logs, métricas, trazas, alertas | — | NodePort 30300 |
 
-Anclado al [stack tecnológico autorizado — agnóstico §6](../../../stack-tecnologico-autorizado-agnostico.es.md).
+Anclado al [stack tecnológico autorizado — agnóstico §7](../../../stack-tecnologico-autorizado-agnostico.es.md).
 
 ## 4. Requerimientos técnicos
 
 - **Infraestructura:** CPU 6–14 vCPU · RAM 12–16 GB en el host (asignar ≥ 8–10 GB a la VM de Docker; el control-plane + todos los pods + observabilidad es exigente) · Storage 30–50 GB SSD · Networking: `extraPortMappings` de kind para publicar el Ingress al host.
 - **Software:** Docker v25+, kind, kubectl, Helm v3. Ingress-NGINX instalado en el clúster.
-- **Seguridad:** Secrets nativos de K8s plantillados por el chart (valores de desarrollo `postgres`/`root`); en producción se sobreescriben cifrados o se gestionan fuera del chart (`secrets.create=false`) y se migra al patrón **sidecar/Vault** del [stack §6](../../../stack-tecnologico-autorizado-agnostico.es.md). Aislamiento por namespace `ums`; sin TLS externo (HTTP en `:8080`).
+- **Seguridad:** Secrets nativos de K8s plantillados por el chart (valores de desarrollo `postgres`/`root`); en producción se sobreescriben cifrados o se gestionan fuera del chart (`secrets.create=false`) y se migra al patrón **sidecar/Vault** del [stack §7](../../../stack-tecnologico-autorizado-agnostico.es.md). Aislamiento por namespace `ums`; sin TLS externo (HTTP en `:8080`).
 - **Observabilidad:** el backend exporta trazas/métricas por OTLP al colector y logs a Loki (sink Serilog); alertas enrutadas por Alertmanager (`webhookUrl` vacío por defecto → visibles en UI, sin notificación hasta configurar Slack/Teams). Tableros en Grafana bajo `/grafana/`.
 - **DevOps:** sin CI de servidor; puertas local-first vía husky ([ADR-0106](../../../adrs/core/0106-seguridad-calidad-local-first.es.md)). Sin registro de contenedores: `kind load docker-image` inyecta las imágenes en los nodos (`pullPolicy: Never`). IaC = el chart Helm versionado.
 - **Operación:** ciclo de redeploy = *rebuild* imagen → `kind load docker-image ums/backend:latest --name unimar-cluster-ums` → `kubectl -n ums rollout restart deploy/ums-backend`. Acceso robusto por Ingress (`:8080`) en vez de `kubectl port-forward` (se cae bajo presión).

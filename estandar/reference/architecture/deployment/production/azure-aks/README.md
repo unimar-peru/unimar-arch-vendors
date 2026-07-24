@@ -10,7 +10,7 @@ Diagrama hermano: deployment-diagram.md
   <img src="https://img.shields.io/badge/UNIMAR%20S.A.-Operador_Log%C3%ADstico_Aduanero-0f3e67?style=for-the-badge&logoColor=white" alt="Unimar S.A.">
   <img src="https://img.shields.io/badge/Unimar%20Arch-Deployment-003c6b?style=for-the-badge&logoColor=white" alt="Unimar Arch">
   <img src="https://img.shields.io/badge/Estado-Proposed-f39c12?style=flat-square" alt="Estado">
-  <img src="https://img.shields.io/badge/Versi%C3%B3n-0.1.0-042139?style=flat-square" alt="Versión">
+  <img src="https://img.shields.io/badge/Versi%C3%B3n-1.0.0-042139?style=flat-square" alt="Versión">
 </p>
 
 **← [Inicio](../../../../../../README.md) / [Hub de Arquitectura](../../../README.md) / [Deployment Hub](../../hub/deployment-architecture-hub.md) / Azure AKS**
@@ -30,7 +30,7 @@ Diagrama hermano: deployment-diagram.md
 | Type | Kubernetes gestionado (cloud) |
 | Status | Proposed |
 | Owner | Architecture Board |
-| Version | 0.1.0 |
+| Version | 1.0.0 |
 | Created / Updated | 2026-07-22 / 2026-07-22 |
 | Applicable Products | DT, TMS, WMS, MMS, SIL, UMS, XMS |
 | Decision Records | [ADR-0013](../../../adrs/core/0013-topologia-infraestructura-cloud-dr.es.md) · [ADR-0028](../../../adrs/core/0028-infraestructura-hibrida-autogestionada.es.md) · [ADR-0039](../../../adrs/core/0039-switcher-abstraccion-topologia-despliegue.es.md) · [ADR-0010](../../../adrs/core/0010-estrategia-arquitectura-multitenant.es.md) · [ADR-0014](../../../adrs/core/0014-estrategia-cache-distribuido-redis.es.md) · [ADR-0030](../../../adrs/core/0030-api-gateway-ingress-vs-nestjs.es.md) |
@@ -50,7 +50,7 @@ Ver **[deployment-diagram.md](./deployment-diagram.md)** — Mermaid por capas: 
 
 ## 3. Componentes requeridos
 
-Cada componente se ancla al [stack autorizado agnóstico §6](../../../stack-tecnologico-autorizado-agnostico.es.md); la columna «Servicio Azure» es el adaptador concreto elegido y **justificado** para esta topología.
+Cada componente se ancla al [stack autorizado agnóstico §7](../../../stack-tecnologico-autorizado-agnostico.es.md); la columna «Servicio Azure» es el adaptador concreto elegido y **justificado** para esta topología.
 
 | Componente | Servicio Azure (justificado) | Propósito | Alternativa / Puerto | Nota DR |
 | :-- | :-- | :-- | :-- | :-- |
@@ -60,9 +60,9 @@ Cada componente se ancla al [stack autorizado agnóstico §6](../../../stack-tec
 | Messaging | **RabbitMQ en clúster** (referencia [ADR-0028](../../../adrs/core/0028-infraestructura-hibrida-autogestionada.es.md)) · **Azure Service Bus** (adaptador gestionado) | Bus AMQP / eventos CloudEvents con Transactional Outbox. RabbitMQ preserva portabilidad; Service Bus reduce operación si se acepta el adaptador. | Kafka (Puerto) | RabbitMQ mirrored queues / Service Bus geo-DR |
 | Caché | **Azure Cache for Redis** (Premium, zona-redundante) | Caché multi-capa BFF y núcleo ([ADR-0014](../../../adrs/core/0014-estrategia-cache-distribuido-redis.es.md)) tras `ICachePort`. Gestionado para evitar operar Redis a escala. | Redis en clúster (Puerto) | Replicación geo activa (Premium) |
 | Object Storage | **S3-API**: MinIO en AKS o **Blob Storage** tras adaptador compat-S3 | Documentos, branding, adjuntos. S3-API como protocolo de cable universal ([stack §4.3](../../../stack-tecnologico-autorizado-agnostico.es.md)); prohibido SDK propietario en dominio. | MinIO autohospedado | RA-GRS / réplica de bucket |
-| Secretos | **Azure Key Vault** + **Secrets Store CSI / sidecar Vault** | Claves, cadenas de conexión, claves Always Encrypted. Inyección sidecar como único patrón ([stack §4.2](../../../stack-tecnologico-autorizado-agnostico.es.md)). Prohibido secreto en chart/Git. | HashiCorp Vault | Key Vault con backup + soft-delete |
+| Secretos | **Azure Key Vault** + **Secrets Store CSI / sidecar Vault** | Claves, cadenas de conexión, claves Always Encrypted. Inyección sidecar como único patrón ([stack §5.2](../../../stack-tecnologico-autorizado-agnostico.es.md)). Prohibido secreto en chart/Git. | HashiCorp Vault | Key Vault con backup + soft-delete |
 | Identidad | **Microsoft Entra ID** (Workload Identity) + UMS como IdP de suite | Identidad de plataforma (managed identities de pods) y OIDC. UMS sigue siendo el proveedor de auth/authz nativo de la suite. | Keycloak (on-prem) | Entra ID es global; UMS replicado |
-| Observabilidad | **OTel Collector → Azure Monitor / Log Analytics + Managed Grafana** | Logs JSON, métricas y trazas W3C ([stack §5](../../../stack-tecnologico-autorizado-agnostico.es.md)). OTel mantiene neutralidad; Azure Monitor es solo backend de despliegue. | Prometheus/Loki/Tempo en clúster | Workspace en ambas regiones |
+| Observabilidad | **OTel Collector → Azure Monitor / Log Analytics + Managed Grafana** | Logs JSON, métricas y trazas W3C ([stack §6](../../../stack-tecnologico-autorizado-agnostico.es.md)). OTel mantiene neutralidad; Azure Monitor es solo backend de despliegue. | Prometheus/Loki/Tempo en clúster | Workspace en ambas regiones |
 | Networking | **VNet Hub-and-Spoke · subnets DMZ/App/Data · Private Link · Azure Policy** | Segmentación, tráfico privado a BD/Key Vault, restricción geográfica de región. | — | Peering inter-región |
 | Seguridad de borde | **Azure Front Door + WAF v2 · Application Gateway (TLS 1.3)** | Ingreso global con health-probe y reroute inter-región ([ADR-0013](../../../adrs/core/0013-topologia-infraestructura-cloud-dr.es.md)); reglas WAF OWASP. | Cloudflare (CDN opcional [ADR-0014](../../../adrs/core/0014-estrategia-cache-distribuido-redis.es.md)) | Front Door es global anycast |
 
@@ -114,7 +114,7 @@ Comparación completa de costo/complejidad/escala/operación en la [matriz de op
 
 ## 9. Relación con el SDLC de UNIMAR-ARCH
 
-Aplica en la **Fase 5 — Entrega y Operaciones** y solo para sistemas en **Fase arquitectónica 3+** (Kubernetes se adopta cuando el desacoplamiento de servicios lo justifica, no antes — [ADR-0013](../../../adrs/core/0013-topologia-infraestructura-cloud-dr.es.md), [stack §6](../../../stack-tecnologico-autorizado-agnostico.es.md)). Gobiernan: ADR-0013, ADR-0028, ADR-0039, ADR-0010, ADR-0014, ADR-0030. La adopción por producto se registra en el `DECISIONS.md` del satélite (o del core si es transversal) y todo hallazgo en `GAPS.md`, conforme al [Hub §11](../../hub/deployment-architecture-hub.md). Estado **Proposed** hasta contar con ADR de adopción aceptado y un despliegue verificado.
+Aplica en la **Fase 5 — Entrega y Operaciones** y solo para sistemas en **Fase arquitectónica 3+** (Kubernetes se adopta cuando el desacoplamiento de servicios lo justifica, no antes — [ADR-0013](../../../adrs/core/0013-topologia-infraestructura-cloud-dr.es.md), [stack §7](../../../stack-tecnologico-autorizado-agnostico.es.md)). Gobiernan: ADR-0013, ADR-0028, ADR-0039, ADR-0010, ADR-0014, ADR-0030. La adopción por producto se registra en el `DECISIONS.md` del satélite (o del core si es transversal) y todo hallazgo en `GAPS.md`, conforme al [Hub §11](../../hub/deployment-architecture-hub.md). Estado **Proposed** hasta contar con ADR de adopción aceptado y un despliegue verificado.
 
 ---
 

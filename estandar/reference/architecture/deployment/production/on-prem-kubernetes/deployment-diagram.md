@@ -4,7 +4,7 @@
   <img src="https://img.shields.io/badge/UNIMAR%20S.A.-Operador_Log%C3%ADstico_Aduanero-0f3e67?style=for-the-badge&logoColor=white" alt="Unimar S.A.">
   <img src="https://img.shields.io/badge/Unimar%20Arch-Deployment-003c6b?style=for-the-badge&logoColor=white" alt="Unimar Arch">
   <img src="https://img.shields.io/badge/Estado-Proposed-f39c12?style=flat-square" alt="Estado">
-  <img src="https://img.shields.io/badge/Versi%C3%B3n-0.1.0-042139?style=flat-square" alt="Versión">
+  <img src="https://img.shields.io/badge/Versi%C3%B3n-1.0.0-042139?style=flat-square" alt="Versión">
 </p>
 
 **← [Inicio](../../../../../../README.md) / [Hub de Arquitectura](../../../README.md) / [Deployment Hub](../../hub/deployment-architecture-hub.md) / [On-Premise K8s](./README.md) / Diagrama**
@@ -141,11 +141,11 @@ flowchart LR
 | Usuarios / Red corporativa | Usuarios internos, VPN site-to-site | [Escenario 4](../../../escenarios-despliegue-multinube.es.md#4-escenario-on-premise-control-total-y-soberanía-extrema) |
 | Edge / Security | NGFW, MetalLB+HAProxy, Ingress (TLS 1.3) | [ADR-0028](../../../adrs/core/0028-infraestructura-hibrida-autogestionada.es.md) |
 | Application | Control plane (etcd/API-server), Frontend/BFF, API Gateway | [ADR-0039](../../../adrs/core/0039-switcher-abstraccion-topologia-despliegue.es.md) |
-| Service | Servicios de dominio (7 sistemas), Workers/Jobs | [stack §6](../../../stack-tecnologico-autorizado-agnostico.es.md) |
+| Service | Servicios de dominio (7 sistemas), Workers/Jobs | [stack §7](../../../stack-tecnologico-autorizado-agnostico.es.md) |
 | Messaging | RabbitMQ (quorum queues) | [ADR-0028](../../../adrs/core/0028-infraestructura-hibrida-autogestionada.es.md) |
 | Data | PostgreSQL/Patroni, SQL Server, MongoDB, Redis, MinIO, Storage replicado | [ADR-0051](../../../adrs/core/0051-estrategia-motor-base-datos-empresarial.es.md) |
 | Secretos / Identidad | Vault (sidecar), UMS/Keycloak (OIDC) | [ADR-0010](../../../adrs/core/0010-estrategia-arquitectura-multitenant.es.md) |
-| Observabilidad | OpenTelemetry, Prometheus, Grafana, Loki, Tempo | [stack §5](../../../stack-tecnologico-autorizado-agnostico.es.md) |
+| Observabilidad | OpenTelemetry, Prometheus, Grafana, Loki, Tempo | [stack §6](../../../stack-tecnologico-autorizado-agnostico.es.md) |
 | Backup / DR | Velero, Veeam (3-2-1 inmutable), Sitio DR físico | [ADR-0013](../../../adrs/core/0013-topologia-infraestructura-cloud-dr.es.md) |
 
 ---
