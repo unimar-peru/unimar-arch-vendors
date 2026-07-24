@@ -27,6 +27,7 @@ Esta página ligera se mantiene en la ruta raíz para preservar enlaces existent
 
 | Fecha | Versión | Cambio | Autor |
 | :--- | :--- | :--- | :--- |
+| 2026-07-24 | 0.2.0 | Alineación con el estándar vigente: se incorporan ADR-0105 (Definition of Release) y ADR-0106 (Seguridad y calidad local-first, supersede ADR-0005), y el Deployment Architecture Hub (catálogo curado de alternativas de despliegue). Matriz de ADRs y Q&A actualizados. | Unimar Arch Team |
 | 2026-06-05 | 0.1.0 | Scaffold inicial: taxonomía inicial, NOTICE, DISCLAIMER, instalación de BMAD Method | Unimar Arch Team |
 
 ---

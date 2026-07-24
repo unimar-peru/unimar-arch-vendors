@@ -1,0 +1,136 @@
+name: Gobernanza
+
+# Los gates que solo corren en el pre-commit local (evadible con --no-verify, e
+# inexistente si nadie configuro core.hooksPath) se ejecutan aqui, en el
+# servidor, donde nadie los puede saltar. Es el limite de merge inevadible.
+#
+# El estandar Unimar no vive en una copia local (.harness/): lo provee el plugin
+# unimar-core. El runner no tiene Claude Code instalado, asi que obtiene los
+# validadores haciendo checkout del repositorio del marketplace.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+env:
+  # Version del estandar, FIJADA A UN TAG. El CI de este satelite no debe cambiar
+  # de comportamiento porque alguien publique en el marketplace: subir de version
+  # es un commit aqui, revisable como cualquier otro. Apuntar a `main` renuncia a
+  # builds reproducibles.
+  STANDARD_REF: unimar-core-1.34.0
+
+jobs:
+  gobernanza:
+    name: Validadores del estandar
+    runs-on: ubuntu-latest
+    steps:
+      # fetch-depth: 0 -- validate-trazabilidad recorre el historial y comprueba
+      # con `git cat-file` que los hashes de evidencia de los gaps cerrados
+      # existan. Con el clon superficial por defecto (profundidad 1) no estan, y
+      # el gate reportaria como colgante toda evidencia legitima.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          # Node 22 como minimo: los validadores usan `glob` de node:fs/promises.
+          node-version: '24'
+
+      - name: Obtener el estandar
+        uses: actions/checkout@v4
+        with:
+          repository: unimar-peru/unimar-marketplace
+          ref: ${{ env.STANDARD_REF }}
+          token: ${{ secrets.STANDARD_TOKEN || github.token }}
+          path: .estandar
+
+      - name: Ruta de los validadores
+        run: echo "UNIMAR_CORE=$GITHUB_WORKSPACE/.estandar/plugins/unimar-core" >> "$GITHUB_ENV"
+
+      # Sin --fix: modo verificacion. Falla si MADUREZ.md o GAPS.md no estan
+      # normalizados, en vez de arreglarlos en silencio.
+      - name: Madurez medida y con evidencia (S-19)
+        run: node "$UNIMAR_CORE/scripts/validate-madurez.mjs"
+
+      - name: Registro de gaps valido y ordenado (S-20)
+        run: node "$UNIMAR_CORE/scripts/validate-gaps.mjs"
+
+      - name: Cada casilla de madurez < 5 tiene su gap (S-19, S-20)
+        run: node "$UNIMAR_CORE/scripts/validate-correspondencia.mjs"
+
+      - name: Encoding, texto mutilado, enlaces y anclas (S-09, S-10, SD-06)
+        run: node "$UNIMAR_CORE/scripts/validate-docs.mjs"
+
+      - name: Ninguna referencia G-NNN o ADR-NNNN cuelga (SD-02)
+        run: node "$UNIMAR_CORE/scripts/validate-trazabilidad.mjs"
+
+      - name: Estructura de los artefactos SDLC (S-01..S-05, S-13)
+        run: node "$UNIMAR_CORE/scripts/validate-satellite-base.mjs"
+
+      - name: Las reglas de herencia estan triajadas (S-15, S-16)
+        run: node "$UNIMAR_CORE/scripts/validate-triaje.mjs"
+
+      # Estructura del satelite: CONTRIBUTING.md con bucle de retorno, raiz de
+      # fuente declarada, esqueleto de la taxonomia, y ningun marcador sin
+      # sustituir. Sin esta puerta, S-18 depende de que el operador la recuerde.
+      - name: Estructura del satelite (S-16, S-18)
+        run: node "$UNIMAR_CORE/scripts/validate-estructura-satelite.mjs"
+
+      # Aviso, no puerta: la heuristica de SD-04 tiene falsos positivos. Sale 0
+      # aunque encuentre candidatos; su salida se lee en el log del PR.
+      - name: Criterios de aceptacion verificables (SD-04, aviso)
+        run: node "$UNIMAR_CORE/scripts/validate-criterios.mjs"
+
+      # Aviso, no puerta (ADR-0106 S6): los gates locales son la postura de
+      # seguridad; este paso solo reporta si el satelite los cablea. La seguridad
+      # no depende de este CI (P-LOCAL-02) — se corre aqui por visibilidad.
+      - name: Gates locales de calidad y seguridad (S-23, aviso)
+        run: node "$UNIMAR_CORE/scripts/validate-gates-locales.mjs"
+
+      # Aviso: coherencia del modelo Suite -> Sistema -> PRD (ADR-0120), si el
+      # satelite declara suite.yaml/sistema.yaml.
+      - name: Modelo Suite -> Sistema -> PRD (ADR-0120, aviso)
+        run: node "$UNIMAR_CORE/scripts/validate-suite.mjs"
+
+      - name: Lint de Markdown
+        run: >
+          npx --yes markdownlint-cli@0.39.0
+          --config .markdownlint.json
+          --ignore .claude --ignore _bmad --ignore _bmad-output --ignore .estandar
+          "**/*.md"
+
+  # Job de build y pruebas del satelite (gate F3/F4 del SDLC).
+  # unimar-arch-vendors es un paquete DOCUMENTAL para proveedores: no hay build
+  # de codigo. La "prueba" es validar la documentacion que se distribuye.
+  build-pruebas:
+    name: Build y pruebas (documentacion)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Obtener el estandar
+        uses: actions/checkout@v4
+        with:
+          repository: unimar-peru/unimar-marketplace
+          ref: ${{ env.STANDARD_REF }}
+          token: ${{ secrets.STANDARD_TOKEN || github.token }}
+          path: .estandar
+
+      - name: Ruta de los validadores
+        run: echo "UNIMAR_CORE=$GITHUB_WORKSPACE/.estandar/plugins/unimar-core" >> "$GITHUB_ENV"
+
+      # Documentación: sin build de código
+      - name: Pruebas de documentacion
+        run: node "$UNIMAR_CORE/scripts/validate-docs.mjs"

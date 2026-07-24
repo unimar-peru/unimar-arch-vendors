@@ -1,0 +1,30 @@
+# .gitignore base del satélite Unimar. Es un punto de partida agnóstico de
+# runtime: cada satélite lo extiende con lo que su stack genere (artefactos de
+# compilación, cachés de gestor de paquetes, salidas de herramientas). No se
+# reduce; solo se añade.
+
+# Dependencias y artefactos de build
+node_modules/
+dist/
+build/
+coverage/
+
+# Entorno y secretos: nunca al historial
+.env
+.env.*
+
+# Registros
+*.log
+
+# Ruido del sistema operativo y de editores
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Salida y árbol generados por BMAD y los runners de agente. S-17: se hereda la
+# versión, no los archivos que genera el runner. Se reconstituyen por clon con
+# `npx bmad-method install --tools claude-code`; no se commitean ni se heredan.
+_bmad-output/
+_bmad/
+.claude/

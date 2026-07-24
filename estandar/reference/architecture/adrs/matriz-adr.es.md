@@ -41,7 +41,7 @@ La Matriz de ADRs es el catálogo de estado de todas las decisiones arquitectón
 | ADR | Título | Estado | Runtime |
 |---|---|---|---|
 | [ADR-0001](core/0001-orquestacion-monorepo-nx.es.md) | Monorepo Orchestration — Nx | `Aceptado` | Agnóstico |
-| [ADR-0005](core/0005-ci-cd-calidad-codeql.es.md) | CI/CD Quality — CodeQL | `Aceptado` | Agnóstico |
+| [ADR-0005](core/0005-ci-cd-calidad-codeql.es.md) | CI/CD Quality — CodeQL — superseído por ADR-0106 | `Supersedido` | Agnóstico |
 | [ADR-0013](core/0013-topologia-infraestructura-cloud-dr.es.md) | Cloud Infrastructure Topology — DR | `Aceptado` | Agnóstico |
 | [ADR-0028](core/0028-infraestructura-hibrida-autogestionada.es.md) | Self-Hosted Hybrid Infrastructure | `Aceptado` | Agnóstico |
 | [ADR-0039](core/0039-switcher-abstraccion-topologia-despliegue.es.md) | Deployment Topology Abstraction Switcher | `Aceptado` | Agnóstico |
@@ -75,6 +75,7 @@ La Matriz de ADRs es el catálogo de estado de todas las decisiones arquitectón
 | ADR | Título | Estado | Runtime |
 |---|---|---|---|
 | [ADR-0009](core/0009-gestion-vulnerabilidades-dependencias-estrictas.es.md) | Strict Dependency Pinning & Vulnerability Management | `Aceptado` | Agnóstico |
+| [ADR-0106](core/0106-seguridad-calidad-local-first.es.md) | Seguridad y Calidad Local-First — supersede ADR-0005 | `Aceptado` | Agnóstico |
 | [ADR-0012](nodejs/0012-autorizacion-avanzada-rbac-abac.es.md) | Advanced Authorization — RBAC/ABAC | `Aceptado` | Node.js |
 | [ADR-0020](core/0020-estrategia-abstraccion-proveedor-identidad.es.md) | Identity Provider Abstraction Strategy | `Aceptado` | Agnóstico |
 | [ADR-0021](nodejs/0021-compilacion-graph-auth-alto-rendimiento.es.md) | High-Performance Auth & Graph Compilation | `Aceptado` | Node.js |
@@ -152,6 +153,7 @@ La Matriz de ADRs es el catálogo de estado de todas las decisiones arquitectón
 | [ADR-0018](core/0018-piramide-pruebas-gates-calidad.es.md) | Testing Pyramid & Quality Gates | `Aceptado` | Agnóstico |
 | [ADR-0052](core/0052-estrategia-aislamiento-pruebas-unitarias.es.md) | Estrategia de Aislamiento de Pruebas Unitarias | `Aceptado` | Agnóstico |
 | [ADR-0053](core/0053-estrategia-pruebas-integracion-e2e.es.md) | Estrategia de Pruebas de Integración y E2E | `Aceptado` | Agnóstico |
+| [ADR-0105](core/0105-definition-of-release-puertas-verificables.es.md) | Definition of Release — Puertas Verificables | `Borrador` | Agnóstico |
 
 ### Estándares de Código y Nomenclatura
 
@@ -177,7 +179,7 @@ La Matriz de ADRs es el catálogo de estado de todas las decisiones arquitectón
 | ADR | Título | Estado | Dominio |
 |---|---|---|---|
 | ADR-0001 | Monorepo Orchestration — Nx | `Aceptado` | Infraestructura |
-| ADR-0005 | CI/CD Quality — CodeQL | `Aceptado` | Infraestructura |
+| ADR-0005 | CI/CD Quality — CodeQL — superseído por ADR-0106 | `Supersedido` | Infraestructura |
 | ADR-0006 | Future Microservices Transition — Dapr | `Aceptado` | Arquitectura |
 | ADR-0009 | Strict Dependency Pinning | `Aceptado` | Seguridad |
 | ADR-0010 | Sucursal como Dimensión de Negocio y Contexto de Autorización | `Aceptado` | Multi-Tenancy |
@@ -216,6 +218,8 @@ La Matriz de ADRs es el catálogo de estado de todas las decisiones arquitectón
 | ADR-0054 | DB Design & Normalization Standards | `Aceptado` | Persistencia |
 | ADR-0055 | Microfrontends Architecture | `Borrador` | Arquitectura |
 | ADR-0056 | Clean Code como Base de Ingeniería de la Suite | `Aceptado` | Estándares |
+| ADR-0105 | Definition of Release — Puertas Verificables | `Borrador` | Calidad |
+| ADR-0106 | Seguridad y Calidad Local-First — supersede ADR-0005 | `Aceptado` | Seguridad |
 
 ### Node.js / TypeScript
 
@@ -281,5 +285,5 @@ La Matriz de ADRs es el catálogo de estado de todas las decisiones arquitectón
 
 <p align="center">
   <strong>© Unimar S.A.</strong> · RUC 20100412447 · Operador Logístico Aduanero desde 1978<br>
-  Última revisión: 2026-07-17
+  Última revisión: 2026-07-24
 </p>

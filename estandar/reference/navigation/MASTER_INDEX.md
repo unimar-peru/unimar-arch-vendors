@@ -285,9 +285,9 @@ Documentos que aplican a todo el ciclo de vida, sin fase específica.
 
 | Área | Punto de Entrada |
 | :--- | :--- |
-| Reglas globales de harness | [`.harness/rules/global-rules.md`](../../.harness/rules/global-rules.md) |
-| Glosario de terminología | `.harness/rules/terminology-glosario.md` |
-| Validador de documentación | [`.harness/scripts/validate-docs.mjs`](../../.harness/scripts/validate-docs.mjs) |
+| Reglas globales del estándar | Provistas por el plugin `unimar-core` (`${CLAUDE_PLUGIN_ROOT}/rules/global-rules.md`) |
+| Glosario de terminología | Provisto por el plugin `unimar-core` (`${CLAUDE_PLUGIN_ROOT}/rules/terminology-glossary.md`) |
+| Validador de documentación | `node "$UNIMAR_CORE/scripts/validate-docs.mjs"` (provisto por el plugin `unimar-core`) |
 | Workflows CI | [`.github/workflows/docs.yml`](../../.github/workflows/docs.yml) |
 | Hook de pre-commit | [`.husky/pre-commit`](../../.husky/pre-commit) |
 

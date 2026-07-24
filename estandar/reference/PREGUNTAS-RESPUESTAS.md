@@ -451,7 +451,7 @@ feature/* -> develop (squash) -> qa -> uat -> main (--no-ff)
 | Corrupcion de datos | < 60 min |
 | Desastre regional | < 4 horas |
 
-**Evidencia:** [Escenarios de Despliegue](../architecture/escenarios-despliegue-multinube.es.md)
+**Evidencia:** [Deployment Architecture Hub](architecture/deployment/hub/deployment-architecture-hub.md) · [Escenarios de Despliegue](architecture/escenarios-despliegue-multinube.es.md)
 </details>
 
 <details>

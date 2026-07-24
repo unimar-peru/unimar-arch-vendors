@@ -22,7 +22,7 @@ Este repositorio es **orientado a documentación** y **gestionado por agentes** 
 
 | Script | Propósito |
 | :--- | :--- |
-| `node .harness/scripts/validate-docs.mjs` | Validación completa de documentación (enlaces, anclas, encoding, Mermaid) |
+| `node "$UNIMAR_CORE/scripts/validate-docs.mjs"` (validador provisto por el plugin `unimar-core`) | Validación completa de documentación (enlaces, anclas, encoding, Mermaid) |
 | `npx markdownlint .` | Aplica las reglas de `.markdownlint.json` |
 | `npx bmad-method install --action quick-update` | Refresca los módulos BMAD al último patch/minor estable |
 
@@ -35,7 +35,7 @@ El hook de pre-commit (`.husky/pre-commit`) se ejecuta automáticamente en cada 
 
 ### Glosario de Terminología
 
-Ver `.harness/rules/terminology-glosario.md` para el glosario controlado de términos. Al añadir nuevos términos, mantenerlos en español.
+Ver el glosario controlado de términos que provee el plugin `unimar-core` (`${CLAUDE_PLUGIN_ROOT}/rules/terminology-glossary.md`). Al añadir nuevos términos, mantenerlos en español.
 
 ## Arquitectura
 
@@ -47,7 +47,6 @@ Ver `.harness/rules/terminology-glosario.md` para el glosario controlado de tér
   - `reference/architecture/`
   - `reference/governance/`
   - `reference/knowledge/dominio/` — específico de Unimar
-  - `.harness/`
   - `_bmad/`
   - `docs/` — artefactos de planificación BMAD
 
@@ -72,8 +71,8 @@ Las dos capas no se solapan. Las decisiones arquitectónicas van en `reference/a
 
 ## Reglas para Agentes
 
-- Leer [`.harness/rules/global-rules.md`](./.harness/rules/global-rules.md) antes de responder o editar.
-- Usar el playbook relevante de `.harness/playbooks/` para auditorías, revisiones de arquitectura y tareas de ingeniería repetitivas.
+- Leer las reglas globales que provee el plugin `unimar-core` (`${CLAUDE_PLUGIN_ROOT}/rules/global-rules.md`) antes de responder o editar.
+- Usar el playbook relevante que provee el plugin `unimar-core` para auditorías, revisiones de arquitectura y tareas de ingeniería repetitivas.
 - Verificación Obligatoria de Enlaces: verificar todos los enlaces internos y anclas antes de completar cualquier tarea de documentación.
 - Idioma Único: todo el contenido nuevo debe estar en español. No generar pares bilingües ni contrapartes en otros idiomas.
 - Validación de Diagramas: cualquier bloque Mermaid modificado debe pasar validación sintáctica; usar validación de render para cambios materiales.
@@ -106,4 +105,4 @@ Las dos capas no se solapan. Las decisiones arquitectónicas van en `reference/a
 - [DECISIONS.md](./DECISIONS.md) — Registro de decisiones arquitectónicas
 - [NOTICE.md](./license/NOTICE.md) — Atribución
 - [DISCLAIMER.md](./license/DISCLAIMER.md) — Garantía y responsabilidad
-- [`.harness/rules/global-rules.md`](./.harness/rules/global-rules.md) — Directivas vinculantes
+- Reglas globales provistas por el plugin `unimar-core` (`${CLAUDE_PLUGIN_ROOT}/rules/global-rules.md`) — Directivas vinculantes
