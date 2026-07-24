@@ -1,0 +1,16 @@
+# Directorios que no son autoría de este satélite. Aquí, y no repetidos en cada
+# invocación de markdownlint, para que el hook, el CI y quien lo corra a mano
+# miren exactamente el mismo conjunto.
+
+node_modules/
+
+# Generado por BMAD y por los runners de agente.
+_bmad/
+_bmad-output/
+
+# Estándar consumido como plugin, si se materializa en CI.
+.estandar/
+
+# Este satélite es un paquete documental: NO tiene raíz de código fuente que
+# excluir. La raíz de fuente lógica (`estandar/`) es documentación destinada al
+# proveedor y SÍ se linta — no se ignora. Ver DECISIONS.md D-002 (S-18 Extend).

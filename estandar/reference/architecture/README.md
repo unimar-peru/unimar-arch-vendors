@@ -73,6 +73,7 @@ Estrategias de despliegue multi-nube y cumplimiento normativo.
 
 | Documento | Propósito | Cuándo usarlo |
 | :-------- | :-------- | :------------ |
+| [Deployment Architecture Hub](./deployment/hub/deployment-architecture-hub.md) | Catálogo gobernado de alternativas de despliegue (local y producción) con matriz de comparación | Al elegir la topología de despliegue concreta del sistema |
 | [Escenarios de Despliegue Multi-Nube](./escenarios-despliegue-multinube.es.md) | Estrategias multi-cloud con cumplimiento y topología | Al definir la estrategia de cloud o al expandir a una nueva región |
 
 </details>

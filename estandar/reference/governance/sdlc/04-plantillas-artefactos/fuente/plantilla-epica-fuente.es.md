@@ -9,7 +9,7 @@
 
 > **Fase:** 1 — Concepción y Descubrimiento (o 2 — Diseño según alcance)
 > **Puerta de salida:** Aprobación de Negocio / Baseline de Diseño
-> **Padre:** Plantillas de Artefactos
+> **Padre:** [Plantillas de Artefactos](../README.md)
 
 ---
 
@@ -24,34 +24,34 @@ Una Épica es un contenedor de alto nivel que agrupa historias funcionales relac
 | Elemento | Descripción |
 |---|---|
 | [Metadatos](#1-metadatos) | Identificación, versión, estado yOwnership |
-| [Descripcin Funcional](#2-descripcin-funcional) | Objetivo de negocio de la épica |
-| [Actores y Stakeholders](#3-actores-y-stakeholders) | Actor principal, secundario y diagrama de interaccin |
+| [Descripción Funcional](#2-descripción-funcional) | Objetivo de negocio de la épica |
+| [Actores y Stakeholders](#3-actores-y-stakeholders) | Actor principal, secundario y diagrama de interacción |
 | [Historias Funcionales](#4-historias-funcionales) | Lista de historias que componen la épica |
-| [Criterios de Aceptacin](#5-criterios-de-aceptacin) | Escenarios BDD/Gherkin transversales |
-| [Reglas de Negocio](#6-reglas-de-negocio) | Reglas aplicables a toda la épica |
-| [Requisitos Tcnicos](#7-requisitos-tcnicos) | Bounded context, dependencias, restricciones |
+| [Criterios de Aceptación](#5-criterios-de-aceptación-transversales) | Escenarios BDD/Gherkin transversales |
+| [Reglas de Negocio](#6-reglas-de-negocio-aplicables) | Reglas aplicables a toda la épica |
+| [Requisitos Técnicos](#7-requisitos-técnicos-aislados) | Bounded context, dependencias, restricciones |
 | [Diagrama de Flujo](#8-diagrama-de-flujo) | Mermaid flowchart de comportamiento |
-| [Mtricas de xito](#9-mtricas-de-xito) | KPIs para medir éxito de la épica |
-| [Definicin de Hecho](#10-definicin-de-hecho-dod) | Checklist de entrega |
+| [Métricas de Éxito](#9-métricas-de-éxito) | KPIs para medir éÉxito de la épica |
+| [Definición de Hecho](#10-definición-de-hecho-dod) | Checklist de entrega |
 
 ---
 
 ## 1. Metadatos
 
 - **Identificador:** `EP-<Producto>-<NNN>`
-- **Ttulo:** <Frase nominal que describa el objetivo de negocio>
-- **Fase SDLC:** <Fase 1 — Concepcin / Fase 2 — Diseo>
-- **Versin:** <SemVer>
-- **Estado:** Borrador | En Revisin | Aprobada | En Construccin | Cerrada
+- **Título:** <Frase nominal que describa el objetivo de negocio>
+- **Fase SDLC:** <Fase 1 — Concepción / Fase 2 — Diseo>
+- **Versión:** <SemVer>
+- **Estado:** Borrador | En Revisión | Aprobada | En Construcción | Cerrada
 - **Autor:** <Rol y nombre>
 - **Producto:** <Nombre del producto o servicio>
-- **Prioridad:** Crtica | Alta | Media | Baja
+- **Prioridad:** Crítica | Alta | Media | Baja
 - **Responsable de Producto:** <Nombre>
 - **Responsable de Arquitectura:** <Nombre>
 
 ---
 
-## 2. Descripcin Funcional
+## 2. Descripción Funcional
 
 <Una sola idea principal: por qu existe esta épica, qu problema resuelve, qu objetivo de negocio persigue. Tamaño objetivo: 3 a 8 oraciones. Sin detalles tcnicos.>
 
@@ -61,12 +61,12 @@ Una Épica es un contenedor de alto nivel que agrupa historias funcionales relac
 
 ### 3.1 Actor Principal
 
-| Campo | Descripcin |
+| Campo | Descripción |
 |---|---|
 | **Nombre** | <nombre del rol> |
-| **Tipo** | Usuario Interno | Usuario Externo | Sistema | Bot |
-| **Descripcin** | <breve descripcin del actor> |
-| **Canal** | Web | Mobile | API | Chatbot |
+| **Tipo** | Usuario Interno · Usuario Externo · Sistema · Bot |
+| **Descripción** | <breve descripción del actor> |
+| **Canal** | Web · Mobile · API · Chatbot |
 
 ### 3.2 Actores Secundarios
 
@@ -74,7 +74,7 @@ Una Épica es un contenedor de alto nivel que agrupa historias funcionales relac
 |---|---|---|
 | <nombre> | <cmo participa> | <qu necesita del sistema> |
 
-### 3.3 Diagrama de Interaccin
+### 3.3 Diagrama de Interacción
 
 ```mermaid
 sequenceDiagram
@@ -92,17 +92,17 @@ sequenceDiagram
 
 ## 4. Historias Funcionales
 
-| # | Identificador | Ttulo | Prioridad | Estado | Fase SDLC |
+| # | Identificador | Título | Prioridad | Estado | Fase SDLC |
 |---|---|---|---|---|---|
 | 1 | FS-<Producto>-001 | <ttulo> | Alta | Borrador | Fase 2 |
 | 2 | FS-<Producto>-002 | <ttulo> | Alta | Borrador | Fase 2 |
 | N | FS-<Producto>-NNN | <ttulo> | Media | Borrador | Fase 2 |
 
-> Cada historia funcional tiene su propio archivo en `../stories/` con criterios de aceptacin detallados.
+> Cada historia funcional tiene su propio archivo en `../stories/` con criterios de aceptación detallados.
 
 ---
 
-## 5. Criterios de Aceptacin (Transversales)
+## 5. Criterios de Aceptación (Transversales)
 
 *Estos criterios aplican a toda la épica. Las historias individuales tienen criterios especficos.*
 
@@ -127,47 +127,47 @@ Escenario: <nombre del escenario de error>
 
 ## 6. Reglas de Negocio Aplicables
 
-| ID | Regla | Descripcin |
+| ID | Regla | Descripción |
 |---|---|---|
-| BR-<NN> | <nombre> | <descripcin declarativa, sin verbos tecnolgicos> |
+| BR-<NN> | <nombre> | <descripción declarativa, sin verbos tecnolgicos> |
 
 ---
 
-## 7. Requisitos Tcnicos (Aislados)
+## 7. Requisitos Técnicos (Aislados)
 
-*Seccin completada por Arquitectura durante la fase de diseo.*
+*Sección completada por Arquitectura durante la fase de diseño.*
 
 ### 7.1 Dominio y Contexto
 
-| Campo | Descripcin | Valor |
+| Campo | Descripción | Valor |
 |---|---|---|
 | **Bounded Context** | Nombre del contexto delimitado DDD donde opera esta épica | `<Contexto>` |
 | **Módulo / Aggregate** | Mdulo o aggregate responsable dentro del contexto | `<Mdulo>` |
 
 ### 7.2 Dependencias
 
-| Tipo | Nombre | Descripcin |
+| Tipo | Nombre | Descripción |
 |---|---|---|
 | **Base de datos** | `<nombre>` | Tablas, esquemas o databasesimpactados |
 | **APIs externas** | `<servicio>` | APIs de terceros requeridas |
 | **Servicios internos** | `<servicio>` | Microservicios internos del ecosistema Unimar |
 | **Eventos de dominio** | `<nombre>` | Eventos publicados o consumidos |
 
-### 7.3 Restricciones Tcnicas
+### 7.3 Restricciones Técnicas
 
-- **Tiempo de respuesta:** <num> ms mximo end-to-end
+- **Tiempo de respuesta:** <num> ms máximo end-to-end
 - **Throughput esperado:** <num> requests/segundo pico
 - **Disponibilidad:** <num>% SLA
-- **Región / Zona:** <ubicacin> donde debe desplegarse
+- **Región / Zona:** <ubicación> donde debe desplegarse
 
 ### 7.4 ADRs Relevantes
 
 | ADR | Tema | Relevancia para esta épica |
 |---|---|---|
-| ADR-XXXX | <tema> | <por qu aplica> |
-| ADR-YYYY | <tema> | <por qu aplica> |
+| [ADR-XXXX](../../architecture/adrs/...) | <tema> | <por qu aplica> |
+| [ADR-YYYY](../../architecture/adrs/...) | <tema> | <por qu aplica> |
 
-### 7.5 Notas Tcnicas Adicionales
+### 7.5 Notas Técnicas Adicionales
 
 - <detalle 1>
 - <detalle 2>
@@ -178,16 +178,16 @@ Escenario: <nombre del escenario de error>
 
 ```mermaid
 flowchart TD
-    subgraph "<Ttulo de la Epica>"
+    subgraph "<Título de la Epica>"
         direction TB
-        START([Inicio]) --> P1{<decisin principal>}
+        START([Inicio]) --> P1{<decisión principal>}
 
         P1 -->|Sí| A1[<accin 1>]
         P1 -->|No| A2[<accin 2>]
 
-        A1 --> VAL{¿Validacin?}
+        A1 --> VAL{¿Validación?}
         A2 --> VAL
-        VAL -->|Falla| ERR["Error: <descripcin>"]
+        VAL -->|Falla| ERR["Error: <descripción>"]
         VAL -->|Ok| END([<resultado final>])
         ERR --> RET[/Reintentar/]
         RET --> P1
@@ -200,22 +200,22 @@ flowchart TD
 
 ---
 
-## 9. Mtricas de xito
+## 9. Métricas de Éxito
 
-| Mtrica | Descripcin | Meta | Mtodo de medicin |
+| Métrica | Descripción | Meta | Método de medición |
 |---|---|---|---|
-| <nombre> | <descripcin> | <valor> | <fuente de datos> |
-| <nombre> | <descripcin> | <valor> | <fuente de datos> |
+| <nombre> | <descripción> | <valor> | <fuente de datos> |
+| <nombre> | <descripción> | <valor> | <fuente de datos> |
 
 ---
 
-## 10. Definicin de Hecho (DoD)
+## 10. Definición de Hecho (DoD)
 
 - [ ] Todas las historias funcionales asociadas completadas.
-- [ ] Todos los criterios de aceptacin verificados.
+- [ ] Todos los criterios de aceptación verificados.
 - [ ] Code review completado y aprobado.
-- [ ] Pruebas unitarias e integracin superan los umbrales definidos.
-- [ ] Documentacin tcnica actualizada.
+- [ ] Pruebas unitarias e integración superan los umbrales definidos.
+- [ ] Documentación técnica actualizada.
 - [ ] Integraciones con sistemas externos probadas y documentadas.
 - [ ] Reglas de negocio implementadas y verificadas.
 - [ ] Diagrama de flujo validado con el equipo de arquitectura.
@@ -224,9 +224,9 @@ flowchart TD
 
 ## 11. Historial de Cambios
 
-| Versin | Fecha | Autor | Cambios |
+| Versión | Fecha | Autor | Cambios |
 | --- | --- | --- | --- |
-| 0.1.0 | <AAAA-MM-DD> | <Rol> | Versin inicial |
+| 0.1.0 | <AAAA-MM-DD> | <Rol> | Versión inicial |
 
 ---
 
@@ -237,5 +237,5 @@ flowchart TD
 
 <p align="center">
   <strong>© Unimar S.A.</strong> · RUC 20100412447 · Operador Logístico Aduanero desde 1978<br>
-  Última revisin: 2026-06-08
+  Última revisión: 2026-06-08
 </p>

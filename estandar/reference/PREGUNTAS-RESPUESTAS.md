@@ -17,7 +17,7 @@ Este documento responde las preguntas mas comunes que un proveedor externo tiene
 
 **Respuesta:** Es el corpus arquitectonico corporativo de Unimar S.A. — define los estandares, artefactos y requerimientos minimos que los proveedores externos deben cumplir durante el SDLC. Es mantenido por el Architecture Board de Unimar.
 
-**Evidencia:** [README](../../../README.md)
+**Evidencia:** [README](../../README.md)
 </details>
 
 <details>
@@ -25,23 +25,23 @@ Este documento responde las preguntas mas comunes que un proveedor externo tiene
 
 **Respuesta:** Es un repositorio de **documentacion pura**. No contiene codigo de producto. El producto aplicado de referencia (UMS) vive en un repositorio satelite separado.
 
-**Evidencia:** [Master Index](../../../MASTER_INDEX.md)
+**Evidencia:** [Master Index](../MASTER_INDEX.md)
 </details>
 
 <details>
 <summary><b>Para que audiencia esta dirigido?</b></summary>
 
-**Respuesta:** Arquitectos, desarrolladores (.NET/Node.js/Android), QA, DevOps, Product Owners, Revisores de Seguridad, y proveedores externos. Cada rol tiene una ruta de lectura en [Getting Started](../getting-started/README.md).
+**Respuesta:** Arquitectos, desarrolladores (.NET/Node.js/Android), QA, DevOps, Product Owners, Revisores de Seguridad, y proveedores externos. Cada rol tiene una ruta de lectura en [Getting Started](./getting-started/README.md).
 
-**Evidencia:** [Getting Started by Role](../getting-started/README.md)
+**Evidencia:** [Getting Started by Role](./getting-started/README.md)
 </details>
 
 <details>
 <summary><b>¿Como me oriento en menos de 30 minutos?</b></summary>
 
-**Respuesta:** Sigue la ruta de tu rol en [Getting Started](../getting-started/README.md). Si eres proveedor externo, empieza por este documento, luego lee el README principal, y finalmente consulta la matriz de artefactos obligatorios.
+**Respuesta:** Sigue la ruta de tu rol en [Getting Started](./getting-started/README.md). Si eres proveedor externo, empieza por este documento, luego lee el README principal, y finalmente consulta la matriz de artefactos obligatorios.
 
-**Evidencia:** [Getting Started](../getting-started/README.md), [Quick Access](../quick-access/)
+**Evidencia:** [Getting Started](./getting-started/README.md), [Quick Access](quick-access/README.md)
 </details>
 
 <details>
@@ -49,7 +49,7 @@ Este documento responde las preguntas mas comunes que un proveedor externo tiene
 
 **Respuesta:** Regla corporativa (R-04): todo el contenido es en español. Solo se permiten acronimos, identificadores de codigo y nombres de herramientas en ingles.
 
-**Evidencia:** [AGENTS.md](../../../AGENTS.md), Regla R-04
+**Evidencia:** [AGENTS.md](../AGENTS.md), Regla R-04
 </details>
 
 <details>
@@ -57,7 +57,7 @@ Este documento responde las preguntas mas comunes que un proveedor externo tiene
 
 **Respuesta:** BMAD v6.8.0 provee 59 skills en `.opencode/commands/` que augmentan el SDLC (produccion mas rapida de artefactos), pero NO reemplazan el proceso. Los agentes siguen las mismas reglas que los humanos.
 
-**Evidencia:** [AGENTS.md](../../../AGENTS.md)
+**Evidencia:** [AGENTS.md](../AGENTS.md)
 </details>
 
 </details>
@@ -78,7 +78,7 @@ Este documento responde las preguntas mas comunes que un proveedor externo tiene
 | **F4** | Validacion y QA | Verificar que funciona (pruebas, reportes) |
 | **F5** | Entrega y Operaciones | Desplegar y operar (release, monitoreo) |
 
-**Evidencia:** [Gates de Calidad](../governance/sdlc/gates-calidad.es.md)
+**Evidencia:** [Gates de Calidad](./governance/sdlc/gates-calidad.es.md)
 </details>
 
 <details>
@@ -88,7 +88,7 @@ Este documento responde las preguntas mas comunes que un proveedor externo tiene
 
 **Ejemplo:** El gate de F3 verifica: CI verde, coverage >= 80%, zero CVEs high/critical, DoD cumplido.
 
-**Evidencia:** [Gates de Calidad](../governance/sdlc/gates-calidad.es.md)
+**Evidencia:** [Gates de Calidad](./governance/sdlc/gates-calidad.es.md)
 </details>
 
 <details>
@@ -102,7 +102,7 @@ Este documento responde las preguntas mas comunes que un proveedor externo tiene
 | **RC Sellado** | F4 | Test Summary Report sellado, criterios de aceptacion cumplidos |
 | **Produccion Activa** | F5 | Release Notes aprobado, rollback probado, observabilidad verificada |
 
-**Evidencia:** [Gates de Calidad](../governance/sdlc/gates-calidad.es.md)
+**Evidencia:** [Gates de Calidad](./governance/sdlc/gates-calidad.es.md)
 </details>
 
 <details>
@@ -110,7 +110,7 @@ Este documento responde las preguntas mas comunes que un proveedor externo tiene
 
 **Respuesta:** Solo con un **Waiver** formal que incluya: owner, fecha de expiracion, declaracion de riesgo, plan de mitigacion, y autoridad que aprueba. Los CVEs high/critical **NUNCA** se pueden eximir.
 
-**Evidencia:** [Gates de Calidad](../governance/sdlc/gates-calidad.es.md)
+**Evidencia:** [Gates de Calidad](./governance/sdlc/gates-calidad.es.md)
 </details>
 
 <details>
@@ -124,7 +124,7 @@ Este documento responde las preguntas mas comunes que un proveedor externo tiene
 | Tech debt ratio | < 5% |
 | Testing pyramid | 70% unit / 20% integration / 10% E2E |
 
-**Evidencia:** [Estrategia de Pruebas](../governance/sdlc/estrategia-pruebas.es.md), [ADR-0018](../architecture/adrs/core/0018-testing-pyramid-quality-gates.es.md)
+**Evidencia:** [Estrategia de Pruebas](./governance/sdlc/estrategia-pruebas.es.md), [ADR-0018](architecture/adrs/core/0018-piramide-pruebas-gates-calidad.es.md)
 </details>
 
 </details>
@@ -144,7 +144,7 @@ Este documento responde las preguntas mas comunes que un proveedor externo tiene
 | **Backlog Agil** | Lista priorizada por MVP y fases |
 | **Plan de Proyecto** | Estimacion, equipos, fases, roadmap |
 
-**Evidencia:** [Plantilla PRD](../governance/sdlc/04-plantillas-artefactos/plantilla-prd.es.md), [Plantilla US](../governance/sdlc/04-plantillas-artefactos/plantilla-historia-usuario.es.md)
+**Evidencia:** [Plantilla PRD](./governance/sdlc/04-plantillas-artefactos/plantilla-prd.es.md), [Plantilla US](./governance/sdlc/04-plantillas-artefactos/plantilla-historia-usuario.es.md)
 </details>
 
 <details>
@@ -157,7 +157,7 @@ Este documento responde las preguntas mas comunes que un proveedor externo tiene
 | **Stack Autorizado** | Verificacion contra stacks aprobados |
 | **Checklist de Simplicidad** | Validacion de complejidad |
 
-**Evidencia:** [Plantilla Blueprint](../governance/sdlc/04-plantillas-artefactos/plantilla-blueprint-arquitectura.es.md), [Plantilla ADR](../governance/sdlc/04-plantillas-artefactos/plantilla-adr.es.md)
+**Evidencia:** [Plantilla Blueprint](./governance/sdlc/04-plantillas-artefactos/plantilla-blueprint-arquitectura.es.md), [Plantilla ADR](./governance/sdlc/04-plantillas-artefactos/plantilla-adr.es.md)
 </details>
 
 <details>
@@ -169,7 +169,7 @@ Este documento responde las preguntas mas comunes que un proveedor externo tiene
 | **Gates / cobertura** | Evidencia de cumplimiento de quality gates |
 | **Pipeline CI/CD** | Resultados de lint, test, build, seguridad |
 
-**Evidencia:** [Plantilla TS](../governance/sdlc/04-plantillas-artefactos/plantilla-historia-tecnica.es.md)
+**Evidencia:** [Plantilla TS](./governance/sdlc/04-plantillas-artefactos/plantilla-historia-tecnica.es.md)
 </details>
 
 <details>
@@ -179,7 +179,7 @@ Este documento responde las preguntas mas comunes que un proveedor externo tiene
 |-----------|--------|
 | **Reporte Resumen de Pruebas** | Resultado de control de pruebas |
 
-**Evidencia:** [Plantilla Reporte](../governance/sdlc/04-plantillas-artefactos/plantilla-reporte-resumen-pruebas.es.md)
+**Evidencia:** [Plantilla Reporte](./governance/sdlc/04-plantillas-artefactos/plantilla-reporte-resumen-pruebas.es.md)
 </details>
 
 <details>
@@ -189,7 +189,7 @@ Este documento responde las preguntas mas comunes que un proveedor externo tiene
 |-----------|--------|
 | **Notas de Lanzamiento (RN)** | Plan de despliegue documentado |
 
-**Evidencia:** [Plantilla RN](../governance/sdlc/04-plantillas-artefactos/plantilla-notas-lanzamiento.es.md)
+**Evidencia:** [Plantilla RN](./governance/sdlc/04-plantillas-artefactos/plantilla-notas-lanzamiento.es.md)
 </details>
 
 <details>
@@ -197,7 +197,7 @@ Este documento responde las preguntas mas comunes que un proveedor externo tiene
 
 **Respuesta:** **Obligatorio (R)** = bloquea el gate si falta. **Opcional (O)** = mejor practica recomendada, situacional. Los artefactos R estan en la tabla del README principal.
 
-**Evidencia:** [README](../../../README.md)
+**Evidencia:** [README](../../README.md)
 </details>
 
 <details>
@@ -205,7 +205,7 @@ Este documento responde las preguntas mas comunes que un proveedor externo tiene
 
 **Respuesta:** Documentacion que DEBE actualizarse cuando el codigo cambia comportamiento, arquitectura, API u operaciones. Si modificas una API, debes actualizar el OpenAPI spec, la documentacion de integracion, y las historias tecnicas afectadas.
 
-**Evidencia:** [Documentacion](../governance/sdlc/03-documentacion/)
+**Evidencia:** [Documentacion](governance/sdlc/03-documentacion/mejores-practicas-documentacion-sdlc.es.md)
 </details>
 
 </details>
@@ -230,15 +230,15 @@ Este documento responde las preguntas mas comunes que un proveedor externo tiene
 | 8 | SDLC + Gates (proceso) |
 | 9 | Canonical Patterns (implementacion) |
 
-**Evidencia:** [Estandar Arquitectonico](../architecture/estandar-arquitectonico-suite-unimar.es.md)
+**Evidencia:** [Estandar Arquitectonico](./architecture/estandar-arquitectonico-suite-unimar.es.md)
 </details>
 
 <details>
 <summary><b>¿Cuantos ADRs existen?</b></summary>
 
-**Respuesta:** 57+ ADRs: 40+ Core (agnosticos), 13 Node.js, 3 .NET, 1 Android. Todos catalogados en la [Matriz ADR](../architecture/adrs/matriz-adr.es.md).
+**Respuesta:** 57+ ADRs: 40+ Core (agnosticos), 13 Node.js, 3 .NET, 1 Android. Todos catalogados en la [Matriz ADR](./architecture/adrs/matriz-adr.es.md).
 
-**Evidencia:** [Matriz ADR](../architecture/adrs/matriz-adr.es.md)
+**Evidencia:** [Matriz ADR](./architecture/adrs/matriz-adr.es.md)
 </details>
 
 <details>
@@ -248,15 +248,15 @@ Este documento responde las preguntas mas comunes que un proveedor externo tiene
 
 **Ejemplo:** Si quieres usar MongoDB en lugar de PostgreSQL, necesitas un ADR que justifique la excepcion.
 
-**Evidencia:** [Plantilla ADR](../governance/sdlc/04-plantillas-artefactos/plantilla-adr.es.md), [DECISIONS.md](../../../DECISIONS.md)
+**Evidencia:** [Plantilla ADR](./governance/sdlc/04-plantillas-artefactos/plantilla-adr.es.md), [DECISIONS.md](../DECISIONS.md)
 </details>
 
 <details>
 <summary><b>¿Puedo usar una tecnologia no autorizada?</b></summary>
 
-**Respuesta:** No. Cualquier tecnologia no listada en el [Stack Autorizado](../architecture/stack-tecnologico-autorizado-agnostico.es.md) requiere un ADR que justifique la excepcion. El stack aprobado es: .NET/C#, Node.js/TypeScript, Android/Kotlin.
+**Respuesta:** No. Cualquier tecnologia no listada en el [Stack Autorizado](./architecture/stack-tecnologico-autorizado-agnostico.es.md) requiere un ADR que justifique la excepcion. El stack aprobado es: .NET/C#, Node.js/TypeScript, Android/Kotlin.
 
-**Evidencia:** [Stack Autorizado](../architecture/stack-tecnologico-autorizado-agnostico.es.md)
+**Evidencia:** [Stack Autorizado](./architecture/stack-tecnologico-autorizado-agnostico.es.md)
 </details>
 
 <details>
@@ -264,7 +264,7 @@ Este documento responde las preguntas mas comunes que un proveedor externo tiene
 
 **Respuesta:** Todo producto nuevo comienza como **Monolito Modular** (F1) a menos que cumpla los criterios de extraccion (ADR-0045). Evolucionar a modulos distribuidos o microservicios requiere evidencia.
 
-**Evidencia:** [ADR-0045](../architecture/adrs/core/0045-microservice-extraction-readiness-criteria.es.md)
+**Evidencia:** [ADR-0045](architecture/adrs/core/0045-criterios-extraccion-microservicios.es.md)
 </details>
 
 <details>
@@ -272,7 +272,7 @@ Este documento responde las preguntas mas comunes que un proveedor externo tiene
 
 **Respuesta:** 12 patrones (CP-01 a CP-12) que documentan COMO implementar un patron en codigo para un runtime especifico. Los ADRs documentan POR QUE; los Canonical Patterns documentan COMO.
 
-**Evidencia:** [Canonical Patterns](../architecture/canonical-patterns/README.md)
+**Evidencia:** [Canonical Patterns](./architecture/canonical-patterns/README.md)
 </details>
 
 </details>
@@ -287,7 +287,7 @@ Este documento responde las preguntas mas comunes que un proveedor externo tiene
 
 **Respuesta:** 7 principios: Tecnologia Probada, Developer Experience, Test-First, Boundaries Explicitos, Estandares sobre Heroismo, Evidencia sobre Opinion, Open Source Hygiene.
 
-**Evidencia:** [Manifiesto de Ingenieria](../governance/standards/engineering/manifiesto-ingenieria.md)
+**Evidencia:** [Manifiesto de Ingenieria](./governance/standards/engineering/manifiesto-ingenieria.md)
 </details>
 
 <details>
@@ -295,7 +295,7 @@ Este documento responde las preguntas mas comunes que un proveedor externo tiene
 
 **Respuesta:** REST-first con: formato de respuesta estandar, manejo de errores, paginacion, versionado, idempotencia, y spec OpenAPI.
 
-**Evidencia:** [Eststandares de Ingenieria](../governance/standards/engineering/)
+**Evidencia:** [Eststandares de Ingenieria](governance/standards/engineering/README.md)
 </details>
 
 <details>
@@ -303,7 +303,7 @@ Este documento responde las preguntas mas comunes que un proveedor externo tiene
 
 **Respuesta:** React + Vite + TypeScript, Atomic Design, con tests obligatorios.
 
-**Evidencia:** [Stack Autorizado](../architecture/stack-tecnologico-autorizado-agnostico.es.md)
+**Evidencia:** [Stack Autorizado](./architecture/stack-tecnologico-autorizado-agnostico.es.md)
 </details>
 
 <details>
@@ -311,7 +311,7 @@ Este documento responde las preguntas mas comunes que un proveedor externo tiene
 
 **Respuesta:** LGTM (Loki, Grafana, Tempo, Mimir) + Prometheus. Metricas RED/USE. SLIs/SLOs obligatorios.
 
-**Evidencia:** [Estrategia de Monitoreo](../architecture/flujo-arquitectura-observabilidad.es.md)
+**Evidencia:** [Estrategia de Monitoreo](./architecture/flujo-arquitectura-observabilidad.es.md)
 </details>
 
 <details>
@@ -319,7 +319,7 @@ Este documento responde las preguntas mas comunes que un proveedor externo tiene
 
 **Respuesta:** SQL Server para .NET, PostgreSQL para Node.js, MongoDB solo con ADR aprobado. Normalizacion 3NF.
 
-**Evidencia:** [Eststandares de Ingenieria](../governance/standards/engineering/)
+**Evidencia:** [Eststandares de Ingenieria](governance/standards/engineering/README.md)
 </details>
 
 </details>
@@ -334,7 +334,7 @@ Este documento responde las preguntas mas comunes que un proveedor externo tiene
 
 **Respuesta:** 70% unit / 20% integration / 10% E2E (ADR-0018).
 
-**Evidencia:** [Estrategia de Pruebas](../governance/sdlc/estrategia-pruebas.es.md), [ADR-0018](../architecture/adrs/core/0018-testing-pyramid-quality-gates.es.md)
+**Evidencia:** [Estrategia de Pruebas](./governance/sdlc/estrategia-pruebas.es.md), [ADR-0018](architecture/adrs/core/0018-piramide-pruebas-gates-calidad.es.md)
 </details>
 
 <details>
@@ -346,7 +346,7 @@ Este documento responde las preguntas mas comunes que un proveedor externo tiene
 | Node.js | Jest |
 | Android | JUnit5 + MockK + Turbine |
 
-**Evidencia:** [Estrategia de Pruebas](../governance/sdlc/estrategia-pruebas.es.md)
+**Evidencia:** [Estrategia de Pruebas](./governance/sdlc/estrategia-pruebas.es.md)
 </details>
 
 <details>
@@ -360,7 +360,7 @@ Este documento responde las preguntas mas comunes que un proveedor externo tiene
 | F4 | DAST (OWASP ZAP) |
 | Anual | Penetration Testing |
 
-**Evidencia:** [Estrategia de Seguridad](../governance/sdlc/estrategia-seguridad.es.md)
+**Evidencia:** [Estrategia de Seguridad](./governance/sdlc/estrategia-seguridad.es.md)
 </details>
 
 <details>
@@ -373,7 +373,7 @@ Este documento responde las preguntas mas comunes que un proveedor externo tiene
 | API Top 10 | APIs |
 | CIS Benchmarks | Bases de datos |
 
-**Evidencia:** [Estrategia de Seguridad](../governance/sdlc/estrategia-seguridad.es.md)
+**Evidencia:** [Estrategia de Seguridad](./governance/sdlc/estrategia-seguridad.es.md)
 </details>
 
 <details>
@@ -381,7 +381,7 @@ Este documento responde las preguntas mas comunes que un proveedor externo tiene
 
 **Respuesta:** >= 90% de aprobacion funcional para sellar el RC (Release Candidate).
 
-**Evidencia:** [Gates de Calidad](../governance/sdlc/gates-calidad.es.md)
+**Evidencia:** [Gates de Calidad](./governance/sdlc/gates-calidad.es.md)
 </details>
 
 </details>
@@ -396,7 +396,7 @@ Este documento responde las preguntas mas comunes que un proveedor externo tiene
 
 **Respuesta:** GitFlow Extendido (ADR-0050): 4 ramas permanentes (main, develop, qa, uat) + 3 temporales (feature/*, release/*, hotfix/*).
 
-**Evidencia:** [Estrategia de Ramificacion](../governance/sdlc/estrategia-ramificacion.es.md), [ADR-0050](../architecture/adrs/core/0050-estrategia-ramificacion-gitflow.es.md)
+**Evidencia:** [Estrategia de Ramificacion](./governance/sdlc/estrategia-ramificacion.es.md), [ADR-0050](./architecture/adrs/core/0050-estrategia-ramificacion-gitflow.es.md)
 </details>
 
 <details>
@@ -406,7 +406,7 @@ Este documento responde las preguntas mas comunes que un proveedor externo tiene
 feature/* -> develop (squash) -> qa -> uat -> main (--no-ff)
 ```
 
-**Evidencia:** [Estrategia de Ramificacion](../governance/sdlc/estrategia-ramificacion.es.md)
+**Evidencia:** [Estrategia de Ramificacion](./governance/sdlc/estrategia-ramificacion.es.md)
 </details>
 
 <details>
@@ -414,7 +414,7 @@ feature/* -> develop (squash) -> qa -> uat -> main (--no-ff)
 
 **Respuesta:** ADR-0005: lint, test, build, y CodeQL security scan deben pasar antes del merge.
 
-**Evidencia:** [ADR-0005](../architecture/adrs/core/0005-ci-cd-calidad-codeql.es.md)
+**Evidencia:** [ADR-0005](./architecture/adrs/core/0005-ci-cd-calidad-codeql.es.md)
 </details>
 
 <details>
@@ -422,7 +422,7 @@ feature/* -> develop (squash) -> qa -> uat -> main (--no-ff)
 
 **Respuesta:** Conventional Commits v1.0.0 (feat:, fix:, docs:, etc.)
 
-**Evidencia:** [ADR-0050](../architecture/adrs/core/0050-estrategia-ramificacion-gitflow.es.md)
+**Evidencia:** [ADR-0050](./architecture/adrs/core/0050-estrategia-ramificacion-gitflow.es.md)
 </details>
 
 </details>
@@ -437,7 +437,7 @@ feature/* -> develop (squash) -> qa -> uat -> main (--no-ff)
 
 **Respuesta:** Multi-AZ: Kubernetes, Ingress Gateway, Redis, RabbitMQ, HashiCorp Vault, MinIO, SQL Server/PostgreSQL, Prometheus+Grafana+Loki.
 
-**Evidencia:** [Infraestructura Hub](../infrastructure/README.md)
+**Evidencia:** [Infraestructura Hub](./infrastructure/README.md)
 </details>
 
 <details>
@@ -451,7 +451,7 @@ feature/* -> develop (squash) -> qa -> uat -> main (--no-ff)
 | Corrupcion de datos | < 60 min |
 | Desastre regional | < 4 horas |
 
-**Evidencia:** [Escenarios de Despliegue](../architecture/escenarios-despliegue-multinube.es.md)
+**Evidencia:** [Deployment Architecture Hub](architecture/deployment/hub/deployment-architecture-hub.md) · [Escenarios de Despliegue](architecture/escenarios-despliegue-multinube.es.md)
 </details>
 
 <details>
@@ -464,7 +464,7 @@ feature/* -> develop (squash) -> qa -> uat -> main (--no-ff)
 | Redis | Snapshots cada 5min | 2 dias |
 | MinIO | Replicacion continua | Configurable |
 
-**Evidencia:** [Infraestructura Hub](../infrastructure/README.md)
+**Evidencia:** [Infraestructura Hub](./infrastructure/README.md)
 </details>
 
 </details>
@@ -481,7 +481,7 @@ feature/* -> develop (squash) -> qa -> uat -> main (--no-ff)
 
 **Ejemplo:** Una Historia Tecnica (TS) referencia la Historia Funcional (US) que a su vez referencia el PRD.
 
-**Evidencia:** [Modelo de Trazabilidad](../governance/sdlc/modelo-trazabilidad.es.md)
+**Evidencia:** [Modelo de Trazabilidad](./governance/sdlc/modelo-trazabilidad.es.md)
 </details>
 
 <details>
@@ -495,7 +495,7 @@ feature/* -> develop (squash) -> qa -> uat -> main (--no-ff)
 | Technical Story | TS-Producto-NNN |
 | ADR | ADR-NNN |
 
-**Evidencia:** [Modelo de Trazabilidad](../governance/sdlc/modelo-trazabilidad.es.md)
+**Evidencia:** [Modelo de Trazabilidad](./governance/sdlc/modelo-trazabilidad.es.md)
 </details>
 
 <details>
@@ -503,7 +503,7 @@ feature/* -> develop (squash) -> qa -> uat -> main (--no-ff)
 
 **Respuesta:** Cada gate verifica que la cadena este completa para esa fase. Gaps bloquean el avance.
 
-**Evidencia:** [Gates de Calidad](../governance/sdlc/gates-calidad.es.md)
+**Evidencia:** [Gates de Calidad](./governance/sdlc/gates-calidad.es.md)
 </details>
 
 </details>
@@ -521,7 +521,7 @@ feature/* -> develop (squash) -> qa -> uat -> main (--no-ff)
 - **Medio:** Tech Leads (estandares de area)
 - **Menor:** Cualquier maintainer (correcciones, mejoras)
 
-**Evidencia:** [Contribucion](../contribucion/README.md)
+**Evidencia:** [Contribucion](./contribucion/README.md)
 </details>
 
 <details>
@@ -533,7 +533,7 @@ feature/* -> develop (squash) -> qa -> uat -> main (--no-ff)
 | Medio | 2-5 dias habiles |
 | Mayor | 5-10 dias habiles + reunion semanal |
 
-**Evidencia:** [Contribucion](../contribucion/README.md)
+**Evidencia:** [Contribucion](./contribucion/README.md)
 </details>
 
 <details>
@@ -541,7 +541,7 @@ feature/* -> develop (squash) -> qa -> uat -> main (--no-ff)
 
 **Respuesta:** `validate-docs.mjs` valida links, anchors, encoding y Mermaid. El pre-commit hook ejecuta lint-staged + validate-docs automaticamente.
 
-**Evidencia:** [AGENTS.md](../../../AGENTS.md)
+**Evidencia:** [AGENTS.md](../AGENTS.md)
 </details>
 
 <details>
@@ -549,7 +549,7 @@ feature/* -> develop (squash) -> qa -> uat -> main (--no-ff)
 
 **Respuesta:** Archivos en kebab-case, directorios con scope, separacion estricta entre `reference/` (corpus) y `docs/` (artefactos de planificacion).
 
-**Evidencia:** [Taxonomia](../governance/standards/taxonomia-repositorio.md)
+**Evidencia:** [Taxonomia](./governance/standards/taxonomia-repositorio.md)
 </details>
 
 </details>
@@ -564,7 +564,7 @@ feature/* -> develop (squash) -> qa -> uat -> main (--no-ff)
 
 **Respuesta:** Logistica aduanera: Despacho, DUA, Sucursal, Operador, Patios, Contenedores, Transportes. Unimar es Operador Logistico Aduanero desde 1978.
 
-**Evidencia:** [Knowledge/Dominio](../knowledge/dominio/)
+**Evidencia:** [Knowledge/Dominio](knowledge/dominio/README.md)
 </details>
 
 <details>
@@ -572,7 +572,7 @@ feature/* -> develop (squash) -> qa -> uat -> main (--no-ff)
 
 **Respuesta:** 550+ terminos controlados cubriendo SDLC, testing, seguridad, infraestructura y dominio de negocio.
 
-**Evidencia:** [Glosario](../governance/glosario.md)
+**Evidencia:** [Glosario](./governance/glosario.md)
 </details>
 
 </details>
@@ -587,7 +587,7 @@ feature/* -> develop (squash) -> qa -> uat -> main (--no-ff)
 
 **Respuesta:** La fase no se cierra. No puedes avanzar a la siguiente. Opciones: arreglar las violaciones, solicitar un Waiver formal, o escalar al Architecture Board.
 
-**Evidencia:** [Gates de Calidad](../governance/sdlc/gates-calidad.es.md)
+**Evidencia:** [Gates de Calidad](./governance/sdlc/gates-calidad.es.md)
 </details>
 
 <details>
@@ -595,7 +595,7 @@ feature/* -> develop (squash) -> qa -> uat -> main (--no-ff)
 
 **Respuesta:** Solo con un ADR aprobado que justifique la excepcion. El default es SQL Server (.NET) o PostgreSQL (Node.js).
 
-**Evidencia:** [Stack Autorizado](../architecture/stack-tecnologico-autorizado-agnostico.es.md)
+**Evidencia:** [Stack Autorizado](./architecture/stack-tecnologico-autorizado-agnostico.es.md)
 </details>
 
 <details>
@@ -603,7 +603,7 @@ feature/* -> develop (squash) -> qa -> uat -> main (--no-ff)
 
 **Respuesta:** No. Todo el contenido es en español (R-04). Solo acronimos, identificadores de codigo y nombres de herramientas van en ingles.
 
-**Evidencia:** [AGENTS.md](../../../AGENTS.md)
+**Evidencia:** [AGENTS.md](../AGENTS.md)
 </details>
 
 <details>
@@ -611,7 +611,7 @@ feature/* -> develop (squash) -> qa -> uat -> main (--no-ff)
 
 **Respuesta:** Todas las plantillas estan en `estandar/reference/governance/sdlc/04-plantillas-artefactos/` con versiones fuente (copiables) y renderizadas (ejemplos).
 
-**Evidencia:** [Plantillas](../governance/sdlc/04-plantillas-artefactos/)
+**Evidencia:** [Plantillas](governance/sdlc/04-plantillas-artefactos/README.md)
 </details>
 
 <details>
@@ -619,7 +619,7 @@ feature/* -> develop (squash) -> qa -> uat -> main (--no-ff)
 
 **Respuesta:** Crea un ADR que justifique la excepcion con: contexto, opciones evaluadas, decision, y consecuencias. Registralo en DECISIONS.md y sometelo al Architecture Board.
 
-**Evidencia:** [Plantilla ADR](../governance/sdlc/04-plantillas-artefactos/plantilla-adr.es.md), [DECISIONS.md](../../../DECISIONS.md)
+**Evidencia:** [Plantilla ADR](./governance/sdlc/04-plantillas-artefactos/plantilla-adr.es.md), [DECISIONS.md](../DECISIONS.md)
 </details>
 
 <details>
@@ -627,7 +627,7 @@ feature/* -> develop (squash) -> qa -> uat -> main (--no-ff)
 
 **Respuesta:** El repositorio esta en constante evolucion. Las actualizaciones mayores pasan por el Architecture Board (reunion semanal). Los cambios menores se aprueban en < 24h.
 
-**Evidencia:** [Contribucion](../contribucion/README.md)
+**Evidencia:** [Contribucion](./contribucion/README.md)
 </details>
 
 </details>
@@ -638,12 +638,12 @@ feature/* -> develop (squash) -> qa -> uat -> main (--no-ff)
 
 | Documento | Proposto |
 |---|---|
-| [README Principal](../../../README.md) | Tabla de artefactos obligatorios |
-| [Gates de Calidad](../governance/sdlc/gates-calidad.es.md) | Criterios por gate |
-| [Glosario](../governance/glosario.md) | 550+ terminos controlados |
-| [Matriz ADR](../architecture/adrs/matriz-adr.es.md) | Todas las decisiones |
-| [Getting Started](../getting-started/README.md) | Rutas por rol |
-| [Contribucion](../contribucion/README.md) | Como contribuir |
+| [README Principal](../../README.md) | Tabla de artefactos obligatorios |
+| [Gates de Calidad](./governance/sdlc/gates-calidad.es.md) | Criterios por gate |
+| [Glosario](./governance/glosario.md) | 550+ terminos controlados |
+| [Matriz ADR](./architecture/adrs/matriz-adr.es.md) | Todas las decisiones |
+| [Getting Started](./getting-started/README.md) | Rutas por rol |
+| [Contribucion](./contribucion/README.md) | Como contribuir |
 
 ---
 

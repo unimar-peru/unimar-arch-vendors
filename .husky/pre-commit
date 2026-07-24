@@ -1,0 +1,98 @@
+#!/usr/bin/env sh
+# Puerta de calidad Git del satelite: los validadores del estandar Unimar.
+#
+# El estandar NO vive en una copia local (.harness/): lo provee el plugin
+# unimar-core de Claude Code. Este hook localiza los validadores en el cache de
+# plugins, en la version instalada, y los ejecuta contra el cwd. En una maquina
+# corporativa la version la fija managed settings (enabledPlugins).
+#
+# ACTIVACION -- una sola vez por clon:
+#   git config core.hooksPath .husky
+#
+# El hook local NO es la garantia: se evade con --no-verify, y sin
+# core.hooksPath ni siquiera existe. El limite de merge inevadible es el CI.
+#
+# Todos los pasos BLOQUEAN el commit si fallan (set -e), salvo donde se indique.
+
+set -e
+
+# Localizar el estandar (plugin unimar-core), ultima version instalada.
+UNIMAR_CORE=$(ls -d "$HOME"/.claude/plugins/cache/unimar/unimar-core/*/ 2>/dev/null | sort -V | tail -1)
+if [ -z "$UNIMAR_CORE" ]; then
+  echo "[husky] El estandar Unimar no esta instalado (plugin unimar-core)." >&2
+  echo "        Ejecuta: claude plugin marketplace add unimar-peru/unimar-marketplace" >&2
+  echo "                 claude plugin enable unimar-core@unimar" >&2
+  exit 1
+fi
+echo "[husky] estandar: ${UNIMAR_CORE}"
+
+# 1. Madurez y gaps (S-19, S-20). --fix reordena y recalcula; se vuelven a poner
+#    en el indice para que el commit los recoja ya normalizados. El orden
+#    importa: validate-gaps deriva las dimensiones de la columna Dim. de
+#    MADUREZ.md, asi que va despues.
+node "${UNIMAR_CORE}/scripts/validate-madurez.mjs" --fix
+node "${UNIMAR_CORE}/scripts/validate-gaps.mjs" --fix
+git add MADUREZ.md GAPS.md
+
+# 2. Cada casilla de madurez < 5 tiene su gap (S-19, S-20).
+node "${UNIMAR_CORE}/scripts/validate-correspondencia.mjs"
+
+# 3. Encoding, texto mutilado, enlaces y trazabilidad (S-09, S-10, SD-06).
+node "${UNIMAR_CORE}/scripts/validate-docs.mjs"
+
+# 4. Ninguna referencia G-NNN o ADR-NNNN cuelga (SD-02). Mira el historial, asi
+#    que no ve el commit que se esta creando: esa pasada la da el CI.
+node "${UNIMAR_CORE}/scripts/validate-trazabilidad.mjs"
+
+# 5. Estructura de los artefactos SDLC (S-01..S-05, S-13). AVISO, no puerta:
+#    este repo es un paquete documental (plantillas y ejemplos con placeholders),
+#    no un satelite de producto con artefactos reales. El validador los juzga
+#    como artefactos y produce falsos positivos -- el propio plugin unimar-core
+#    falla igual sobre sus plantillas. Ver DECISIONS.md D-003. No bloquea.
+node "${UNIMAR_CORE}/scripts/validate-satellite-base.mjs" || true
+
+# 6. Las reglas de herencia estan todas triajadas en DECISIONS.md (S-15, S-16).
+node "${UNIMAR_CORE}/scripts/validate-triaje.mjs"
+
+# 6.b Estructura del satelite (S-16, S-18): CONTRIBUTING.md con el bucle de
+#     retorno, raiz de fuente declarada, esqueleto de la taxonomia, ausencia de
+#     .harness/, y ningun marcador de plantilla sin sustituir. Un registro sin
+#     llenar no debe pasar por lleno.
+node "${UNIMAR_CORE}/scripts/validate-estructura-satelite.mjs"
+
+# 7. Criterios de aceptacion verificables (SD-04). Es un AVISO: la heuristica
+#    tiene falsos positivos, y un gate ruidoso que bloquea es peor que no
+#    tenerlo (SD-06). Sin --strict, sale 0 aunque encuentre candidatos.
+node "${UNIMAR_CORE}/scripts/validate-criterios.mjs"
+
+# 7.b Gates locales de calidad y seguridad (S-23, ADR-0106). AVISO: comprueba
+#     que el satelite cablea sus gates locales (secretos, deps, coverage,
+#     commitlint) segun su stack. Sin --strict no bloquea; local-first no
+#     depende de la cuota ni la disponibilidad del CI del proveedor.
+node "${UNIMAR_CORE}/scripts/validate-gates-locales.mjs"
+
+# 7.f Modelo Suite -> Sistema -> PRD (S-?? , ADR-0120). AVISO: si el satelite
+#     declara suite.yaml/sistema.yaml, comprueba su coherencia y que las siglas
+#     sean Ratificada. No aplica si no es una suite multi-sistema.
+node "${UNIMAR_CORE}/scripts/validate-suite.mjs"
+
+# 8. Lint de Markdown sobre los archivos en stage.
+#    lint-staged aborta con "No valid configuration found" si el satelite no
+#    trae .lintstagedrc.json. Se comprueba antes de invocarlo: un hook que muere
+#    por su propia configuracion ausente bloquea el commit sin decir nada util.
+if ! command -v npx >/dev/null 2>&1; then
+  echo "[husky] npx no disponible: se omite el lint de Markdown." >&2
+elif [ -f .lintstagedrc.json ]; then
+  npx --yes lint-staged@15
+else
+  echo "[husky] Sin .lintstagedrc.json: se omite el lint de Markdown." >&2
+  echo "        Materializalo desde templates/ del plugin." >&2
+fi
+
+# 9. Build y pruebas del runtime del satelite (gate F3/F4 del SDLC).
+#    unimar-arch-vendors es un paquete DOCUMENTAL: no hay build de codigo. La
+#    "prueba" es la validacion de la documentacion que distribuye a proveedores.
+# Documentación: sin build de código
+node "${UNIMAR_CORE}/scripts/validate-docs.mjs"
+
+echo "[husky] pre-commit: madurez, gaps, correspondencia, docs, trazabilidad, SDLC, triaje, estructura y criterios OK (estandar via plugin)."

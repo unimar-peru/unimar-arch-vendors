@@ -1,0 +1,3 @@
+{
+  "*.md": "npx --yes markdownlint-cli@0.39.0 --config .markdownlint.json --ignore .claude --ignore _bmad --ignore _bmad-output --ignore .estandar"
+}

@@ -22,9 +22,9 @@
 | Campo | Descripción |
 |---|---|
 | **Nombre** | `<nombre del rol>` |
-| **Tipo** | Usuario Interno | Usuario Externo | Sistema | Bot |
-| **Descripcin** | `<breve descripción del actor>` |
-| **Canal** | Web | Mobile | API | Chatbot |
+| **Tipo** | Usuario Interno · Usuario Externo · Sistema · Bot |
+| **Descripción** | `<breve descripción del actor>` |
+| **Canal** | Web · Mobile · API · Chatbot |
 
 #### 2.2 Actores Secundarios
 
@@ -32,7 +32,7 @@
 |---|---|---|
 | `<nombre>` | `<cómo participa>` | `<qué necesita del sistema>` |
 
-#### 2.3 Diagrama de Interaccin
+#### 2.3 Diagrama de Interacción
 
 ```mermaid
 sequenceDiagram
@@ -48,19 +48,21 @@ sequenceDiagram
 
 #### 2.4 Interacciones del Actor Principal
 
-| # | Interaccin | Pantalla/Vista | Resultado esperado |
+| # | Interacción | Pantalla/Vista | Resultado esperado |
 |---|---|---|---|
 | 1 | `<accin>` | `<pantalla>` | `<resultado>` |
 | 2 | `<accin>` | `<pantalla>` | `<resultado>` |
 
-### 3. Criterios de Aceptacin (BDD/Gherkin)
+### 3. Criterios de Aceptación (BDD/Gherkin)
 
 **Escenario 1:** [Nombre del escenario]
+
 - **Dado que** [contexto inicial]
 - **Cuando** [acción ejecutada]
 - **Entonces** [resultado esperado]
 
 **Escenario 2:** [Nombre del escenario alternativo]
+
 - **Dado que** [contexto inicial]
 - **Cuando** [acción ejecutada]
 - **Entonces** [resultado esperado]
@@ -96,7 +98,7 @@ sequenceDiagram
 
 | ADR | Tema | Relevancia para esta historia |
 |---|---|---|
-| ADR-XXXX | `<tema>` | `<por qué aplica>` |
+| [ADR-XXXX](../../architecture/adrs/...) | `<tema>` | `<por qué aplica>` |
 
 #### 4.5 Notas Técnicas Adicionales
 

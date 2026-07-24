@@ -25,9 +25,9 @@ Este documento está estructurado en **Épicas** que agrupan **Historias Funcion
 
 | Elemento | Descripción |
 |---|---|
-| [Épica 1: Nombre](#épica-1-nombre) | Resumen de la épica |
-| [Épica 2: Nombre](#épica-2-nombre) | Resumen de la épica |
-| [Trazabilidad General](#trazabilidad-general) | Vista completa de dependencias |
+| [Épica 1: Nombre](#épica-1-nombre-de-la-épica) | Resumen de la épica |
+| [Épica 2: Nombre](#épica-2-nombre-de-la-épica) | Resumen de la épica |
+| [Trazabilidad General](#5-trazabilidad-general) | Vista completa de dependencias |
 
 ---
 
@@ -82,7 +82,7 @@ flowchart TB
 |---|---|
 | **Título** | `<Título descriptivo de la épica>` |
 | **Objetivo** | `<Frase que describa el valor de negocio de esta épica>` |
-| **Prioridad** | Crítica | Alta | Media | Baja |
+| **Prioridad** | Crítica · Alta · Media · Baja |
 | **Responsable de Producto** | `<Nombre>` |
 | **Historias Asociadas** | HU-001, HU-002 |
 
@@ -109,8 +109,8 @@ flowchart TD
 
 | ID | Título | Prioridad | Estado |
 |---|---|---|---|
-| [HU-001](#hu-001-nombre) | `<Título de HU-001>` | Alta | `Borrador` |
-| [HU-002](#hu-002-nombre) | `<Título de HU-002>` | Media | `Borrador` |
+| [HU-001](#hu-001-título-de-la-historia) | `<Título de HU-001>` | Alta | `Borrador` |
+| [HU-002](#hu-002-título-de-la-historia) | `<Título de HU-002>` | Media | `Borrador` |
 
 ---
 
@@ -122,7 +122,7 @@ flowchart TD
 |---|---|
 | **Título** | `<Título descriptivo de la épica>` |
 | **Objetivo** | `<Frase que describa el valor de negocio de esta épica>` |
-| **Prioridad** | Crítica | Alta | Media | Baja |
+| **Prioridad** | Crítica · Alta · Media · Baja |
 | **Responsable de Producto** | `<Nombre>` |
 | **Historias Asociadas** | HU-003, HU-004 |
 
@@ -149,8 +149,6 @@ flowchart TD
 
 | ID | Título | Prioridad | Estado |
 |---|---|---|---|
-| [HU-003](#hu-003-nombre) | `<Título de HU-003>` | Alta | `Borrador` |
-| [HU-004](#hu-004-nombre) | `<Título de HU-004>` | Media | `Borrador` |
 
 ---
 
@@ -161,7 +159,7 @@ flowchart TD
 ### HU-001: `<Título de la Historia>`
 
 **Identificador:** `FS-<Producto>-001`
-**Épica Padre:** [EP-<Producto>-001](#épica-1-nombre)
+**Épica Padre:** [EP-<Producto>-001](#épica-1-nombre-de-la-épica)
 **[Volver a tabla de navegación](#tabla-de-navegación)**
 
 #### 4.1 Metadatos
@@ -171,7 +169,7 @@ flowchart TD
 | **Título** | `<Frase nominal que describa el valor, no la implementación>` |
 | **PRD Origen** | `PRD-<Producto>-<NNN>` § `<sección>` |
 | **Versión** | `<SemVer>` |
-| **Estado** | Borrador | En Revisión | Aprobada | En Construcción | Cerrada |
+| **Estado** | Borrador · En Revisión · Aprobada · En Construcción · Cerrada |
 | **Autor** | `<Rol y nombre>` |
 | **Historia(s) Padre(s)** | `EP-<Producto>-001` |
 
@@ -261,10 +259,10 @@ Escenario: <nombre del escenario de error>
 ### HU-002: `<Título de la Historia>`
 
 **Identificador:** `FS-<Producto>-002`
-**Épica Padre:** [EP-<Producto>-001](#épica-1-nombre)
+**Épica Padre:** [EP-<Producto>-001](#épica-1-nombre-de-la-épica)
 **[Volver a tabla de navegación](#tabla-de-navegación)**
 
-*(Repetir estructura de HU-001)*
+> *(Repetir estructura de HU-001)*
 
 ---
 
