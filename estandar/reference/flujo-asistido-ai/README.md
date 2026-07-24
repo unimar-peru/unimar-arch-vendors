@@ -37,7 +37,7 @@ El modelo de trazabilidad puede ejecutarse en dos modos:
 
 1. Abre el repositorio en VS Code con OpenCode.
 2. Ejecuta `/bmad-help` — el agente analizará tu fase actual y recomendará el siguiente skill.
-3. Sigue la secuencia de la [sección 3](#3-secuencia-paso-a-paso) invocando cada skill en orden.
+3. Sigue la secuencia de la [Visión General del Flujo](#2-visión-general-del-flujo) invocando cada skill en orden.
 
 > **Documentación local en español:** [`docs/README.md`](../../docs/README.md) — guía completa de artefactos BMAD, configuración y lista de skills instalados.
 >
