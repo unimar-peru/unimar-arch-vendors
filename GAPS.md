@@ -1,7 +1,7 @@
 # GAPS.md — unimar-arch-vendors
 
 > **Estado:** Activo | **Propietario:** Unimar S.A. | **Regla:** S-20
-> **Pendientes:** 10 · **En curso:** 0 · **Cerrados:** 0 · **Total:** 10
+> **Pendientes:** 11 · **En curso:** 0 · **Cerrados:** 0 · **Total:** 11
 
 Registro único de gaps y oportunidades de este satélite. Los contadores de arriba los recalcula el validador; no se editan a mano.
 
@@ -28,7 +28,6 @@ Los **pendientes van siempre primero**. Después: criticidad, luego complejidad 
 
 | ID | Gap u Oportunidad | Criticidad | Complejidad | Estado | Dimensión | Evidencia | Apertura |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| G-011 | El corpus documental del vendor arrastra deuda de markdownlint pre-existente. El hook lintea solo archivos staged, así que un cambio transversal (p. ej. el bump a v1.0.0) la aflora y bloquea el commit. Requiere una normalización dedicada (auto-`--fix` de MD004/MD049/MD022/MD032 y decisión de diseño para los badges `[...]()` con enlace vacío). | Media | Media | Pendiente | Arq-Mantenibilidad | El commit de versión v1.0.0 (`db6337c`) tocó 89 archivos; 60 arrastran ~908 violaciones en `main` ajenas al cambio (ediciones de un solo token). Desglose: ~813 auto-corregibles (MD004×570, MD049×120, MD022×54, MD032×23…) y ~78 manuales (MD042×8 badges `[...]()` deliberados, MD005×21, MD029×17, MD036×9…). Ese commit se hizo con `--no-verify`. | 2026-07-24 |
 | G-001 | Documentar los controles de seguridad local-first (ADR-0106) como guía exigible al proveedor de software. | Media | Media | Pendiente | Arq-Seguridad | — | 2026-07-24 |
 | G-002 | Incluir una matriz de criterios de rendimiento (NFR) exigibles al proveedor en sus entregables. | Media | Media | Pendiente | Arq-Rendimiento | — | 2026-07-24 |
 | G-003 | Documentar los requisitos de resiliencia y recuperación ante desastres (ADR-0011/0013) para el proveedor. | Media | Media | Pendiente | Arq-Confiabilidad | — | 2026-07-24 |
@@ -39,6 +38,7 @@ Los **pendientes van siempre primero**. Después: criticidad, luego complejidad 
 | G-008 | Documentar los gates de construcción y CI/CD (ADR-0106) exigibles en la fase de construcción del proveedor. | Media | Media | Pendiente | SDLC-Construccion | — | 2026-07-24 |
 | G-009 | Definir los criterios de aceptación y la Definition of Release (ADR-0105) para la validación del entregable. | Media | Media | Pendiente | SDLC-Validacion | — | 2026-07-24 |
 | G-010 | Documentar el proceso de entrega, cotización y seguimiento del proyecto con el proveedor. | Media | Media | Pendiente | SDLC-Entrega | — | 2026-07-24 |
+| G-011 | El corpus documental del vendor arrastra deuda de markdownlint pre-existente. El hook lintea solo archivos staged, así que un cambio transversal (p. ej. el bump a v1.0.0) la aflora y bloquea el commit. Requiere una normalización dedicada (auto-`--fix` de MD004/MD049/MD022/MD032 y decisión de diseño para los badges `[...]()` con enlace vacío). | Media | Media | Pendiente | Arq-Mantenibilidad | El commit de versión v1.0.0 (`db6337c`) tocó 89 archivos; 60 arrastran ~908 violaciones en `main` ajenas al cambio (ediciones de un solo token). Desglose: ~813 auto-corregibles (MD004×570, MD049×120, MD022×54, MD032×23…) y ~78 manuales (MD042×8 badges `[...]()` deliberados, MD005×21, MD029×17, MD036×9…). Ese commit se hizo con `--no-verify`. | 2026-07-24 |
 
 ---
 
