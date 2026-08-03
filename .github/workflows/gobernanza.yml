@@ -22,7 +22,7 @@ env:
   # de comportamiento porque alguien publique en el marketplace: subir de version
   # es un commit aqui, revisable como cualquier otro. Apuntar a `main` renuncia a
   # builds reproducibles.
-  STANDARD_REF: unimar-core-1.34.0
+  STANDARD_REF: unimar-core-3.7.1
 
 jobs:
   gobernanza:
