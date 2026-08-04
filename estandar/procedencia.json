@@ -1,0 +1,46 @@
+{
+  "$comentario": [
+    "PROCEDENCIA del paquete que este repositorio publica a proveedores externos.",
+    "",
+    "Existe porque hasta hoy nada decia de que version del estandar deriva este",
+    "material. Un proveedor no podia saber si lo que leia era lo que Unimar exige,",
+    "y Unimar no podia demostrar que le exigio. Eso es superficie contractual, no",
+    "desorden documental.",
+    "",
+    "Lo que NO es este archivo: una promesa de que el paquete sea copia del",
+    "estandar. Medido, no lo es -- y por diseno, ver `PROCEDENCIA.md`."
+  ],
+  "paquete": {
+    "version": "1.0.0",
+    "repositorio": "unimar-peru/unimar-arch-vendors",
+    "visibilidad": "publico",
+    "commit": "80ca4ca",
+    "naturaleza": "obra derivada curada, NO espejo del estandar"
+  },
+  "fuente": {
+    "repositorio": "unimar-peru/unimar_arch",
+    "visibilidad": "privado",
+    "rama": "develop",
+    "commit": "1102323",
+    "comparado_el": "2026-08-03"
+  },
+  "comparacion": {
+    "$como_se_midio": "Byte a byte, fichero a fichero, contra la fuente en el commit declarado.",
+    "ficheros_en_el_paquete": 330,
+    "identicos_a_la_fuente": 24,
+    "difieren_de_la_fuente": 300,
+    "solo_en_el_paquete": 6,
+    "solo_en_el_paquete_detalle": [
+      "reference/PREGUNTAS-RESPUESTAS.md",
+      "reference/architecture/adrs/core/0030-api-gateway-ingress-vs-nestjs.es.md",
+      "reference/assets/unimar-arch-model.png",
+      "reference/governance/gaps/.gitkeep",
+      "reference/governance/standards/taxonomia-repositorio.md",
+      "reference/navigation/DOCUMENTATION_VERSIONS.md"
+    ],
+    "$sobre_la_divergencia": "300 de 330 ficheros difieren. El paquete NO corresponde a ninguna version del estandar: se curo y evoluciono aparte. Declararlo como copia de una version seria falso.",
+    "$sobre_lo_ausente": "La fuente tiene ~1481 documentos bajo `reference/` y `docs/` que este paquete NO incluye. No es un olvido: la fuente es PRIVADA y este repositorio es PUBLICO. Sincronizar el arbol entero publicaria material interno. La curaduria es la frontera de confidencialidad.",
+    "huella_del_paquete_sha256": "fc9115b3f31df27e7e5f5ffc05bb488c35d76cb602f93857a9a190db905d9ba9"
+  },
+  "$pendiente": "Esta declaracion es un corte en el tiempo, no un control vivo: nada comprueba que siga siendo cierta. Comprobarlo exige acceso a la fuente privada, que este repositorio no tiene. Lo que si detecta la huella `sha256` es una edicion local del paquete despues de la fecha declarada."
+}

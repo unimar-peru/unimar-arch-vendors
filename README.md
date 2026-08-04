@@ -1,12 +1,12 @@
-<div align="center">
-
 # Estándar para Proveedores de Software
+
+<div align="center">
 
 > **Documentación del Ciclo de Vida de Desarrollo de Software (SDLC) aplicable a proveedores externos**
 
-[![Unimar](https://img.shields.io/badge/Unimar_Arch-003c6b?style=for-the-badge)]()
-[![Estado](https://img.shields.io/badge/Estado-Activo-27ae60?style=for-the-badge)]()
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-1.0.0-042139?style=for-the-badge)]()
+![Unimar](https://img.shields.io/badge/Unimar_Arch-003c6b?style=for-the-badge)
+![Estado](https://img.shields.io/badge/Estado-Activo-27ae60?style=for-the-badge)
+![Versión](https://img.shields.io/badge/Versi%C3%B3n-1.0.0-042139?style=for-the-badge)
 
 <br/>
 
@@ -16,7 +16,14 @@
 
 ---
 
+> **¿De cuándo es este material?** Lo dice [`estandar/PROCEDENCIA.md`](./estandar/PROCEDENCIA.md):
+> qué versión es el paquete, cuándo se comparó contra la fuente interna de Unimar, y qué contiene
+> y qué no. Consúltalo antes de un hito contractual.
+
+---
+
 ## Obligatorios Mínimos
+
 | Artefacto                       | Descripción                                                                                                            | Fase   | URL                                                                                                                                                                                                                                                                                                            | Descubrimiento   | Diseño   | Construcción   | Calidad   | Despliegue   |
 |:--------------------------------|:-----------------------------------------------------------------------------------------------------------------------|:-------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-----------------|:---------|:---------------|:----------|:-------------|
 | PRD                             | Definición de producto                                                                                                 | F1     | [Enlace](estandar/reference/governance/sdlc/04-plantillas-artefactos/plantilla-prd.es.md)                                         | ✓                |          |                |           |              |
@@ -32,6 +39,7 @@
 | Notas de Lanzamiento (RN)       | Reporte de plan de despliegue                                                                                          | F5     | [Enlace](estandar/reference/governance/sdlc/04-plantillas-artefactos/plantilla-notas-lanzamiento.es.md)             |                  |          |                |           | ✓            |
 
 ## Transversales
+
 | Documento                                    | Descripción                                              | URL                                                                                                                                                                                                                                                                                                  |
 |:---------------------------------------------|:---------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Transversal: Manifiesto de Ingeniería        | Documneto de principios arquitectónicos que sigue Unimar | [Enlace](estandar/reference/governance/standards/engineering/manifiesto-ingenieria.md)                                     |
@@ -47,6 +55,7 @@
 | Transversal: Estrategia de documentación     | Practicas dictadas para el estandar de documentación     | [Enlace](estandar/reference/governance/sdlc/03-documentacion/mejores-practicas-documentacion-sdlc.es.md) |
 
 ## hubs
+>
 > **Meta:** Centralizar las disciplinas que aplican en todas las fases del SDLC.
 > **Objetivo:** Un solo punto de entrada por área transversal, sin enlaces dispersos a documentos individuales. Esta sección es la referencia detallada de los dominios transversales y el punto de consulta general del estándar.
 >
