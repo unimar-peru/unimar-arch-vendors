@@ -1,7 +1,7 @@
 # GAPS.md — unimar-arch-vendors
 
 > **Estado:** Activo | **Propietario:** Unimar S.A. | **Regla:** S-20
-> **Pendientes:** 10 · **En curso:** 0 · **Cerrados:** 1 · **Total:** 11
+> **Pendientes:** 11 · **En curso:** 0 · **Cerrados:** 1 · **Total:** 12
 
 Registro único de gaps y oportunidades de este satélite. Los contadores de arriba los recalcula el validador; no se editan a mano.
 
@@ -28,6 +28,7 @@ Los **pendientes van siempre primero**. Después: criticidad, luego complejidad 
 
 | ID | Gap u Oportunidad | Criticidad | Complejidad | Estado | Dimensión | Evidencia | Apertura |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| G-012 | **El lint de Markdown pasa a aviso con 4577 violaciones dentro, y eso es deuda, no una exencion.** El paso nunca se habia ejecutado: el job moria antes, en «Obtener el estandar», desde que el token dejo de alcanzar el marketplace privado. Al corregir esa causa aflora lo que tapaba: **4577 violaciones en 258 archivos**, todas bajo `estandar/`, que es la documentacion que se entrega al proveedor. `markdownlint --fix` resuelve **3697 (81%)** de forma mecanica -- 2526 son `MD004/ul-style`, guiones donde la configuracion pide asteriscos-- y dejan **880** que exigen mano: espaciado alrededor de listas y titulos (`MD032`, `MD022`), lenguaje en los bloques de codigo (`MD040`), enfasis usado como titulo (`MD036`) y titulos duplicados (`MD025`, `MD024`). Se degrada a `continue-on-error: true` para no bloquear con una deuda heredada: un rojo permanente que nadie puede resolver en su PR se acaba ignorando, y entonces el gate no vale nada. **Cerrar este gap es ejecutar `--fix`, saldar las 880 restantes y devolver el paso a puerta bloqueante**; mientras la linea `continue-on-error` siga en el workflow, el gate no existe. | Alta | Media | Pendiente | SDLC-Validacion | Medido el 2026-08-05 con `markdownlint-cli@0.39.0` y la configuracion del repositorio: 4577 violaciones; tras `--fix` en una copia de trabajo, 880 restantes en 258 archivos tocados. Ninguna en `.estandar/`. | 2026-08-05 |
 | G-001 | Documentar los controles de seguridad local-first (ADR-0106) como guía exigible al proveedor de software. | Media | Media | Pendiente | Arq-Seguridad | — | 2026-07-24 |
 | G-002 | Incluir una matriz de criterios de rendimiento (NFR) exigibles al proveedor en sus entregables. | Media | Media | Pendiente | Arq-Rendimiento | — | 2026-07-24 |
 | G-003 | Documentar los requisitos de resiliencia y recuperación ante desastres (ADR-0011/0013) para el proveedor. | Media | Media | Pendiente | Arq-Confiabilidad | — | 2026-07-24 |
