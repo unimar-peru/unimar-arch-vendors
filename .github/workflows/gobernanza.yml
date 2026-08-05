@@ -24,6 +24,11 @@ env:
   # builds reproducibles.
   STANDARD_REF: unimar-core-3.8.2
 
+# Identificador publico de la GitHub App del CI. No es secreto: va aqui para
+# que se vea en el diff. Lo secreto es solo la clave privada.
+env:
+  UNIMAR_CI_CLIENT_ID: Iv23li6S5GfyBHJKzHGZ
+
 jobs:
   gobernanza:
     name: Validadores del estandar
@@ -42,12 +47,28 @@ jobs:
           # Node 22 como minimo: los validadores usan `glob` de node:fs/promises.
           node-version: '24'
 
+      # Token efimero de la GitHub App `unimar-ci`, acotado al repositorio que
+      # se va a leer. Sustituye al token personal: una App no caduca ni pertenece
+      # a una persona. Inventario en `unimar_arch/.harness/secretos.json`.
+      #
+      # Sin `|| github.token` de reserva, a proposito: ese token no alcanza otro
+      # repositorio privado, asi que la reserva no arregla nada y convierte un
+      # secreto ausente en un fallo tardio y confuso.
+      - name: Token efimero para leer el estandar
+        id: app-token-1
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ env.UNIMAR_CI_CLIENT_ID }}
+          private-key: ${{ secrets.UNIMAR_CI_APP_KEY }}
+          owner: unimar-peru
+          repositories: unimar-marketplace
+
       - name: Obtener el estandar
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           repository: unimar-peru/unimar-marketplace
           ref: ${{ env.STANDARD_REF }}
-          token: ${{ secrets.STANDARD_TOKEN || github.token }}
+          token: ${{ steps.app-token-1.outputs.token }}
           path: .estandar
 
       - name: Ruta de los validadores
@@ -126,12 +147,28 @@ jobs:
         with:
           node-version: '24'
 
+      # Token efimero de la GitHub App `unimar-ci`, acotado al repositorio que
+      # se va a leer. Sustituye al token personal: una App no caduca ni pertenece
+      # a una persona. Inventario en `unimar_arch/.harness/secretos.json`.
+      #
+      # Sin `|| github.token` de reserva, a proposito: ese token no alcanza otro
+      # repositorio privado, asi que la reserva no arregla nada y convierte un
+      # secreto ausente en un fallo tardio y confuso.
+      - name: Token efimero para leer el estandar
+        id: app-token-2
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ env.UNIMAR_CI_CLIENT_ID }}
+          private-key: ${{ secrets.UNIMAR_CI_APP_KEY }}
+          owner: unimar-peru
+          repositories: unimar-marketplace
+
       - name: Obtener el estandar
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           repository: unimar-peru/unimar-marketplace
           ref: ${{ env.STANDARD_REF }}
-          token: ${{ secrets.STANDARD_TOKEN || github.token }}
+          token: ${{ steps.app-token-2.outputs.token }}
           path: .estandar
 
       - name: Ruta de los validadores
