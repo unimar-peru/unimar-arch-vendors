@@ -1,0 +1,53 @@
+COPIA VERBATIM DE LOS VALIDADORES DEL ESTANDAR UNIMAR
+=====================================================
+
+Origen   : unimar-peru/unimar-marketplace
+Ruta     : plugins/unimar-core/{scripts,rules}
+Etiqueta : unimar-core-3.8.2
+Commit   : bf3c9d200eaa782df7169e1466f015e314247fc6
+
+POR QUE ESTA COMMITEADA Y NO SE OBTIENE EN EL CI
+------------------------------------------------
+S-16 dice que el estandar se provee, no se copia, y el resto de satelites lo
+cumple: su CI hace checkout de unimar-marketplace con un token de la GitHub App
+unimar-ci. Aqui NO se puede.
+
+unimar-arch-vendors es el UNICO repositorio PUBLICO de la organizacion, y los
+secretos de organizacion tienen visibilidad "private": un repositorio publico no
+los recibe. Antes de esto el workflow usaba
+
+    token: ${{ secrets.STANDARD_TOKEN || github.token }}
+
+donde STANDARD_TOKEN no existe en ninguna parte, de modo que caia siempre al
+github.token, acotado a este repositorio y sin alcance sobre el marketplace
+privado. El CI llevaba semanas fallando con "Repository not found".
+
+La alternativa era exponer la clave privada de la App a un repositorio publico,
+donde cualquiera con permiso de escritura podria exfiltrarla editando un
+workflow. Se descarto por eso. Esta copia es la divergencia consciente que evita
+ese riesgo.
+
+La ruta es .estandar/ a proposito: lib/exclusiones.mjs del propio estandar ya
+declara ese basename como "no autoria", de modo que ningun walker lo valida como
+si fuera contenido de este repositorio.
+
+QUE SE COPIA Y QUE NO
+---------------------
+Solo lo que el CI ejecuta: los 11 validadores que invoca el workflow, su lib/, y
+rules/ (validate-triaje.mjs resuelve ../rules/satellite-repo-rules.md desde su
+propia ubicacion). NO se copian agents/, templates/, taxonomy/ ni reference/.
+
+COMO ACTUALIZARLA
+-----------------
+No se edita a mano. Se regenera desde la etiqueta del marketplace y se actualiza
+la cabecera de este archivo en el mismo commit: sin eso la copia deja de ser
+trazable a su origen.
+
+    TAG=unimar-core-X.Y.Z
+    gh api "repos/unimar-peru/unimar-marketplace/git/trees/$TAG?recursive=1" \
+      --jq '.tree[] | select(.path|test("^plugins/unimar-core/(scripts|rules)/"))
+            | select(.type=="blob") | "\(.path)\t\(.sha)"'
+
+    # y por cada blob:
+    gh api "repos/unimar-peru/unimar-marketplace/git/blobs/$SHA" --jq .content \
+      | base64 -d > .estandar/plugins/unimar-core/$RUTA_RELATIVA

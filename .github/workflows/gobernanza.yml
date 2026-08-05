@@ -5,8 +5,20 @@ name: Gobernanza
 # servidor, donde nadie los puede saltar. Es el limite de merge inevadible.
 #
 # El estandar Unimar no vive en una copia local (.harness/): lo provee el plugin
-# unimar-core. El runner no tiene Claude Code instalado, asi que obtiene los
-# validadores haciendo checkout del repositorio del marketplace.
+# unimar-core. En los demas satelites el runner lo obtiene haciendo checkout del
+# marketplace con un token de la GitHub App unimar-ci.
+#
+# AQUI NO. unimar-arch-vendors es el unico repositorio PUBLICO de la
+# organizacion, y los secretos de organizacion tienen visibilidad "private": un
+# repositorio publico no los recibe. El checkout caia al github.token, que no
+# alcanza el marketplace privado, y el CI fallaba con "Repository not found".
+# Exponer la clave privada de la App a un repo publico se descarto: cualquiera
+# con escritura podria exfiltrarla editando un workflow.
+#
+# Los validadores estan por tanto COMMITEADOS en .estandar/, fijados a una
+# etiqueta. Ver .estandar/PROCEDENCIA.txt para el origen exacto y como
+# regenerarlos. Es una divergencia consciente de S-16, registrada en
+# DECISIONS.md y en GAPS.md.
 
 on:
   push:
@@ -18,11 +30,10 @@ permissions:
   contents: read
 
 env:
-  # Version del estandar, FIJADA A UN TAG. El CI de este satelite no debe cambiar
-  # de comportamiento porque alguien publique en el marketplace: subir de version
-  # es un commit aqui, revisable como cualquier otro. Apuntar a `main` renuncia a
-  # builds reproducibles.
-  STANDARD_REF: unimar-core-3.8.2
+  # Ruta de los validadores commiteados. La version que representan esta en
+  # .estandar/PROCEDENCIA.txt; subirla es un commit aqui, revisable como
+  # cualquier otro, igual que lo era mover STANDARD_REF.
+  UNIMAR_CORE_PATH: .estandar/plugins/unimar-core
 
 jobs:
   gobernanza:
@@ -42,16 +53,8 @@ jobs:
           # Node 22 como minimo: los validadores usan `glob` de node:fs/promises.
           node-version: '24'
 
-      - name: Obtener el estandar
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-        with:
-          repository: unimar-peru/unimar-marketplace
-          ref: ${{ env.STANDARD_REF }}
-          token: ${{ secrets.STANDARD_TOKEN || github.token }}
-          path: .estandar
-
       - name: Ruta de los validadores
-        run: echo "UNIMAR_CORE=$GITHUB_WORKSPACE/.estandar/plugins/unimar-core" >> "$GITHUB_ENV"
+        run: echo "UNIMAR_CORE=$GITHUB_WORKSPACE/${{ env.UNIMAR_CORE_PATH }}" >> "$GITHUB_ENV"
 
       # Sin --fix: modo verificacion. Falla si MADUREZ.md o GAPS.md no estan
       # normalizados, en vez de arreglarlos en silencio.
@@ -126,16 +129,8 @@ jobs:
         with:
           node-version: '24'
 
-      - name: Obtener el estandar
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-        with:
-          repository: unimar-peru/unimar-marketplace
-          ref: ${{ env.STANDARD_REF }}
-          token: ${{ secrets.STANDARD_TOKEN || github.token }}
-          path: .estandar
-
       - name: Ruta de los validadores
-        run: echo "UNIMAR_CORE=$GITHUB_WORKSPACE/.estandar/plugins/unimar-core" >> "$GITHUB_ENV"
+        run: echo "UNIMAR_CORE=$GITHUB_WORKSPACE/${{ env.UNIMAR_CORE_PATH }}" >> "$GITHUB_ENV"
 
       # Documentación: sin build de código
       - name: Pruebas de documentacion
