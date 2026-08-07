@@ -24,7 +24,7 @@ Un satélite es **vigente** cuando **consume el plugin**: declara `unimar-core` 
 
 ## Modelo de Herencia
 
-El estándar **no se copia en el satélite**: se distribuye como el plugin versionado [`unimar-core`](https://github.com/unimar-peru/unimar-marketplace), y su versión es su identidad. Lo respalda el [ADR-0062](../../reference/architecture/adrs/core/0062-estandar-distribuido-como-plugin-versionado.es.md).
+El estándar **no se copia en el satélite**: se distribuye como el plugin versionado [`unimar-core`](https://github.com/unimar-peru/unimar-marketplace), y su versión es su identidad. Lo respalda el [ADR-0062](../reference/architecture/adrs/core/0062-estandar-distribuido-como-plugin-versionado.es.md).
 
 ```mermaid
 flowchart TD
@@ -60,14 +60,14 @@ Las aristas no son todas iguales, y confundirlas fue durante meses la causa de l
 | **Instalación** | Agentes BMAD | Los genera `bmad-method`. Se hereda la **versión**, no los archivos (S-17). |
 | **Materialización** | `.editorconfig`, `.markdownlint.json`, `GAPS.md`, `MADUREZ.md`, `CONTRIBUTING.md`, el esqueleto de directorios, la raíz de fuente, puertas | Se crean una vez desde las plantillas del plugin, y a partir de ahí el satélite las mantiene. |
 
-> **El empaquetado ya no es manual.** `package-plugin.mjs --sync` genera el plugin desde la fuente según el contrato [`plugin.manifest.json`](../plugin.manifest.json), y `--check` falla en el CI del core si lo publicado diverge. Antes de existir ese gate, el plugin llegó a quedarse cuatro commits atrás y `validate-docs.mjs` **retrocedió** a una versión anterior a su propio arreglo, sin que nada lo detectara.
+> **El empaquetado ya no es manual.** `package-plugin.mjs --sync` genera el plugin desde la fuente según el contrato [`plugin.manifest.json`](https://github.com/unimar-peru/unimar_arch/blob/main/.harness/plugin.manifest.json), y `--check` falla en el CI del core si lo publicado diverge. Antes de existir ese gate, el plugin llegó a quedarse cuatro commits atrás y `validate-docs.mjs` **retrocedió** a una versión anterior a su propio arreglo, sin que nada lo detectara.
 
 ---
 
 ## Inicio Rápido — Crear o actualizar un satélite
 
 > **Meta:** dejar un repositorio hijo conforme a <!--censo:reglas.S.primera-->S-01<!--/censo--> … <!--censo:reglas.S.ultima-->S-25<!--/censo-->, sin copiar el estándar.
-> **Requisitos:** Node.js 24 LTS ([ADR-0067](../../reference/architecture/adrs/core/0067-runtime-node-24-lts.es.md)). **No** hace falta clonar `unimar_arch`.
+> **Requisitos:** Node.js 24 LTS ([ADR-0067](../reference/architecture/adrs/core/0067-runtime-node-24-lts.es.md)). **No** hace falta clonar `unimar_arch`.
 
 ### 1. Instalar el estándar
 
@@ -80,11 +80,24 @@ claude plugin enable unimar-core@unimar
 
 En una máquina corporativa la versión la fija managed settings (`enabledPlugins`), y el satélite la recibe sin instalación manual.
 
-Los validadores viven en el caché del plugin. Para invocarlos desde un script o a mano:
+Los validadores viven en el caché del plugin. Para localizar la copia instalada e invocarlos desde un script o a mano:
 
 ```bash
-UNIMAR_CORE=$(ls -d "$HOME"/.claude/plugins/cache/unimar/unimar-core/*/ | sort -V | tail -1)
+# La copia instalada la declara el cliente en installed_plugins.json: se lee
+# de ahí, no del número mayor del caché, que nunca se recoge (ADR-0169 §2.6).
+UNIMAR_CORE=$(node -e '
+  const registro = process.env.HOME + "/.claude/plugins/installed_plugins.json";
+  let entrada;
+  try { entrada = (require(registro).plugins?.["unimar-core@unimar"] ?? [])[0]; } catch {}
+  if (!entrada?.installPath) {
+    console.error("unimar-core no está instalado; ejecuta: claude plugin enable unimar-core@unimar");
+    process.exit(1);
+  }
+  console.log(entrada.installPath);
+')
 ```
+
+> **Por qué no se elige «la última del caché».** El estándar resolvía esta ruta con `ls` del caché ordenado por versión, y esa heurística **solo dice la verdad si la serie de versiones es monótona**. Los directorios del caché no se recogen nunca —una máquina de referencia conserva veinte, desde `0.1.0`—, así que en cuanto la línea vigente deja de ser la de número mayor ([ADR-0169](../reference/architecture/adrs/core/0169-linea-de-version-en-fase-de-diseno-declarada.es.md) §2.4), el orden elige para siempre un estándar viejo y **nada lo delata**: el gate local juzgaría con una versión y el CI con otra, cada uno coherente consigo mismo. El cliente ya declara qué instaló, como hecho y no como inferencia, en `~/.claude/plugins/installed_plugins.json` (entrada `unimar-core@unimar`, campo `installPath`), y esa lectura es correcta con serie monótona y sin ella (ADR-0169 §2.6). Se usa Node porque es requisito del estándar ([ADR-0067](../reference/architecture/adrs/core/0067-runtime-node-24-lts.es.md)); `jq` no lo es, y por eso no aparece. **Límite declarado:** si el cliente no actualiza su registro, la lectura devuelve lo que el cliente cree — que es justamente lo que el resto del estándar necesita saber. No comprueba que ese directorio corresponda a la etiqueta que fija `STANDARD_REF` en el CI.
 
 ### 2. Materializar los archivos de gobernanza
 
@@ -123,14 +136,14 @@ mensaje ya está publicado y corregirlo exige reescribir historia (SD-02).
 
 ### 2.b Taxonomía, contribución y raíz de fuente (S-18)
 
-La [taxonomía de satélite](../../taxonomy/taxonomia-repositorio-satelite.md) **se referencia, no se copia**. El satélite no mantiene una versión local del documento: materializa el esqueleto que prescribe.
+La [taxonomía de satélite](../taxonomy/taxonomia-repositorio-satelite.md) **se referencia, no se copia**. El satélite no mantiene una versión local del documento: materializa el esqueleto que prescribe.
 
 ```bash
 mkdir -p docs reference/governance/gaps
 mkdir -p src && touch src/.gitkeep      # raíz de fuente por defecto
 ```
 
-`src/` es la raíz de fuente **única y obligatoria en todo arquetipo** ([ADR-0107](../../reference/architecture/adrs/core/0107-src-raiz-de-fuente-unica.es.md)). La raíz del repositorio no aloja código: solo gobernanza documental y configuración. Un monorepo coloca sus `apps/`, `libs/` y `packages/` **bajo `src/`** (`src/apps`, `src/libs`, `src/packages`); el _workspace_ del orquestador (`nx.json`, `package.json`) permanece en la **raíz del repositorio** (una sola raíz de _workspace_, [ADR-0066](../../reference/architecture/adrs/core/0066-alcance-de-nx-en-monorepos-poliglotas.es.md)). Nx opera desde la raíz y descubre los proyectos bajo `src/`. Un satélite sin código ejecutable declara S-18 como `N/A`, con el porqué.
+`src/` es la raíz de fuente **única y obligatoria en todo arquetipo** ([ADR-0107](../reference/architecture/adrs/core/0107-src-raiz-de-fuente-unica.es.md)). La raíz del repositorio no aloja código: solo gobernanza documental y configuración. Un monorepo coloca sus `apps/`, `libs/` y `packages/` **bajo `src/`** (`src/apps`, `src/libs`, `src/packages`); el _workspace_ del orquestador (`nx.json`, `package.json`) permanece en la **raíz del repositorio** (una sola raíz de _workspace_, [ADR-0066](../reference/architecture/adrs/core/0066-alcance-de-nx-en-monorepos-poliglotas.es.md)). Nx opera desde la raíz y descubre los proyectos bajo `src/`. Un satélite sin código ejecutable declara S-18 como `N/A`, con el porqué.
 
 `CONTRIBUTING.md` no es papeleo. Es donde el satélite aprende que **no puede editar el estándar** y cuál es su único camino legítimo para cambiarlo: registrar el hallazgo en `GAPS.md`, consultar `check-upstream.mjs` y proponerlo con `propose-upstream.mjs` como PR a `unimar_arch`. Un satélite sin esa sección tiene la puerta cerrada y ninguna llave.
 
@@ -174,7 +187,7 @@ Para proyectar el radar en una sesión: `node "$UNIMAR_CORE/scripts/validate-mad
 
 ### 4. Instalar los agentes BMAD (S-17)
 
-El satélite **no copia** los agentes: los instala. La versión autoritativa es la declarada en [`_bmad/_config/manifest.yaml`](../../_bmad/_config/manifest.yaml) de `unimar_arch`.
+El satélite **no copia** los agentes: los instala. La versión autoritativa es la declarada en [`_bmad/_config/manifest.yaml`](https://github.com/unimar-peru/unimar_arch/blob/main/_bmad/_config/manifest.yaml) de `unimar_arch`.
 
 ```bash
 npx bmad-method install --action quick-update
@@ -194,17 +207,17 @@ El satélite **no materializa** rulesets ni subagentes: los recibe. El plugin em
 
 El plugin también registra sus propios hooks, fuera del repositorio:
 
-- **`PreToolUse`** → `hook-guard-standard.mjs` **deniega** con razón cualquier escritura bajo `.harness/`, `.claude/agents/` o `.claude/settings.json`. Es _fail-closed_: si no puede evaluar la operación, bloquea. Y es _parent-aware_: en `unimar_arch` — que se reconoce por publicar [`catalog.json`](../catalog.json) — la autoría de `.harness/` sí es legítima.
+- **`PreToolUse`** → `hook-guard-standard.mjs` **deniega** con razón cualquier escritura bajo `.harness/`, `.claude/agents/` o `.claude/settings.json`. Es _fail-closed_: si no puede evaluar la operación, bloquea. Y es _parent-aware_: en `unimar_arch` — que se reconoce por publicar [`catalog.json`](https://github.com/unimar-peru/unimar_arch/blob/main/.harness/catalog.json) — la autoría de `.harness/` sí es legítima.
 
 Con `allowManagedHooksOnly: true` en managed settings, el satélite no puede registrar el hook, quitarlo ni modificarlo. Un guardián al que el vigilado puede despedir no es un guardián.
 
-El catálogo de todo lo disponible en la fuente — reglas, scripts, rulesets — vive en [`catalog.json`](../catalog.json), legible por máquina. `validate-catalog.mjs` comprueba que cada script exista y que cada regla citada esté declarada: **el catálogo no puede mentir sobre lo que hay.**
+El catálogo de todo lo disponible en la fuente — reglas, scripts, rulesets — vive en [`catalog.json`](https://github.com/unimar-peru/unimar_arch/blob/main/.harness/catalog.json), legible por máquina. `validate-catalog.mjs` comprueba que cada script exista y que cada regla citada esté declarada: **el catálogo no puede mentir sobre lo que hay.**
 
 ### 5. Encadenar las puertas (S-12)
 
 El satélite ejecuta la validación antes de cada commit y, sobre todo, en el servidor. La plantilla `templates/husky-pre-commit.sh` ya localiza el plugin y encadena los <!--censo:validadores.satelite:palabra-->catorce<!--/censo--> validadores de §3; la plantilla `templates/gobernanza.yml` hace lo propio en CI.
 
-> **Esta cifra no se teclea: la computa `validate-conteos.mjs` del bloque de §3.** Decía «siete» mientras el bloque listaba ocho y la plantilla encadenaba nueve — tres números para el mismo hecho ([G-130](../../GAPS.md)). Lo que el censo **no** alcanza es la plantilla: el manifiesto la declara `propiedadDelPlugin`, no vive en esta fuente y ninguna puerta la cruza contra este bloque. Que hoy coincidan es un arreglo, no un control.
+> **Esta cifra no se teclea: la computa `validate-conteos.mjs` del bloque de §3.** Decía «siete» mientras el bloque listaba ocho y la plantilla encadenaba nueve — tres números para el mismo hecho ([G-130](https://github.com/unimar-peru/unimar_arch/blob/main/GAPS.md)). Lo que el censo **no** alcanza es la plantilla: el manifiesto la declara `propiedadDelPlugin`, no vive en esta fuente y ninguna puerta la cruza contra este bloque. Que hoy coincidan es un arreglo, no un control.
 
 Activación del hook, una vez por clon:
 
@@ -218,7 +231,7 @@ git no puede activarlo al clonar: ejecutar la configuración que trae un reposit
 
 ### 5.b Gates locales de calidad y seguridad (S-23)
 
-Los controles de calidad y seguridad se ejecutan en **local** —máquina del desarrollador y git hooks—, no en servicios administrados del proveedor ([ADR-0106](../../reference/architecture/adrs/core/0106-seguridad-calidad-local-first.es.md)). La postura de seguridad **no depende** de la cuota, el saldo ni la disponibilidad de GitHub Actions: el caso que lo motivó fue un satélite que se quedó sin poder validar seguridad al agotarse la cuota de Actions.
+Los controles de calidad y seguridad se ejecutan en **local** —máquina del desarrollador y git hooks—, no en servicios administrados del proveedor ([ADR-0106](../reference/architecture/adrs/core/0106-seguridad-calidad-local-first.es.md)). La postura de seguridad **no depende** de la cuota, el saldo ni la disponibilidad de GitHub Actions: el caso que lo motivó fue un satélite que se quedó sin poder validar seguridad al agotarse la cuota de Actions.
 
 El satélite cablea en sus hooks los gates que su stack permita, y `validate-gates-locales.mjs` lo comprueba como **aviso** (gateable cuando la adopción madure):
 
@@ -234,11 +247,11 @@ El CI del proveedor, si existe, es un checkpoint de merge **redundante** y una c
 
 ### 6. Registrar el triaje
 
-Cada satélite triaja las <!--censo:reglas.S:palabra-->veinticinco<!--/censo--> reglas en su `DECISIONS.md`, **con estos identificadores**. Ver la [Guía de Herencia](../../reference/governance/standards/onboarding/guia-herencia-repositorio-hijo.md) para la semántica de `Adopt` / `Extend` / `Override` / `N/A` y el orden de precedencia.
+Cada satélite triaja las <!--censo:reglas.S:palabra-->veinticinco<!--/censo--> reglas en su `DECISIONS.md`, **con estos identificadores**. Ver la [Guía de Herencia](../reference/governance/standards/onboarding/guia-herencia-repositorio-hijo.md) para la semántica de `Adopt` / `Extend` / `Override` / `N/A` y el orden de precedencia.
 
 ### 7. Declarar el tipo de repositorio (ADR-0069)
 
-Un satélite es un **producto** —un sistema con usuarios, entornos y despliegue— o una **librería** que otros repositorios consumen y que no se despliega. El [ADR-0069](../../reference/architecture/adrs/core/0069-tipo-de-repositorio-libreria-o-producto.es.md) hace de esa distinción parte del estándar, para no medir una librería con la vara de un producto sin recurrir a un `Override` que S-15 prohíbe.
+Un satélite es un **producto** —un sistema con usuarios, entornos y despliegue— o una **librería** que otros repositorios consumen y que no se despliega. El [ADR-0069](../reference/architecture/adrs/core/0069-tipo-de-repositorio-libreria-o-producto.es.md) hace de esa distinción parte del estándar, para no medir una librería con la vara de un producto sin recurrir a un `Override` que S-15 prohíbe.
 
 El satélite lo declara en la **cabecera de gobernanza de su `DECISIONS.md`**, junto a `STANDARD_REF`:
 
@@ -250,9 +263,9 @@ Los valores canónicos son `producto` y `libreria`. El **defecto es `producto`**
 
 | Ámbito | `producto` (defecto) | `libreria` |
 |---|---|---|
-| Ramas ([ADR-0050](../../reference/architecture/adrs/core/0050-estrategia-ramificacion-gitflow.es.md)) | `main`, `develop`, `qa`, `uat` | `main`, `develop` |
+| Ramas ([ADR-0050](../reference/architecture/adrs/core/0050-estrategia-ramificacion-gitflow.es.md)) | `main`, `develop`, `qa`, `uat` | `main`, `develop` |
 | Artefactos SDLC (S-01 … S-05) | Obligatorios según fase | No obligatorios; su equivalente es el corpus de ADRs locales |
-| README y metadatos | Portal de cuatro secciones ([ADR-0159](../../reference/architecture/adrs/core/0159-plantillas-del-estandar-con-fuente-y-forma.es.md)), con el Flujo SDLC por fase y sus hubs | Portal de cuatro secciones ([ADR-0159](../../reference/architecture/adrs/core/0159-plantillas-del-estandar-con-fuente-y-forma.es.md)); el Flujo SDLC cubre instalación, SemVer, API pública y límites |
+| README y metadatos | Portal de cuatro secciones ([ADR-0159](../reference/architecture/adrs/core/0159-plantillas-del-estandar-con-fuente-y-forma.es.md)), con el Flujo SDLC por fase y sus hubs | Portal de cuatro secciones ([ADR-0159](../reference/architecture/adrs/core/0159-plantillas-del-estandar-con-fuente-y-forma.es.md)); el Flujo SDLC cubre instalación, SemVer, API pública y límites |
 | Madurez (S-19) | Escalado, SLA, DORA | Overhead por llamada, corrección de la librería, cadencia de release |
 
 ---
@@ -261,13 +274,13 @@ Los valores canónicos son `producto` y `libreria`. El **defecto es `producto`**
 
 | ID | Regla | Descripción | Operación Permitida |
 |---|---|---|---|
-| **S-01** | Plantillas Base | Todo artefacto SDLC en satélite debe basarse en las plantillas de [`reference/governance/sdlc/04-plantillas-artefactos/`](../../reference/governance/sdlc/04-plantillas-artefactos/README.md) | `Adopt` / `Extend` / `Override` |
+| **S-01** | Plantillas Base | Todo artefacto SDLC en satélite debe basarse en las plantillas de [`reference/governance/sdlc/04-plantillas-artefactos/`](../reference/governance/sdlc/04-plantillas-artefactos/README.md) | `Adopt` / `Extend` / `Override` |
 | **S-02** | Formato Canónico | Las historias funcionales en satélite deben seguir la estructura con: tabla de navegación, diagrama Mermaid, lista de secciones numeradas | `Adopt` / `Extend` |
 | **S-03** | Diagramas Mermaid Obligatorios | Toda historia funcional y épica debe incluir al menos un diagrama Mermaid de flujo o secuencia | `Adopt` / `Extend` |
 | **S-04** | Requisitos Técnicos Aislados | La sección 3 de toda historia de usuario debe tener: bounded context, dependencias, restricciones, ADRs relevantes, notas | `Adopt` / `Extend` |
 | **S-05** | Actores y Stakeholders | La sección 2 de toda historia de usuario debe incluir actor principal, actores secundarios, diagrama de secuencia, tabla de interacciones | `Adopt` / `Extend` |
 | **S-06** | Trazabilidad a ADRs | Cada decisión técnica en satélite debe referenciar un ADR de `unimar_arch`. Si no existe, crear el ADR en `unimar_arch` primero | `Adopt` |
-| **S-07** | Stack Tecnológico Autorizado | Solo usar tecnologías del [stack aprobado](../../reference/architecture/stack-tecnologico-autorizado-agnostico.es.md). Si se requiere nueva tecnología, solicitar ADR en `unimar_arch` | `Adopt` / `Override` solo con nuevo ADR |
+| **S-07** | Stack Tecnológico Autorizado | Solo usar tecnologías del [stack aprobado](../reference/architecture/stack-tecnologico-autorizado-agnostico.es.md). Si se requiere nueva tecnología, solicitar ADR en `unimar_arch` | `Adopt` / `Override` solo con nuevo ADR |
 | **S-08** | Versión SemVer en Plantillas | Toda plantilla en satélite debe mantener su versión SemVer en los badges y sincronizar con `unimar_arch` | `Adopt` / `Extend` |
 | **S-09** | Idioma Único | Toda la documentación en satélite debe estar en español, salvo excepciones declaradas en [`terminology-glossary.md`](./terminology-glossary.md) | `Adopt` |
 | **S-10** | Referencias Relativas | Los enlaces internos entre artefactos deben ser rutas relativas desde la ubicación del archivo | `Adopt` |
@@ -275,17 +288,17 @@ Los valores canónicos son `producto` y `libreria`. El **defecto es `producto`**
 | **S-12** | Validación Pre-Commit | Antes de cada commit en satélite, ejecutar el mismo script de validación que en `unimar_arch` | `Adopt` |
 | **S-13** | Historial de Cambios | Todo artefacto debe mantener tabla de historial de cambios con versión, fecha, autor y descripción | `Adopt` / `Extend` |
 | **S-14** | Guía de Estilo | El formato de diagramas, tablas y secciones debe seguir la guía de estilo de `unimar_arch` | `Adopt` / `Extend` |
-| **S-15** | Decisiones Locales | Las decisiones locales del satélite deben registrarse en un `DECISIONS.md` local y nunca contradecir un ADR de `unimar_arch`. Cuando una decisión local merezca un **ADR propio**, su identificador es **`ADR-<SIGLA>-NNN`**: la sigla del sistema según el [catálogo](../../reference/architecture/catalogo-sistemas-suite.es.md), y `NNN` una secuencia propia desde `001`. Un satélite que **no sea un sistema** del catálogo declara su prefijo en `DECISIONS.md`, y no puede coincidir con una sigla `Ratificada`. **Las cuatro cifras a secas (`ADR-NNNN`) son el espacio de identidad del núcleo y un satélite no las usa**: un mismo número en dos repositorios son dos decisiones distintas con el mismo nombre, y «ver ADR-0064» deja de tener respuesta. El ADR local lleva el mismo front-matter que el del núcleo (`adr`, `estado`, `supersede`, `deprecia_reglas`): sin él, `validate-adr-status.mjs` no puede leerlo y la decisión es opaca para toda máquina | `Adopt` |
+| **S-15** | Decisiones Locales | Las decisiones locales del satélite deben registrarse en un `DECISIONS.md` local y nunca contradecir un ADR de `unimar_arch`. Cuando una decisión local merezca un **ADR propio**, su identificador es **`ADR-<SIGLA>-NNN`**: la sigla del sistema según el [catálogo](../reference/architecture/catalogo-sistemas-suite.es.md), y `NNN` una secuencia propia desde `001`. Un satélite que **no sea un sistema** del catálogo declara su prefijo en `DECISIONS.md`, y no puede coincidir con una sigla `Ratificada`. **Las cuatro cifras a secas (`ADR-NNNN`) son el espacio de identidad del núcleo y un satélite no las usa**: un mismo número en dos repositorios son dos decisiones distintas con el mismo nombre, y «ver ADR-0064» deja de tener respuesta. El ADR local lleva el mismo front-matter que el del núcleo (`adr`, `estado`, `supersede`, `deprecia_reglas`): sin él, `validate-adr-status.mjs` no puede leerlo y la decisión es opaca para toda máquina | `Adopt` |
 | **S-16** | Estándar Provisto, no Copiado | El satélite **no contiene** `.harness/`, ni `inherited.lock`, ni copia alguna de reglas o validadores. El estándar lo provee el plugin `unimar-core`, y la versión consumida se fija explícitamente en el CI del satélite. Editar el estándar desde un satélite es imposible por hook y, si se intentara fuera del agente, el CI lo rechaza. El camino para cambiarlo es proponerlo en `unimar_arch` | `Adopt` |
 | **S-17** | Agentes BMAD | El satélite instala BMAD con `npx bmad-method install`, en la misma versión que declara `_bmad/_config/manifest.yaml` de `unimar_arch`. Los archivos generados por el runner no se heredan; el runner elegido se declara en `DECISIONS.md` | `Adopt` / `Extend` |
-| **S-18** | Taxonomía, Contribución y Raíz de Fuente | El satélite **referencia** la [taxonomía de repositorio satélite](../../taxonomy/taxonomia-repositorio-satelite.md), que rige su documentación; no la copia. Materializa el esqueleto de directorios que prescribe, su `CONTRIBUTING.md` —que **debe** documentar el bucle de retorno al núcleo— y la **raíz de fuente `src/`**, única y obligatoria en todo arquetipo ([ADR-0107](../../reference/architecture/adrs/core/0107-src-raiz-de-fuente-unica.es.md)), creada vacía con `.gitkeep`. Un monorepo anida sus sub-raíces (`libs/`, `apps/`, `packages/`) **dentro** de `src/`, no en el nivel superior; un satélite sin código ejecutable triaja S-18 como `N/A`. Materializa además `.markdownlint.json` sin divergencia y `.editorconfig` como base extensible. La taxonomía **no gobierna** la nomenclatura de los artefactos de código del runtime | `Adopt` / `Extend` |
+| **S-18** | Taxonomía, Contribución y Raíz de Fuente | El satélite **referencia** la [taxonomía de repositorio satélite](../taxonomy/taxonomia-repositorio-satelite.md), que rige su documentación; no la copia. Materializa el esqueleto de directorios que prescribe, su `CONTRIBUTING.md` —que **debe** documentar el bucle de retorno al núcleo— y la **raíz de fuente `src/`**, única y obligatoria en todo arquetipo ([ADR-0107](../reference/architecture/adrs/core/0107-src-raiz-de-fuente-unica.es.md)), creada vacía con `.gitkeep`. Un monorepo anida sus sub-raíces (`libs/`, `apps/`, `packages/`) **dentro** de `src/`, no en el nivel superior; un satélite sin código ejecutable triaja S-18 como `N/A`. Materializa además `.markdownlint.json` sin divergencia y `.editorconfig` como base extensible. La taxonomía **no gobierna** la nomenclatura de los artefactos de código del runtime | `Adopt` / `Extend` |
 | **S-19** | Medición de Madurez | El satélite mantiene `MADUREZ.md` en su raíz, con las dos dimensiones y la escala TOGAF ACMM 1..5. Un nivel ≥ 2 exige evidencia enlazada; un nivel < 5 exige declarar el camino al siguiente. Verificado por `validate-madurez.mjs` | `Adopt` |
 | **S-20** | Registro Único de Gaps | El satélite mantiene `GAPS.md` en su raíz. Los pendientes van siempre primero, ordenados por criticidad y luego por complejidad. Cada gap apunta a una dimensión de `MADUREZ.md`. Un gap `Cerrado` exige evidencia. El estado se actualiza y se reordena en cada commit vía `validate-gaps.mjs --fix` | `Adopt` |
-| **S-21** | Rulesets de Agentes | El satélite **recibe** del plugin los subagentes BMAD, cada uno con el ruleset de [`agent-rulesets.md`](./agent-rulesets.md), sus validadores y su allowlist de herramientas. No los materializa ni los edita: `.claude/agents/` y `.claude/settings.json` son zona protegida por `hook-guard-standard.mjs`. Los hooks del plugin hacen cumplir S-16 y S-20 sin depender de que el agente las recuerde. El catálogo [`catalog.json`](../catalog.json) enumera reglas, scripts y rulesets de la fuente, y `validate-catalog.mjs` comprueba que no mienta | `Adopt` |
+| **S-21** | Rulesets de Agentes | El satélite **recibe** del plugin los subagentes BMAD, cada uno con el ruleset de [`agent-rulesets.md`](./agent-rulesets.md), sus validadores y su allowlist de herramientas. No los materializa ni los edita: `.claude/agents/` y `.claude/settings.json` son zona protegida por `hook-guard-standard.mjs`. Los hooks del plugin hacen cumplir S-16 y S-20 sin depender de que el agente las recuerde. El catálogo [`catalog.json`](https://github.com/unimar-peru/unimar_arch/blob/main/.harness/catalog.json) enumera reglas, scripts y rulesets de la fuente, y `validate-catalog.mjs` comprueba que no mienta | `Adopt` |
 | **S-22** | Reglas Spec-Driven | El satélite adopta [`spec-driven-rules.md`](./spec-driven-rules.md), reglas SD-01 a SD-08. La especificación precede a la implementación; la evidencia precede a la afirmación | `Adopt` |
-| **S-23** | Gates de Calidad y Seguridad Local-First | Los controles de calidad y seguridad se ejecutan en **local** —máquina del desarrollador y git hooks— sin depender de GitHub Actions ni de servicios de seguridad del proveedor ([ADR-0106](../../reference/architecture/adrs/core/0106-seguridad-calidad-local-first.es.md), P-LOCAL-01). El satélite cablea en sus hooks los gates que su stack permita: escáner de secretos (gitleaks), auditoría de dependencias (`npm audit` / `dotnet list --vulnerable`), linters/SAST del stack, pruebas con **umbral de coverage** que falla por debajo, y formato de commits (commitlint). El CI del proveedor **no** es la puerta de seguridad por defecto; reintroducirlo como gate exige un ADR que amplíe ADR-0106 (P-LOCAL-02). La publicación de evidencias al proveedor, si existe, es opcional (P-LOCAL-03) | `Adopt` / `Extend` |
-| **S-24** | Fase 1 Define, el Tablero Planifica | Los artefactos de **Fase 1 — Concepción y Descubrimiento** (PRD, Backlog Ágil, Épica, Historia de Usuario, Lienzo de Descubrimiento, Caso de Negocio, Estimación Preliminar) **definen y ordenan** el trabajo —épicas, historias, prioridad, tallas relativas, dependencias y una **propuesta de secuencia** de sprints— y **no declaran tiempo de calendario** ([ADR-0134](../../reference/architecture/adrs/core/0134-fase-1-define-el-backlog-el-tablero-posee-el-tiempo.es.md) D2). Quedan prohibidos en ellos: fechas de inicio, fin, entrega o despliegue; quarters o meses como horizonte de entrega; diagramas `gantt` o cualquier eje temporal absoluto; duraciones de sprint expresadas como calendario; y métricas de ejecución en curso (velocity real, burn-down, % de avance, desvío de cronograma). **Excepción:** la fecha documental del propio artefacto —aprobación, revisión, historial de cambios (S-13)—, que describe al documento y no a la entrega. El **esfuerzo sí** se estima, en unidades de capacidad —puntos de historia, sprints de equipo, personas— y nunca convertido en calendario (D3). La secuencia de sprints se expresa como grafo de precedencia, no como gantt (D4). Todo Backlog Ágil **debe** enlazar su iniciativa en el **tablero SDLC**, que es la fuente única de fechas, línea base, ruta crítica, valor ganado y avance real ([ADR-0087](../../reference/architecture/adrs/core/0087-tablero-ejecutivo-iniciativas-directorio-central.es.md), [ADR-0089](../../reference/architecture/adrs/core/0089-app-oficial-sdlc-bd-relacional.es.md), [ADR-0100](../../reference/architecture/adrs/core/0100-gestion-valor-ganado-cronograma-tablero.es.md)). El **ejecutor** es `validate-s24-fase1.mjs` ([ADR-0128](../../reference/architecture/adrs/core/0128-politica-como-codigo-ejecutor-derivado.es.md)), en **dos niveles**: bloquea lo que no admite lectura benigna —el diagrama `gantt`, el eje temporal, el trimestre como horizonte y las fechas de entrega declaradas por nombre— y avisa de lo heurístico, porque un gate ruidoso que bloquea es peor que no tenerlo (SD-06). La **excepción de S-13 es parte del ejecutor, no una omisión**: marcar las fechas del historial empujaría a falsearlo para pasar la puerta | `Adopt` |
-| **S-25** | Índice de Iniciativas Publicado | Todo satélite **de tipo producto con PRDs** (`prds > 0`; una `libreria` no autora PRDs y triaja `N/A`) **debe generar, publicar y mantener** su `initiatives-index.json` en `<pages_url>/reporting/data/initiatives-index.json`, alcanzable, declarando de quién es (`satellite`) y **listando en `documentos[].ref` todos los PRDs que el repo autora**. Sin esta obligación la federación de PRDs queda inerte: el tablero está construido para **leer** el índice ([ADR-0087](../../reference/architecture/adrs/core/0087-tablero-ejecutivo-iniciativas-directorio-central.es.md), [ADR-0088](../../reference/architecture/adrs/core/0088-bd-sdlc-app-control-sdlc.es.md), [ADR-0137](../../reference/architecture/adrs/core/0137-sincronizacion-selectiva-de-prds.es.md)) pero **nadie lo producía**, y un PRD sin publicar no aparece en el directorio central ([ADR-0140](../../reference/architecture/adrs/core/0140-publicacion-obligatoria-indice-iniciativas-satelite.es.md), cierra [G-244](../../GAPS.md)). Esta regla §3 es el **ejecutor primario** —fuerza el **arranque**, que ningún gate del tablero alcanza (no hay a qué colgarlo antes de la primera publicación)—; el gate F1 del tablero cubre la **continuidad** ([ADR-0140](../../reference/architecture/adrs/core/0140-publicacion-obligatoria-indice-iniciativas-satelite.es.md) §2.2). El **ejecutor** es `validate-prd-index.mjs`, que nace con la regla ([ADR-0128](../../reference/architecture/adrs/core/0128-politica-como-codigo-ejecutor-derivado.es.md)): descubre los PRDs del repo por su identificador auto-declarado y **solo LEE** —el core exige y verifica, no genera, copia ni repara el índice ajeno ([ADR-0088](../../reference/architecture/adrs/core/0088-bd-sdlc-app-control-sdlc.es.md) §2.3)— y falla si el índice falta o no los lista. La verificación de **alcanzabilidad remota** (HTTP 200 al registrar la evidencia) es del gate F1, no de esta puerta local | `Adopt` |
+| **S-23** | Gates de Calidad y Seguridad Local-First | Los controles de calidad y seguridad se ejecutan en **local** —máquina del desarrollador y git hooks— sin depender de GitHub Actions ni de servicios de seguridad del proveedor ([ADR-0106](../reference/architecture/adrs/core/0106-seguridad-calidad-local-first.es.md), P-LOCAL-01). El satélite cablea en sus hooks los gates que su stack permita: escáner de secretos (gitleaks), auditoría de dependencias (`npm audit` / `dotnet list --vulnerable`), linters/SAST del stack, pruebas con **umbral de coverage** que falla por debajo, y formato de commits (commitlint). El CI del proveedor **no** es la puerta de seguridad por defecto; reintroducirlo como gate exige un ADR que amplíe ADR-0106 (P-LOCAL-02). La publicación de evidencias al proveedor, si existe, es opcional (P-LOCAL-03) | `Adopt` / `Extend` |
+| **S-24** | Fase 1 Define, el Tablero Planifica | Los artefactos de **Fase 1 — Concepción y Descubrimiento** (PRD, Backlog Ágil, Épica, Historia de Usuario, Lienzo de Descubrimiento, Caso de Negocio, Estimación Preliminar) **definen y ordenan** el trabajo —épicas, historias, prioridad, tallas relativas, dependencias y una **propuesta de secuencia** de sprints— y **no declaran tiempo de calendario** ([ADR-0134](../reference/architecture/adrs/core/0134-fase-1-define-el-backlog-el-tablero-posee-el-tiempo.es.md) D2). Quedan prohibidos en ellos: fechas de inicio, fin, entrega o despliegue; quarters o meses como horizonte de entrega; diagramas `gantt` o cualquier eje temporal absoluto; duraciones de sprint expresadas como calendario; y métricas de ejecución en curso (velocity real, burn-down, % de avance, desvío de cronograma). **Excepción:** la fecha documental del propio artefacto —aprobación, revisión, historial de cambios (S-13)—, que describe al documento y no a la entrega. El **esfuerzo sí** se estima, en unidades de capacidad —puntos de historia, sprints de equipo, personas— y nunca convertido en calendario (D3). La secuencia de sprints se expresa como grafo de precedencia, no como gantt (D4). Todo Backlog Ágil **debe** enlazar su iniciativa en el **tablero SDLC**, que es la fuente única de fechas, línea base, ruta crítica, valor ganado y avance real ([ADR-0087](../reference/architecture/adrs/core/0087-tablero-ejecutivo-iniciativas-directorio-central.es.md), [ADR-0089](../reference/architecture/adrs/core/0089-app-oficial-sdlc-bd-relacional.es.md), [ADR-0100](../reference/architecture/adrs/core/0100-gestion-valor-ganado-cronograma-tablero.es.md)). El **ejecutor** es `validate-s24-fase1.mjs` ([ADR-0128](../reference/architecture/adrs/core/0128-politica-como-codigo-ejecutor-derivado.es.md)), en **dos niveles**: bloquea lo que no admite lectura benigna —el diagrama `gantt`, el eje temporal, el trimestre como horizonte y las fechas de entrega declaradas por nombre— y avisa de lo heurístico, porque un gate ruidoso que bloquea es peor que no tenerlo (SD-06). La **excepción de S-13 es parte del ejecutor, no una omisión**: marcar las fechas del historial empujaría a falsearlo para pasar la puerta | `Adopt` |
+| **S-25** | Índice de Iniciativas Publicado | Todo satélite **de tipo producto con PRDs** (`prds > 0`; una `libreria` no autora PRDs y triaja `N/A`) **debe generar, publicar y mantener** su `initiatives-index.json` en `<pages_url>/reporting/data/initiatives-index.json`, alcanzable, declarando de quién es (`satellite`) y **listando en `documentos[].ref` todos los PRDs que el repo autora**. Sin esta obligación la federación de PRDs queda inerte: el tablero está construido para **leer** el índice ([ADR-0087](../reference/architecture/adrs/core/0087-tablero-ejecutivo-iniciativas-directorio-central.es.md), [ADR-0088](../reference/architecture/adrs/core/0088-bd-sdlc-app-control-sdlc.es.md), [ADR-0137](../reference/architecture/adrs/core/0137-sincronizacion-selectiva-de-prds.es.md)) pero **nadie lo producía**, y un PRD sin publicar no aparece en el directorio central ([ADR-0140](../reference/architecture/adrs/core/0140-publicacion-obligatoria-indice-iniciativas-satelite.es.md), cierra [G-244](https://github.com/unimar-peru/unimar_arch/blob/main/GAPS.md)). Esta regla §3 es el **ejecutor primario** —fuerza el **arranque**, que ningún gate del tablero alcanza (no hay a qué colgarlo antes de la primera publicación)—; el gate F1 del tablero cubre la **continuidad** ([ADR-0140](../reference/architecture/adrs/core/0140-publicacion-obligatoria-indice-iniciativas-satelite.es.md) §2.2). El **ejecutor** es `validate-prd-index.mjs`, que nace con la regla ([ADR-0128](../reference/architecture/adrs/core/0128-politica-como-codigo-ejecutor-derivado.es.md)): descubre los PRDs del repo por su identificador auto-declarado y **solo LEE** —el core exige y verifica, no genera, copia ni repara el índice ajeno ([ADR-0088](../reference/architecture/adrs/core/0088-bd-sdlc-app-control-sdlc.es.md) §2.3)— y falla si el índice falta o no los lista. La verificación de **alcanzabilidad remota** (HTTP 200 al registrar la evidencia) es del gate F1, no de esta puerta local | `Adopt` |
 
 > **Condicionamiento por tipo (ADR-0069).** Las reglas **S-01 a S-05** y **S-24** rigen los artefactos SDLC de **producto** (historias, épicas, PRD, backlog). En un satélite `tipo: libreria` no son obligatorias: una capacidad crosscutting no tiene usuarios ni features, y su «qué» y «por qué» viven en el corpus de ADRs locales. Un satélite de librería triaja S-01 … S-05 y S-24 como `N/A` **en función de su tipo declarado**, no por conveniencia; el resto de reglas aplica igual a ambos tipos. Ver el paso [7. Declarar el tipo de repositorio](#7-declarar-el-tipo-de-repositorio-adr-0069).
 
@@ -306,15 +319,15 @@ Los valores canónicos son `producto` y `libreria`. El **defecto es `producto`**
 
 | Plantilla | Archivo Fuente | Fase SDLC | Operación Sugerida |
 |---|---|---|---|
-| Historia Funcional (con épicas) | [`plantilla-historia-funcional-fuente.es.md`](../../reference/governance/sdlc/04-plantillas-artefactos/fuente/plantilla-historia-funcional-fuente.es.md) | Fase 2 | `Adopt` |
-| Historia de Usuario | [`plantilla-historia-usuario-fuente.es.md`](../../reference/governance/sdlc/04-plantillas-artefactos/fuente/plantilla-historia-usuario-fuente.es.md) | Fase 1 | `Adopt` |
-| Historia Técnica | [`plantilla-historia-tecnica-fuente.es.md`](../../reference/governance/sdlc/04-plantillas-artefactos/fuente/plantilla-historia-tecnica-fuente.es.md) | Fase 3 | `Adopt` |
-| épica | [`plantilla-epica-fuente.es.md`](../../reference/governance/sdlc/04-plantillas-artefactos/fuente/plantilla-epica-fuente.es.md) | Fase 1 | `Adopt` |
-| ADR | [`plantilla-adr-fuente.es.md`](../../reference/governance/sdlc/04-plantillas-artefactos/fuente/plantilla-adr-fuente.es.md) | Fase 2 | `Adopt` |
-| PRD | [`plantilla-prd-fuente.es.md`](../../reference/governance/sdlc/04-plantillas-artefactos/fuente/plantilla-prd-fuente.es.md) | Fase 1 | `Adopt` |
-| Backlog Ágil | [`plantilla-backlog-agil-fuente.es.md`](../../reference/governance/sdlc/04-plantillas-artefactos/fuente/plantilla-backlog-agil-fuente.es.md) | Fase 1 | `Adopt` |
-| Reporte de Pruebas | [`plantilla-reporte-pruebas-fuente.es.md`](../../reference/governance/sdlc/04-plantillas-artefactos/fuente/plantilla-reporte-pruebas-fuente.es.md) | Fase 4 | `Adopt` |
-| Notas de Lanzamiento | [`plantilla-notas-lanzamiento-fuente.es.md`](../../reference/governance/sdlc/04-plantillas-artefactos/fuente/plantilla-notas-lanzamiento-fuente.es.md) | Fase 5 | `Adopt` |
+| Historia Funcional (con épicas) | [`plantilla-historia-funcional-fuente.es.md`](../reference/governance/sdlc/04-plantillas-artefactos/fuente/plantilla-historia-funcional-fuente.es.md) | Fase 2 | `Adopt` |
+| Historia de Usuario | [`plantilla-historia-usuario-fuente.es.md`](../reference/governance/sdlc/04-plantillas-artefactos/fuente/plantilla-historia-usuario-fuente.es.md) | Fase 1 | `Adopt` |
+| Historia Técnica | [`plantilla-historia-tecnica-fuente.es.md`](../reference/governance/sdlc/04-plantillas-artefactos/fuente/plantilla-historia-tecnica-fuente.es.md) | Fase 3 | `Adopt` |
+| épica | [`plantilla-epica-fuente.es.md`](../reference/governance/sdlc/04-plantillas-artefactos/fuente/plantilla-epica-fuente.es.md) | Fase 1 | `Adopt` |
+| ADR | [`plantilla-adr-fuente.es.md`](../reference/governance/sdlc/04-plantillas-artefactos/fuente/plantilla-adr-fuente.es.md) | Fase 2 | `Adopt` |
+| PRD | [`plantilla-prd-fuente.es.md`](../reference/governance/sdlc/04-plantillas-artefactos/fuente/plantilla-prd-fuente.es.md) | Fase 1 | `Adopt` |
+| Backlog Ágil | [`plantilla-backlog-agil-fuente.es.md`](../reference/governance/sdlc/04-plantillas-artefactos/fuente/plantilla-backlog-agil-fuente.es.md) | Fase 1 | `Adopt` |
+| Reporte de Pruebas | [`plantilla-reporte-pruebas-fuente.es.md`](../reference/governance/sdlc/04-plantillas-artefactos/fuente/plantilla-reporte-pruebas-fuente.es.md) | Fase 4 | `Adopt` |
+| Notas de Lanzamiento | [`plantilla-notas-lanzamiento-fuente.es.md`](../reference/governance/sdlc/04-plantillas-artefactos/fuente/plantilla-notas-lanzamiento-fuente.es.md) | Fase 5 | `Adopt` |
 
 ---
 
@@ -352,7 +365,7 @@ Los que son **herramientas de la fuente** y no viajan al satélite:
 | `apply-agent-config.mjs` | Materializa los rulesets sobre el runner del core y, con `--target`, regenera los subagentes del plugin; `--check` detecta la deriva | S-21, S-22 |
 | `hook-sync-gaps.mjs` | Hook `Stop`: normaliza `GAPS.md` y bloquea cierres sin evidencia | S-20 |
 
-> **Retirados en la versión 1.0.0.** `validate-inherited.mjs`, `validate-heredogram.mjs` e `inherited.lock` pertenecían a la herencia por copia que [ADR-0062](../../reference/architecture/adrs/core/0062-estandar-distribuido-como-plugin-versionado.es.md) abolió. Se han eliminado. Mientras existieron, `check-upstream.mjs` y `propose-upstream.mjs` exigían un `inherited.lock` que S-16 prohíbe al satélite: el bucle de retorno abortaba en su primera línea, y ningún satélite conforme podía proponer un cambio al estándar. Ahora ambos derivan la versión en uso de la ubicación del propio script y viajan en el plugin.
+> **Retirados en la versión 1.0.0.** `validate-inherited.mjs`, `validate-heredogram.mjs` e `inherited.lock` pertenecían a la herencia por copia que [ADR-0062](../reference/architecture/adrs/core/0062-estandar-distribuido-como-plugin-versionado.es.md) abolió. Se han eliminado. Mientras existieron, `check-upstream.mjs` y `propose-upstream.mjs` exigían un `inherited.lock` que S-16 prohíbe al satélite: el bucle de retorno abortaba en su primera línea, y ningún satélite conforme podía proponer un cambio al estándar. Ahora ambos derivan la versión en uso de la ubicación del propio script y viajan en el plugin.
 
 `validate-satellite-base.mjs` comprueba en concreto:
 

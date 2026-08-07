@@ -18,9 +18,10 @@
  *   - Un gap `Cerrado` DEBE tener evidencia: commit, PR o ADR. Cerrar sin
  *     evidencia es una afirmación sin respaldo.
  *
- * Forma de la fila: 8 columnas es el contrato base; `Tipo` (9.ª) y `Deuda`
- * (10.ª, ADR-0103 D2) son OPCIONALES. La aridad de lectura admite las tres, y
- * la de reescritura la fija la cabecera del propio fichero.
+ * Forma de la fila: 8 columnas es el contrato base; `Tipo` (9.ª), `Deuda`
+ * (10.ª, ADR-0103 D2) y `Ámbito` (11.ª, ADR-0161 §2.1) son OPCIONALES. La
+ * aridad de lectura admite las cuatro, y la de reescritura la fija la cabecera
+ * del propio fichero.
  *
  * Uso:
  *   node <estandar>/scripts/validate-gaps.mjs           # valida, no escribe
@@ -57,6 +58,14 @@ const TIPOS = ['GAP', 'Riesgo', 'Oportunidad', 'Deuda Técnica', 'Mejora Continu
 // entre las dos cosas destruye informacion. Por eso es una columna y no un valor
 // mas del enum `TIPOS`. La celda vacia significa `—`, es decir: no es deuda.
 const DEUDAS = ['Sí', '—'];
+// Ambito del hallazgo (ADR-0161 §2.1): a quien sirve cerrarlo. `Nucleo` mejora
+// el estandar —reglas, validadores, plantillas, plugin, corpus, herencia—;
+// `Producto` mejora una aplicacion construida CON el estandar, o corrige un
+// defecto interno de un satelite que no deriva de una norma del nucleo. El guion
+// es «sin clasificar», y NO equivale a `Producto`: quien no clasifica no excluye.
+// No es una forma de cierre (ADR-0161 §2.4): un gap `Producto` sigue `Pendiente`,
+// cuenta en los contadores y mide en la correspondencia con MADUREZ.md.
+const AMBITOS = ['Núcleo', 'Producto', '—'];
 
 /**
  * Las dimensiones válidas se DERIVAN de MADUREZ.md (columna `Dim.` de cada
@@ -91,15 +100,17 @@ const HEADER_RE = /^\|\s*ID\s*\|/;
  * aridad de reescritura seria peor que cablear la de lectura, porque `--fix`
  * amputaria en el primer commit la columna que el fichero si declara.
  *
- * Ocho columnas son el contrato base. La novena (`Tipo`) y la decima (`Deuda`,
- * ADR-0103 D2) son opcionales y van AL FINAL a proposito: añadir al final no
- * retira ni acota ninguna regla que un satelite conforme estuviera obedeciendo
- * (ADR-0068 §3.3), luego es `minor`. Insertarlas en medio si seria `major`.
+ * Ocho columnas son el contrato base. La novena (`Tipo`), la decima (`Deuda`,
+ * ADR-0103 D2) y la undecima (`Ámbito`, ADR-0161 §2.1) son opcionales y van AL
+ * FINAL a proposito: añadir al final no retira ni acota ninguna regla que un
+ * satelite conforme estuviera obedeciendo (ADR-0068 §3.3), luego es `minor`.
+ * Insertarlas en medio si seria `major`.
  */
-const ARIDADES = [8, 9, 10];
+const ARIDADES = [8, 9, 10, 11];
 let columnas = 8;
 const conTipo = () => columnas >= 9;
 const conDeuda = () => columnas >= 10;
+const conAmbito = () => columnas >= 11;
 const SIN_EVIDENCIA = new Set(['', '—', '-', 'N/A', 'n/a']);
 
 const errors = [];
@@ -148,7 +159,7 @@ function readRegistry() {
       // Las tres formas siguen siendo validas a la vez: un satelite que declare 8
       // o 9 columnas no se rompe por que el nucleo adopte la decima.
       if (!ARIDADES.includes(c.length)) {
-        fail(`Fila ${i + 1}: se esperaban 8 columnas (9 con Tipo, 10 con Deuda), hay ${c.length}.`);
+        fail(`Fila ${i + 1}: se esperaban 8 columnas (9 con Tipo, 10 con Deuda, 11 con Ámbito), hay ${c.length}.`);
         return null;
       }
       /*
@@ -160,8 +171,8 @@ function readRegistry() {
       if (c.length > columnas) {
         console.error(`  ⚠ Fila ${i + 1}: trae ${c.length} columnas y la cabecera declara ${columnas}; el sobrante se perdera al normalizar. Declara la columna en la cabecera.`);
       }
-      const [id, titulo, criticidad, complejidad, estado, dimension, evidencia, apertura, tipo, deuda] = c;
-      return { id, titulo, criticidad, complejidad, estado, dimension, evidencia, apertura, tipo: tipo ?? '', deuda: deuda ?? '' };
+      const [id, titulo, criticidad, complejidad, estado, dimension, evidencia, apertura, tipo, deuda, ambito] = c;
+      return { id, titulo, criticidad, complejidad, estado, dimension, evidencia, apertura, tipo: tipo ?? '', deuda: deuda ?? '', ambito: ambito ?? '' };
     })
     .filter(Boolean);
 
@@ -183,6 +194,7 @@ function validate(rows) {
     // Un «sí» sin tilde o un «X» convertirían la columna en texto libre, y una
     // marca que no se puede contar no sirve para filtrar nada.
     if (r.deuda && !DEUDAS.includes(r.deuda)) fail(`${r.id}: deuda "${r.deuda}" no válida. Use: ${DEUDAS.join(' | ')} (o la celda vacía, que equivale a —).`);
+    if (r.ambito && !AMBITOS.includes(r.ambito)) fail(`${r.id}: ámbito "${r.ambito}" no válido. Use: ${AMBITOS.join(' | ')} (o la celda vacía, que equivale a —).`);
     if (!DIMENSIONES.includes(r.dimension)) fail(`${r.id}: dimensión "${r.dimension}" no válida. Use una de: ${DIMENSIONES.join(', ')}.`);
 
     const sinEvidencia = SIN_EVIDENCIA.has(r.evidencia);
@@ -207,13 +219,19 @@ function sortRows(rows) {
 }
 
 /*
- * Se reescribe con la aridad que declara la cabecera. `Deuda` no participa en la
- * ordenacion: el orden canonico sigue siendo estado, criticidad, complejidad, ID.
+ * Se reescribe con la aridad que declara la cabecera. Ni `Deuda` ni `Ámbito`
+ * participan en la ordenacion: el orden canonico sigue siendo estado,
+ * criticidad, complejidad, ID. Agrupar por ambito enterraria un gap critico
+ * del Tablero bajo uno menor del nucleo, y el orden existe para que lo urgente
+ * este arriba, no para separar tableros.
  */
 function renderRow(r) {
   const campos = [r.id, r.titulo, r.criticidad, r.complejidad, r.estado, r.dimension, r.evidencia, r.apertura];
   if (conTipo()) campos.push(r.tipo || 'GAP');
   if (conDeuda()) campos.push(r.deuda || '—');
+  // Sin defecto a `Núcleo`: rellenar por conveniencia afirmaria un ambito que
+  // nadie decidio, y el guion dice la verdad — nadie lo ha clasificado todavia.
+  if (conAmbito()) campos.push(r.ambito || '—');
   return `| ${campos.join(' | ')} |`;
 }
 

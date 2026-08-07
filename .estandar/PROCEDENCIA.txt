@@ -3,8 +3,8 @@ COPIA VERBATIM DE LOS VALIDADORES DEL ESTANDAR UNIMAR
 
 Origen   : unimar-peru/unimar-marketplace
 Ruta     : plugins/unimar-core/{scripts,rules}
-Etiqueta : unimar-core-3.8.2
-Commit   : bf3c9d200eaa782df7169e1466f015e314247fc6
+Etiqueta : unimar-core-1.58.0
+Commit   : d6edcad4e63212025fd928c5ec658f59d22ec598
 
 POR QUE ESTA COMMITEADA Y NO SE OBTIENE EN EL CI
 ------------------------------------------------
@@ -30,6 +30,33 @@ ese riesgo.
 La ruta es .estandar/ a proposito: lib/exclusiones.mjs del propio estandar ya
 declara ese basename como "no autoria", de modo que ningun walker lo valida como
 si fuera contenido de este repositorio.
+
+POR QUE 1.58.0 SE LEE MAS BAJO QUE 3.8.2 Y AUN ASI ES POSTERIOR
+---------------------------------------------------------------
+El estandar consolido su numeracion en la linea 1.x mientras dure la fase de
+diseno (ADR-0169 de unimar_arch). El propietario decide cuando se pasa a la 2, y
+hasta entonces acotar una regla no produce un major. No es un rollback de
+contenido: el corpus de 1.57.0 es byte a byte el de 5.2.0, que fue la ultima de
+la linea anterior.
+
+Consecuencia para esta copia: NO se puede decidir "cual es la mas nueva" por
+orden de version. La etiqueta que esta cabecera declara es el unico dato fiable.
+
+QUE CAMBIO EN ESTE CONJUNTO RESPECTO A 3.8.2
+---------------------------------------------
+El conjunto NO son los mismos nombres de antes: se deriva resolviendo los
+imports de los 11 validadores que el CI invoca, y eso cambio.
+
+ENTRAN   lib/enlaces.mjs  -- validate-docs.mjs lo importa desde ADR-0167. Sin el,
+                             ERR_MODULE_NOT_FOUND en el primer validador del CI.
+         lib/suite.mjs    -- validate-suite.mjs lo importa. Mismo fallo.
+
+SALEN    lib/exclusiones.mjs, lib/kb.mjs -- ningun validador de este conjunto las
+                             importa. Estaban aqui porque el paquete publicado las
+                             arrastra sin que la fuente las declare, defecto
+                             registrado como G-336 en unimar_arch.
+
+Al regenerar, resuelve los imports en vez de copiar la lista anterior.
 
 QUE SE COPIA Y QUE NO
 ---------------------

@@ -30,9 +30,19 @@ const STRICT = process.argv.includes('--strict');
  * empaquetado (`.estandar/`, el checkout efimero que hace el CI de un satelite),
  * las skills y agentes generados (`.claude/`, `_bmad*`), y la fuente del propio
  * estandar (`.harness/`), cuyos ejemplos no son criterios de nadie.
+ *
+ * `.marketplace` es el mismo caso visto desde la otra punta (G-347): el CI de la
+ * FUENTE hace checkout del marketplace ahi —`path: .marketplace` en el paso
+ * «Obtener el marketplace» de `.github/workflows/docs.yml`— y dentro esta el
+ * plugin publicado, que es un instante anterior de esta misma fuente. Juzgar sus
+ * criterios de aceptacion como si fueran del repositorio de hoy es contradictorio
+ * por construccion: son los criterios de ayer, ya juzgados cuando eran de hoy.
+ * Hoy este validador no reportaba nada de ahi dentro por casualidad —no habia
+ * adjetivo vago que pescar—, no por diseno: entraba en el arbol y lo recorria.
+ * Con `--strict` esa casualidad era la unica diferencia entre verde y rojo.
  */
 const IGNORAR = new Set([
-  '.git', '.harness', '.estandar', 'node_modules', '.claude',
+  '.git', '.harness', '.estandar', '.marketplace', 'node_modules', '.claude',
   '_bmad', '_bmad-output', '.opencode', '.agents', 'license',
 ]);
 const ENCABEZADO = /^#{1,6}\s.*criterios?\s+de\s+aceptaci|^#{1,6}\s.*acceptance\s+criteria/i;

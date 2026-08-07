@@ -29,6 +29,15 @@ import { readFile, writeFile } from "node:fs/promises";
 import { glob } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { resolve, relative, dirname, basename } from "node:path";
+/*
+ * Que es un enlace, y cual de ellos se puede juzgar, vive en `lib/enlaces.mjs`
+ * y no aqui. Tres consumidores necesitan la MISMA respuesta -- este validador,
+ * `validate-paquete.mjs` y el reanclaje de `package-plugin.mjs` --, y si cada
+ * uno la respondiera por su cuenta, el empaquetado reescribiria un conjunto de
+ * enlaces y la puerta juzgaria otro: un marcador de plantilla seria «roto» para
+ * uno e invisible para el otro.
+ */
+import { destinosDe } from "./lib/enlaces.mjs";
 
 /*
  * El objetivo del validador es el repositorio que se valida -- el cwd desde el
@@ -164,43 +173,10 @@ function checkEncoding(rel, content) {
 /*
  * Solo se comprueba lo que el repositorio controla. Una URL http puede caerse
  * mañana y no es culpa de este commit; un ancla propia, en cambio, o resuelve o
- * el documento está roto hoy.
+ * el documento está roto hoy. Las reglas de extracción —el destino con espacios,
+ * los marcadores de plantilla, la interpolación `${…}`— están en
+ * `lib/enlaces.mjs` con su porqué.
  */
-/*
- * El destino admite espacios: Markdown permite `[texto](ruta "título")`, y en el
- * corpus hay rutas con espacio final —`[FS-04](../../../../ )`— que una regex de
- * `[^)\s]+` no captura. Es decir: los enlaces peor escritos eran justo los
- * invisibles al validador. Se captura todo el paréntesis y se limpia después.
- */
-const ENLACE_RE = /(?<!!)\[[^\]]*\]\(([^)]*)\)/g;
-const IMAGEN_RE = /!\[[^\]]*\]\(([^)]*)\)/g;
-
-/** Normaliza el destino: quita el título opcional y los ángulos de `<ruta>`. */
-function limpiarDestino(d) {
-  let s = d.trim();
-  const conTitulo = s.match(/^(\S+)\s+["'(]/);
-  if (conTitulo) s = conTitulo[1];
-  return s.replace(/^<+|>+$/g, "").trim();
-}
-
-const esExterno = (d) => /^(https?:|mailto:|tel:|ftp:|data:)/i.test(d);
-
-/*
- * Las plantillas canónicas enseñan a rellenar rutas con marcadores: `<ruta>`,
- * `{{destino}}`, `test-summary-report-v[VERSION].md`, o un `...` que significa
- * "y así con las demás". No son enlaces rotos: son el hueco que el autor debe
- * rellenar. Marcarlos convertiría el validador en ruido y la gente aprendería a
- * ignorarlo — que es como muere un gate.
- *
- * Una interpolación de variable —`${CLAUDE_PLUGIN_ROOT}/rules/x.md`— es un caso
- * aparte: no es un hueco por rellenar, es una ruta que se resuelve en tiempo de
- * ejecución (aquí, contra el caché del plugin). No existe en el disco del
- * satélite y no puede comprobarse estáticamente; marcarla como rota es un falso
- * positivo que golpea a todo satélite recién dado de alta, porque su `CLAUDE.md`
- * enlaza así las reglas del plugin.
- */
-const esMarcador = (d) =>
-  /^[<{]/.test(d) || /\[[A-Z_]{2,}\]/.test(d) || /\.\.\.$/.test(d) || /\{\{/.test(d) || /\$\{/.test(d);
 
 /**
  * Slug al estilo GitHub: se parte del texto RENDERIZADO del encabezado, así que
@@ -245,22 +221,6 @@ function anclasDe(content) {
   for (const m of content.matchAll(/<a\s+(?:name|id)="([^"]+)"/g)) anclas.add(m[1]);
   for (const m of content.matchAll(/\bid="([^"]+)"/g)) anclas.add(m[1]);
   return anclas;
-}
-
-/** Todos los destinos enlazados de un documento, ya filtrados. */
-function* destinosDe(content) {
-  const cuerpo = content.replace(/```[\s\S]*?```/g, " ");
-  for (const re of [ENLACE_RE, IMAGEN_RE]) {
-    re.lastIndex = 0;
-    for (const m of cuerpo.matchAll(re)) {
-      // El marcador se juzga sobre el destino CRUDO: `limpiarDestino` quita los
-      // ángulos, y `<ruta-al-prd>` limpio se confunde con una ruta de verdad.
-      if (esMarcador(m[1].trim())) continue;
-      const crudo = limpiarDestino(m[1]);
-      if (!crudo || esExterno(crudo) || esMarcador(crudo)) continue;
-      yield crudo;
-    }
-  }
 }
 
 /**
