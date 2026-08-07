@@ -23,6 +23,11 @@
  *      y la sigla está listada en `suite.yaml.sistemas`.
  *   5. Coherencia: cada sistema de `suite.yaml.sistemas` tiene su `sistema.yaml`.
  *
+ * `suite.yaml` se lee con `lib/suite.mjs`, el lector unico que comparte con
+ * `scaffold-artefactos-fase.mjs`: mientras cada uno traia el suyo, uno aceptaba
+ * `sistemas` solo en flujo y el otro solo en bloque, y ninguna forma servia a los
+ * dos.
+ *
  * Las siglas `Ratificada` se **derivan** del catálogo empaquetado
  * (`reference/architecture/catalogo-sistemas-suite.es.md`), no se cablean. Si el
  * catálogo no viaja en esta copia, la verificación de ratificación se omite con
@@ -34,6 +39,7 @@
 
 import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
 import { join, resolve, dirname } from 'node:path';
+import { yamlPlano, leerSuite, ARCHIVOS_SUITE } from './lib/suite.mjs';
 import { fileURLToPath } from 'node:url';
 
 const RAIZ = process.cwd();
@@ -54,33 +60,6 @@ console.log('━━━ Modelo Suite → Sistema → PRD (S-?? / ADR-0120) ━━
 if (existsSync(join(RAIZ, '.harness', 'catalog.json'))) {
   console.log('  ✔ Este repositorio autora el estándar; no es un satélite. No aplica.');
   process.exit(0);
-}
-
-/** Parser mínimo de un YAML plano: `clave: valor` y `clave: [a, b]`. Un nivel de anidamiento. */
-function yamlPlano(texto) {
-  const raiz = {};
-  let actual = raiz;
-  for (const cruda of texto.split('\n')) {
-    const linea = cruda.replace(/#.*$/, '').replace(/\s+$/, '');
-    if (!linea.trim()) continue;
-    const m = linea.match(/^(\s*)([\w.-]+):\s*(.*)$/);
-    if (!m) continue;
-    const [, sangria, clave, valorCrudo] = m;
-    const valor = valorCrudo.trim();
-    if (sangria.length === 0) {
-      if (valor === '') { actual = raiz[clave] = {}; }
-      else { raiz[clave] = parseValor(valor); actual = raiz; }
-    } else {
-      actual[clave] = parseValor(valor);
-    }
-  }
-  return raiz;
-}
-function parseValor(v) {
-  if (v.startsWith('[') && v.endsWith(']')) {
-    return v.slice(1, -1).split(',').map((x) => x.trim()).filter(Boolean);
-  }
-  return v.replace(/^["']|["']$/g, '');
 }
 
 /** Siglas `Ratificada` derivadas del catálogo empaquetado, si viaja en esta copia. */
@@ -118,7 +97,7 @@ function buscar(nombre, maxDepth = 5) {
 }
 
 // 2. ¿Es una suite multi-sistema?
-const suitePath = ['suite.yaml', 'suite.yml'].map((f) => join(RAIZ, f)).find(existsSync);
+const suitePath = ARCHIVOS_SUITE.map((f) => join(RAIZ, f)).find(existsSync);
 const sistemaPaths = [...buscar('sistema.yaml'), ...buscar('sistema.yml')];
 if (!suitePath && sistemaPaths.length === 0) {
   console.log('  ✔ El satélite no declara Suite ni Sistemas (`suite.yaml`/`sistema.yaml`). No aplica.');
@@ -134,10 +113,10 @@ let suite = null;
 if (!suitePath) {
   warn('Hay `sistema.yaml` pero no `suite.yaml` en la raíz. Una suite se declara con ambos.');
 } else {
-  suite = yamlPlano(readFileSync(suitePath, 'utf-8')).suite ?? {};
+  suite = leerSuite(RAIZ) ?? {};
   if (!suite.id) fail('`suite.yaml`: falta `id` (la sigla de la Suite, p. ej. SCM).');
   if (!suite.nombre) warn('`suite.yaml`: falta `nombre`.');
-  const sistemas = Array.isArray(suite.sistemas) ? suite.sistemas : [];
+  const sistemas = suite.sistemas ?? [];
   if (!sistemas.length) warn('`suite.yaml`: `sistemas` vacío. Una suite sin sistemas no consolida nada.');
   for (const s of sistemas) {
     if (!esRatificada(s)) fail(`\`suite.yaml\`: el sistema \`${s}\` no es una sigla \`Ratificada\` del catálogo (regla 2: no citable en artefactos normativos).`);
@@ -167,7 +146,14 @@ if (suite && Array.isArray(suite.sistemas)) {
 
 // Resumen.
 if (errores.length) {
-  for (const e of errores) console.error(`  ✘ ${e}`);
+  // El simbolo sigue al efecto, no a la gravedad. Sin `--strict` esto NO bloquea
+  // —ADR-0120 §5— y marcarlo con ✘ hacia leer como fallo lo que es un aviso: quien
+  // ve un ✘ en la salida de un commit que paso, o deja de creer al validador o
+  // pierde el tiempo buscando que rompio.
+  for (const e of errores) {
+    if (STRICT) console.error(`  ✘ ${e}`);
+    else console.warn(`  ⚠ ${e}`);
+  }
   for (const a of avisos) console.warn(`  ⚠ ${a}`);
   if (STRICT) { console.error(`\n  ${errores.length} incoherencia(s). --strict activo: bloquea.`); process.exit(1); }
   console.log(`\n  ${errores.length} incoherencia(s), ${avisos.length} aviso(s) (aviso; ADR-0120 §5: gate-able cuando la adopción madure).`);

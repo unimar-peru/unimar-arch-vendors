@@ -140,10 +140,10 @@ Estos agentes especializan a `unimar-dev` y `unimar-ux` por dominio técnico. To
 | :--- | :--- |
 | **Reglas propias** | S-06, S-07, SD-01, SD-04 |
 | **Validadores** | `validate-criterios.mjs`, `validate-docs.mjs` |
-| **Contexto** | Stack agnóstico y Node.js; [ADR-0109](../../reference/architecture/adrs/core/0109-doctrina-ingenieria-frontend-avanzada.es.md), [ADR-0110](../../reference/architecture/adrs/core/0110-sistema-diseno-material-3-tokens.es.md) |
-| **Prohibido** | Prescribir tecnología fuera del stack autorizado sin ADR; incrustar valores crudos en vez de tokens semánticos (P-FE-03). |
+| **Contexto** | Stack agnóstico y Node.js; [ADR-0109](../reference/architecture/adrs/core/0109-doctrina-ingenieria-frontend-avanzada.es.md), [ADR-0110](../reference/architecture/adrs/core/0110-sistema-diseno-material-3-tokens.es.md), [ADR-0131](../reference/architecture/adrs/nodejs/0131-stack-frontend-react-19-router-v8.es.md), [ADR-0165](../reference/architecture/adrs/core/0165-seguridad-frontend-owasp-2025.es.md) |
+| **Prohibido** | Prescribir tecnología fuera del stack autorizado sin ADR (S-07), incluidos los contenedores de estado global de terceros. Incrustar valores crudos en vez de tokens semánticos (P-FE-03). `any`, `@ts-ignore` o `@ts-expect-error` sin justificación escrita (P-FE-05). Tratar como tipado un dato de frontera sin validarlo en runtime (P-FE-06). Memoizar a mano bajo React Compiler (P-FE-07). Derivar estado o cargar datos en `useEffect` (P-FE-08). Decidir autorización en el cliente (P-SEC-01). Poner secretos en el bundle, `VITE_*`/`NEXT_PUBLIC_*` incluidos (P-SEC-02). `dangerouslySetInnerHTML` sin sanear (P-SEC-05). `catch` vacío o fallo abierto (P-SEC-04). Animar ignorando `prefers-reduced-motion` (P-UX-07). |
 
-Principal Frontend Architect. SSE para streaming unidireccional, WebSocket para bidireccional, RxJS para orquestar flujos; Vitest + Playwright en el navegador; arquitectura cliente por capas con limpieza de toda suscripción en el desmontaje.
+Principal Frontend Architect. React 19 con TypeScript estricto y validación en frontera; SSE para streaming unidireccional, WebSocket para bidireccional, RxJS para orquestar flujos; Vitest + Playwright + MSW en el navegador; tokens M3 sobre Tailwind v4 CSS-first; presupuestos de Core Web Vitals medidos en campo; y OWASP Top 10:2025 como marco de seguridad de la capa cliente.
 
 ### RS-UI-UX — `unimar-ui`
 
@@ -151,10 +151,10 @@ Principal Frontend Architect. SSE para streaming unidireccional, WebSocket para 
 | :--- | :--- |
 | **Reglas propias** | S-03, S-06, S-09 |
 | **Validadores** | `validate-docs.mjs` |
-| **Contexto** | [ADR-0110](../../reference/architecture/adrs/core/0110-sistema-diseno-material-3-tokens.es.md); stack agnóstico §3 |
-| **Prohibido** | Entregar UI por debajo de WCAG 2.2 AA; componentes con valores crudos en vez del alias `md.sys.*`. |
+| **Contexto** | [ADR-0110](../reference/architecture/adrs/core/0110-sistema-diseno-material-3-tokens.es.md), [ADR-0165](../reference/architecture/adrs/core/0165-seguridad-frontend-owasp-2025.es.md); stack agnóstico §3 |
+| **Prohibido** | Entregar UI por debajo de WCAG 2.2 AA; componentes con valores crudos en vez del alias `md.sys.*`. Presentar una librería de terceros como implementación oficial de MD3 (P-UX-05). Definir una paleta sin sus roles `on-*` y `*-container` completos, en claro y oscuro (P-UX-06). Animar sin variante bajo `prefers-reduced-motion` (P-UX-07). Un overlay sin trampa de foco, `Escape` y retorno al disparador (P-UX-08). Presentar el ocultar una opción como control de acceso (P-SEC-01). |
 
-Principal UI/UX Design Engineer. Material Design 3, tokens en tres niveles (Style Dictionary) y estados accesibles. Se diferencia de RS-UX: concreta el flujo hasta tokens, anatomía y estados listos para implementar.
+Principal UI/UX Design Engineer. Material Design 3 **como sistema de tokens** —no hay librería web oficial completa—, cadena Style Dictionary → CSS Variables → `@theme` de Tailwind v4, roles de color completos generados con HCT, capas de estado, breakpoints canónicos y accesibilidad WCAG 2.2 AA verificable. Se diferencia de RS-UX: concreta el flujo hasta tokens, anatomía y estados listos para implementar.
 
 ### RS-NODE-BACKEND — `unimar-dev-backend-nodejs`
 
@@ -162,7 +162,7 @@ Principal UI/UX Design Engineer. Material Design 3, tokens en tres niveles (Styl
 | :--- | :--- |
 | **Reglas propias** | S-06, S-07, SD-01, SD-04 |
 | **Validadores** | `validate-criterios.mjs`, `validate-docs.mjs` |
-| **Contexto** | Stack Node.js; [ADR-0002](../../reference/architecture/adrs/nodejs/0002-arquitectura-limpia-nestjs.es.md), [ADR-0112](../../reference/architecture/adrs/core/0112-ampliacion-stack-backend-node.es.md) |
+| **Contexto** | Stack Node.js; [ADR-0002](../reference/architecture/adrs/nodejs/0002-arquitectura-limpia-nestjs.es.md), [ADR-0112](../reference/architecture/adrs/core/0112-ampliacion-stack-backend-node.es.md) |
 | **Prohibido** | Que la capa de dominio importe frameworks; acoplar Kafka/BullMQ sin una capa de puertos; bloquear el event loop con trabajo CPU-bound. |
 
 Principal Backend Engineer (Node.js). Clean Architecture y DDD; NestJS por defecto (Fastify/standalone y Prisma/Mongoose/Kafka por caso de uso).
@@ -173,7 +173,7 @@ Principal Backend Engineer (Node.js). Clean Architecture y DDD; NestJS por defec
 | :--- | :--- |
 | **Reglas propias** | S-06, S-07, SD-01, SD-04 |
 | **Validadores** | `validate-criterios.mjs`, `validate-docs.mjs` |
-| **Contexto** | Stack .NET; [ADR-0041](../../reference/architecture/adrs/dotnet/0041-arquitectura-backend-canonica-dotnet.es.md) |
+| **Contexto** | Stack .NET; [ADR-0041](../reference/architecture/adrs/dotnet/0041-arquitectura-backend-canonica-dotnet.es.md) |
 | **Prohibido** | Contenedores IoC ajenos en módulos ASP.NET Core; EF Core en la capa de dominio; excepciones como control de flujo. |
 
 Staff Architect (.NET 10 LTS / C# 14). Clean Architecture, CQRS, Native AOT y Minimal APIs; inmutabilidad con `record` y errores como valor con OneOf/Result.
@@ -184,7 +184,7 @@ Staff Architect (.NET 10 LTS / C# 14). Clean Architecture, CQRS, Native AOT y Mi
 | :--- | :--- |
 | **Reglas propias** | S-06, S-07, S-09 |
 | **Validadores** | `validate-docs.mjs` |
-| **Contexto** | [ADR-0111](../../reference/architecture/adrs/core/0111-arquitectura-datos-postgresql.es.md), [ADR-0010](../../reference/architecture/adrs/core/0010-estrategia-arquitectura-multitenant.es.md); stack agnóstico §4 |
+| **Contexto** | [ADR-0111](../reference/architecture/adrs/core/0111-arquitectura-datos-postgresql.es.md), [ADR-0010](../reference/architecture/adrs/core/0010-estrategia-arquitectura-multitenant.es.md); stack agnóstico §4 |
 | **Prohibido** | Habilitar RLS como control de aislamiento o de seguridad; delegar el aislamiento por sucursal fuera de RBAC/ABAC de la capa de aplicación. |
 
 Principal Database Architect (PostgreSQL). Índices, particionado, alta disponibilidad, políglota (Mongo/Redis/JSONB) y postura cloud; la seguridad por sucursal vive en aplicación (ADR-0010).

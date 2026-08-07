@@ -25,7 +25,13 @@
  *   3. Auditoría de dependencias del stack (`npm audit` / `dotnet list
  *      --vulnerable`), cuando el repositorio declara un manifiesto de paquetes.
  *   4. Umbral de coverage, cuando hay pruebas.
- *   5. Formato de commits (commitlint / hook `commit-msg`).
+ *   5. Formato de commits (commitlint), por configuración o por invocación real.
+ *
+ * El cableado se busca en los hooks **y en los scripts a los que delegan**: un
+ * hook fino que llama a un orquestador (`scripts/verify-local.sh`) cablea el
+ * gate igual que si lo escribiera en línea. Se busca en lo que esos scripts
+ * **ejecutan**, no en lo que mencionan: un comentario no cablea nada, y darlo por
+ * bueno convierte el aviso en un gate que miente (SD-05).
  *
  * Uso: node <estandar>/scripts/validate-gates-locales.mjs [--strict] [--verbose]
  * Salida: 0 (aviso) salvo con --strict y algún gate aplicable ausente.
@@ -55,30 +61,99 @@ if (existsSync(join(RAIZ, '.harness', 'catalog.json'))) {
   process.exit(0);
 }
 
-/** Contenido concatenado de los hooks de `.husky/`, para buscar cableados. */
+/*
+ * Contenido de los hooks de `.husky/` **y de los scripts a los que delegan**.
+ *
+ * Un hook fino que invoca a un orquestador —`bash scripts/verify-local.sh
+ * prepush`— es la forma que el propio ADR-0106 §2.1 describe, no una excepción.
+ * Buscar el cableado solo dentro de `.husky/` daba en rojo a satélites que sí
+ * ejecutan el gate, un nivel más abajo: el caso que lo levantó fue `unimar-ums`,
+ * cuyo `npm audit` y `dotnet list --vulnerable` viven en `verify-local.sh`
+ * (G-242 de ese satélite). Se sigue la delegación dos saltos —cuanto anida un
+ * orquestador real— con un conjunto de visitados que corta los ciclos.
+ */
 function hooks() {
   const dir = join(RAIZ, '.husky');
   if (!existsSync(dir)) return '';
+  const vistos = new Set();
+  const leer = (p) => { try { return statSync(p).isFile() ? readFileSync(p, 'utf-8') : ''; } catch { return ''; } };
+  // Rutas de script invocables citadas en el texto; `\b` evita que `.js` muerda `package.json`.
+  const RUTA_RE = /(?:^|[\s"'(=])\.?\/?((?:[\w.-]+\/)*[\w.-]+\.(?:sh|bash|mjs|cjs|js)\b)/g;
   let out = '';
+  const seguir = (texto, prof) => {
+    if (prof > 2) return;
+    for (const m of texto.matchAll(RUTA_RE)) {
+      const rel = m[1];
+      if (vistos.has(rel)) continue;
+      vistos.add(rel);
+      const contenido = existsSync(join(RAIZ, rel)) ? leer(join(RAIZ, rel)) : '';
+      if (!contenido) continue;
+      detalle(`hook → ${rel}`);
+      out += contenido + '\n';
+      seguir(contenido, prof + 1);
+    }
+  };
   for (const e of readdirSync(dir)) {
-    const p = join(dir, e);
-    try { if (statSync(p).isFile()) out += readFileSync(p, 'utf-8') + '\n'; } catch { /* ignore */ }
+    const contenido = leer(join(dir, e));
+    if (!contenido) continue;
+    out += contenido + '\n';
+    seguir(contenido, 1);
   }
   return out;
 }
 const HOOKS = hooks();
 
-/** Búsqueda acotada (profundidad limitada) de un archivo que cumpla `test`. */
-function existeArchivo(test, maxDepth = 3) {
-  const IGNORAR = new Set(['node_modules', '.git', '_bmad', '_bmad-output', 'dist', 'build', 'coverage', '.estandar']);
+/*
+ * Lo que los hooks EJECUTAN, sin lo que solo mencionan.
+ *
+ * Los gates se detectaban buscando el nombre de la herramienta en el texto
+ * completo de los hooks, comentarios incluidos. Un comentario no ejecuta nada:
+ * `# Ejemplo: npx commitlint --edit "$1"` daba el gate por cableado, y la
+ * plantilla `husky-commit-msg.sh` que este mismo estandar reparte lleva
+ * exactamente esa linea. El resultado era que todo satelite que materializaba la
+ * plantilla pasaba el gate de formato de commits sin tener commitlint: el
+ * validador leia su propia sugerencia y la tomaba por evidencia (SD-05).
+ *
+ * Se eliminan los comentarios de shell --un `#` a principio de linea o precedido
+ * de espacio-- antes de buscar cualquier cableado. Es la regla del interprete, no
+ * un analisis lexico completo: un `#` dentro de una cadena entrecomillada tambien
+ * se corta. La asimetria es deliberada, porque los dos errores no cuestan igual:
+ * perder un cableado real escrito dentro de una cadena degrada el gate a un aviso
+ * ruidoso, mientras que aceptar un comentario lo convierte en un gate que miente.
+ */
+const HOOKS_EJEC = HOOKS
+  .split('\n')
+  .map((l) => l.replace(/(^|\s)#.*$/, '$1'))
+  .join('\n');
+
+/*
+ * Búsqueda acotada de un archivo que cumpla `test`.
+ *
+ * La profundidad era 3, y con eso un monorepo real quedaba fuera de alcance:
+ * `src/apps/<app>/<Proyecto>.Test/<Proyecto>.Test.csproj` está a cuatro, de modo
+ * que en `unimar-ums` el gate de coverage salía «sin pruebas detectadas» —
+ * infravalorar un gate presente es la misma ceguera que G-242, medida por la
+ * forma del árbol en vez de por el hecho. Se sube a 6, que cubre la raíz de
+ * fuente (ADR-0107) más tres niveles de proyecto, y se acota por dos vías que no
+ * dependen del tamaño del repositorio: la lista de directorios que nunca
+ * contienen fuente y un presupuesto de directorios visitados. La búsqueda corta
+ * en cuanto acierta; el presupuesto solo lo consume la respuesta negativa.
+ */
+function existeArchivo(test, maxDepth = 6) {
+  const IGNORAR = new Set([
+    'node_modules', '.git', '_bmad', '_bmad-output', 'dist', 'build', 'coverage', '.estandar',
+    'bin', 'obj', 'out', 'target', 'vendor', 'TestResults', '.next', '.nx', '.turbo',
+    '.venv', 'venv', '__pycache__', '.gradle', 'Pods',
+  ]);
+  let presupuesto = 20000;
   const pila = [[RAIZ, 0]];
-  while (pila.length) {
+  while (pila.length && presupuesto-- > 0) {
     const [dir, prof] = pila.pop();
     let entradas;
     try { entradas = readdirSync(dir, { withFileTypes: true }); } catch { continue; }
     for (const e of entradas) {
       if (e.isDirectory()) {
-        if (prof < maxDepth && !IGNORAR.has(e.name)) pila.push([join(dir, e.name), prof + 1]);
+        if (prof < maxDepth && !IGNORAR.has(e.name) && !e.name.startsWith('.')) pila.push([join(dir, e.name), prof + 1]);
       } else if (test(e.name)) {
         return true;
       }
@@ -96,7 +171,7 @@ if (hay(join('.husky', 'pre-commit'))) {
 
 // 2. Escáner de secretos (gitleaks).
 const gitleaksConfig = hay('.gitleaks.toml') || hay('.gitleaksignore') || hay(join('.github', 'gitleaks.toml'));
-if (gitleaksConfig || /gitleaks/i.test(HOOKS)) {
+if (gitleaksConfig || /gitleaks/i.test(HOOKS_EJEC)) {
   pass('Escáner de secretos (gitleaks) configurado o cableado.');
 } else {
   warn('Sin escáner de secretos local. Configura gitleaks (baseline `.gitleaks.toml`) y cablealo en un hook (ADR-0106 §2.1).');
@@ -106,7 +181,7 @@ if (gitleaksConfig || /gitleaks/i.test(HOOKS)) {
 const tienePackageJson = existeArchivo((n) => n === 'package.json');
 const tieneDotnet = existeArchivo((n) => n.endsWith('.csproj') || n.endsWith('.sln') || n.endsWith('.slnx'));
 if (tienePackageJson || tieneDotnet) {
-  const auditCableado = /npm audit|pnpm audit|yarn audit|dotnet list .*--vulnerable|osv-scanner/i.test(HOOKS);
+  const auditCableado = /npm audit|pnpm audit|yarn audit|dotnet list .*--vulnerable|osv-scanner/i.test(HOOKS_EJEC);
   if (auditCableado) {
     pass('Auditoría de dependencias cableada en un hook.');
   } else {
@@ -121,7 +196,7 @@ if (tienePackageJson || tieneDotnet) {
 const tienePruebas = existeArchivo((n) => /\.(test|spec)\.[cm]?[jt]sx?$/.test(n))
   || existeArchivo((n) => n.endsWith('.Tests.csproj') || n.endsWith('.Test.csproj'));
 if (tienePruebas) {
-  const umbral = /coverageThreshold|--collect-coverage|coverlet|Threshold|--coverage/i.test(HOOKS)
+  const umbral = /coverageThreshold|--collect-coverage|coverlet|Threshold|--coverage/i.test(HOOKS_EJEC)
     || hay('.nycrc') || hay('.nycrc.json')
     || /coverageThreshold|coverage/i.test(leer('package.json'));
   if (umbral) {
@@ -136,8 +211,17 @@ if (tienePruebas) {
 // 5. Formato de commits (commitlint).
 const commitlintConfig = ['commitlint.config.js', 'commitlint.config.mjs', 'commitlint.config.cjs', '.commitlintrc', '.commitlintrc.json', '.commitlintrc.js']
   .some((f) => hay(f));
-if (commitlintConfig || hay(join('.husky', 'commit-msg')) || /commitlint/i.test(HOOKS)) {
-  pass('Formato de commits validado en local (commitlint / hook `commit-msg`).');
+/*
+ * La mera existencia de `.husky/commit-msg` NO cuenta. El hook `commit-msg` que
+ * reparte este estandar comprueba las referencias del mensaje (SD-02), que es
+ * otra cosa que su formato: un satelite podia tenerlo y aceptar igualmente
+ * cualquier mensaje. Se exige la evidencia real: un archivo de configuracion de
+ * commitlint, o una invocacion suya en lo que los hooks ejecutan.
+ */
+if (commitlintConfig || /commitlint/i.test(HOOKS_EJEC)) {
+  pass('Formato de commits validado en local (commitlint).');
+} else if (hay(join('.husky', 'commit-msg'))) {
+  warn('Hay `.husky/commit-msg`, pero no valida el FORMATO del mensaje: el hook del estandar comprueba las referencias (SD-02), no Conventional Commits. Cablea commitlint en el (ADR-0106 §2.1).');
 } else {
   warn('Sin validación de formato de commits. Cablea commitlint en un hook `commit-msg` (Conventional Commits) (ADR-0106 §2.1).');
 }

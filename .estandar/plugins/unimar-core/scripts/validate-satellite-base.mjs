@@ -85,6 +85,17 @@ function log(message, type = 'info') {
  */
 const IGNORAR = new Set(['node_modules', '_bmad', '_bmad-output', 'license']);
 
+/**
+ * Un artefacto pre-creado por el alta del satelite y aun sin redactar.
+ *
+ * Se reconoce por los dos rastros que deja el andamiaje y que desaparecen en cuanto
+ * alguien escribe el documento. Se exigen LOS DOS para no eximir a un documento real
+ * que solo cite ADR-0149.
+ */
+function esAndamioDelAlta(contenido) {
+  return contenido.includes('Generado por el alta:') && /B[oó]rrame y redact/i.test(contenido);
+}
+
 function getAllMdFiles(dir, baseDir = dir) {
   const files = [];
   try {
@@ -188,6 +199,18 @@ function validateFile(file) {
       if (['S02', 'S03', 'S04', 'S05'].includes(ruleId) && isPortada) {
         continue;
       }
+
+      /*
+       * Andamio del alta (ADR-0149): el propio estandar pre-crea el artefacto en su ruta
+       * canonica con un «borrame y redacta» y sin secciones numeradas, y luego este
+       * validador se las exige. Es el mismo caso que la cabecera ya declara para `_bmad`
+       * —«reportar un problema que su autor no escribio y no puede arreglar»—, salvo que
+       * aqui el autor es el estandar. Se salta hasta que se redacte: en cuanto alguien
+       * escriba dentro, los marcadores desaparecen con el y las reglas vuelven a regir.
+       */
+      if (['S02', 'S13'].includes(ruleId) && esAndamioDelAlta(content)) {
+        continue;
+      }
       if (!rigeEn(ruleId, tipo)) {
         continue;
       }
@@ -272,7 +295,7 @@ function validateFile(file) {
     const tableNav = content.includes('[Volver a tabla');
     const navigacion = content.toLowerCase().includes('tabla de navegación');
 
-    if (!tableNav && !navigacion && !isPortada) {
+    if (!tableNav && !navigacion && !isPortada && !esAndamioDelAlta(content)) {
       fileIssues.push({
         rule: 'S02',
         severity: 'medium',
@@ -280,7 +303,7 @@ function validateFile(file) {
       });
     }
 
-    if (!content.includes('Historial de Cambios')) {
+    if (!content.includes('Historial de Cambios') && !esAndamioDelAlta(content)) {
       fileIssues.push({
         rule: 'S13',
         severity: 'low',
