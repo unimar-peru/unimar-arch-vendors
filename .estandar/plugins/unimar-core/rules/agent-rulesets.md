@@ -1,7 +1,10 @@
 # Rulesets de Agentes BMAD
 
+<!-- vigencia: revisar-antes-de=2027-02-09 -->
+
+> Vigencia: revisar antes del 2027-02-09 — norma publicada, repaso semestral (S-35, [ADR-0196](../reference/architecture/adrs/core/0196-la-vigencia-se-declara-donde-puede-sostenerse-verdadera.es.md), `Aceptado`: es la decisión que crea S-35).
 > **Propietario:** Architecture Board
-> **Alcance:** Los doce agentes de Unimar (7 de ciclo SDLC + 5 especialistas de ingeniería), en `unimar_arch` y en todo satélite.
+> **Alcance:** Los trece agentes de Unimar (7 de ciclo SDLC + 6 especialistas de ingeniería), en `unimar_arch` y en todo satélite.
 > **Regla de herencia:** S-21
 
 Cada agente BMAD tiene un **ruleset**: las reglas que le vinculan, los validadores que debe ejecutar y lo que tiene prohibido hacer. La fuente única es [`../agents/agent-base-config.json`](https://github.com/unimar-peru/unimar_arch/blob/main/.harness/agents/agent-base-config.json); este documento es su lectura humana.
@@ -46,6 +49,7 @@ Cada agente tiene un **alias** (codename por afinidad de característica con el 
 | `unimar-dev-backend-nodejs` | Hal (Green Lantern) | Backend Node.js |
 | `unimar-dev-backend-dotnet` | Tony (Iron Man) | Backend .NET |
 | `unimar-dba-postgresql` | Arthur (Aquaman) | Data / PostgreSQL |
+| `unimar-dba-sqlserver` | Namor (Sub-Mariner) | Data / SQL Server |
 | `unimar-tech-writer` | Barbara (Oracle) | Redactor técnico |
 | `unimar-builder` | Victor (Cyborg) | Constructor de tooling |
 
@@ -188,6 +192,19 @@ Staff Architect (.NET 10 LTS / C# 14). Clean Architecture, CQRS, Native AOT y Mi
 | **Prohibido** | Habilitar RLS como control de aislamiento o de seguridad; delegar el aislamiento por sucursal fuera de RBAC/ABAC de la capa de aplicación. |
 
 Principal Database Architect (PostgreSQL). Índices, particionado, alta disponibilidad, políglota (Mongo/Redis/JSONB) y postura cloud; la seguridad por sucursal vive en aplicación (ADR-0010).
+
+### RS-BD-SQLSERVER — `unimar-dba-sqlserver`
+
+| | |
+| :--- | :--- |
+| **Reglas propias** | S-06, S-07, S-09 |
+| **Validadores** | `validate-docs.mjs` |
+| **Contexto** | [ADR-0051](../reference/architecture/adrs/core/0051-estrategia-motor-base-datos-empresarial.es.md), [ADR-0054](../reference/architecture/adrs/core/0054-estandares-diseno-normalizacion-base-datos.es.md), [ADR-0010](../reference/architecture/adrs/core/0010-estrategia-arquitectura-multitenant.es.md); stack agnóstico §4 |
+| **Prohibido** | Habilitar RLS como control de aislamiento o de seguridad; dejar un constraint o un índice con nombre autogenerado; declarar una columna de fecha-hora sin offset cuando la zona es un hecho del dato. |
+
+Principal Database Architect (SQL Server). Identidad y clustering, tipos exactos, tiempo con offset, índices justificados con **plan real**, concurrencia, alta disponibilidad y respaldo probado. Es el motor obligatorio del perfil .NET ([ADR-0051](../reference/architecture/adrs/core/0051-estrategia-motor-base-datos-empresarial.es.md), `Aceptado`), y [ADR-0227](https://github.com/unimar-peru/unimar_arch/blob/main/reference/architecture/adrs/core/0227-el-motor-pasa-a-sql-server-y-la-capa-que-lo-desacopla-se-ratifica.es.md) —en `Borrador`— es donde se midió la traducción del dialecto y el piso de versión.
+
+**Por qué existe aparte de `RS-BD-POSTGRESQL`:** no es el mismo oficio con otra sintaxis. `EXPLAIN (ANALYZE, BUFFERS)` no existe, las familias de índice son otras, `ON CONFLICT` se vuelve `MERGE … WITH (HOLDLOCK)` y el GUID como clave clustered fragmenta la tabla en un motor y no en el otro. Un agente que traduzca al vuelo acierta en la sintaxis y falla en la decisión. La seguridad por sucursal **no** cambia de sitio: sigue en RBAC/ABAC de aplicación ([ADR-0010](../reference/architecture/adrs/core/0010-estrategia-arquitectura-multitenant.es.md)).
 
 ---
 

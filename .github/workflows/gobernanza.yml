@@ -82,6 +82,53 @@ jobs:
         continue-on-error: true
         run: node "$UNIMAR_CORE/scripts/validate-satellite-base.mjs"
 
+      # Los validadores que llegan con unimar-core-1.90.0. Se encadenan porque
+      # adoptar una regla cuya puerta no corre es lo que ADR-0184 impide: aqui
+      # el triaje de DECISIONS.md dice `Adopt` de diecisiete reglas, y esto es
+      # lo que sostiene esa palabra.
+      - name: Numeracion de identificadores entre ramas (S-26)
+        run: node "$UNIMAR_CORE/scripts/validate-identificadores.mjs"
+
+      - name: Numeracion de ADR entre ramas (S-26)
+        run: node "$UNIMAR_CORE/scripts/validate-adr-numeracion.mjs"
+
+      - name: La vinculacion al estandar esta declarada (S-28)
+        run: node "$UNIMAR_CORE/scripts/validate-vinculacion-estandar.mjs"
+
+      - name: El dato personal no llega al log (S-34)
+        run: node "$UNIMAR_CORE/scripts/validate-redaccion-log.mjs"
+
+      - name: La vigencia se declara donde puede sostenerse (S-35)
+        run: node "$UNIMAR_CORE/scripts/validate-vigencia.mjs"
+
+      - name: La senal declara cuanto dura y quien la altera (S-36)
+        run: node "$UNIMAR_CORE/scripts/validate-retencion-senal.mjs"
+
+      - name: El analizador estatico se declara por runtime (S-37)
+        run: node "$UNIMAR_CORE/scripts/validate-analisis-estatico.mjs"
+
+      - name: El ambito de runtime de un ADR se declara (S-38)
+        run: node "$UNIMAR_CORE/scripts/validate-ambito-runtime.mjs"
+
+      - name: El PRD y la historia tecnica declaran sus secciones (S-39)
+        run: node "$UNIMAR_CORE/scripts/validate-secciones-prd-historia-tecnica.mjs"
+
+      - name: El Blueprint dice que pasa si una dependencia cae (S-42)
+        run: node "$UNIMAR_CORE/scripts/validate-comportamiento-degradado.mjs"
+
+      - name: Ningun artefacto lleva una credencial dentro (S-43)
+        run: node "$UNIMAR_CORE/scripts/validate-credencial-en-artefacto.mjs"
+
+      # AVISO, no puerta. Este repositorio no autora ADRs: los 41 que hay bajo
+      # `estandar/` son la copia curada del corpus de Unimar, y su indice es un
+      # SUBCONJUNTO deliberado. El validador mide omisiones contra el disco y
+      # denuncia cinco, que aqui no son un indice que miente sino una curaduria
+      # que no se declara como tal. Mientras esa decision no se tome, bloquear
+      # con ella seria acusar a este repositorio de cumplir su proposito (G-016).
+      - name: Estado y supersesion de los ADR del espejo (S-27, S-29, aviso)
+        continue-on-error: true
+        run: node "$UNIMAR_CORE/scripts/validate-adr-status.mjs" estandar/reference/architecture/adrs
+
       - name: Las reglas de herencia estan triajadas (S-15, S-16)
         run: node "$UNIMAR_CORE/scripts/validate-triaje.mjs"
 

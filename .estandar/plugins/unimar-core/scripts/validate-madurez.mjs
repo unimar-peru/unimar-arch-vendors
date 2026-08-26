@@ -28,6 +28,8 @@ import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { celdas } from './lib/tabla.mjs';
 import { leerTipo } from './lib/tipo.mjs';
+import { validarPuertaControles } from './lib/puerta-controles.mjs';
+import { validarObjetoMedido } from './lib/objeto-medido.mjs';
 
 /*
  * El mismo archivo corre desde dos sitios: `.harness/scripts/` en el repositorio
@@ -71,6 +73,12 @@ const fail = (m) => errors.push(m);
  * Sigue sin poder juzgar si la prueba SOSTIENE lo que afirma —eso es lectura
  * humana—, pero ya no acepta una afirmación que no apunte a ninguna parte. Es
  * el mínimo exigible por SD-05: la evidencia precede a la afirmación.
+ *
+ * Ese límite se estrecha en UNA clase concreta desde 2026-08-08 (G-169,
+ * ADR-0179): la evidencia que apunta a un documento que mide OTRO objeto. Lo
+ * juzga `lib/objeto-medido.mjs` abriendo el destino. No convierte al validador
+ * en lector: solo le quita la ceguera que dejó transcribir la puntuación de la
+ * arquitectura objetivo como si midiera lo construido.
  */
 const RE_ENLACE = /\[[^\]]+\]\([^)]+\)/;
 const RE_CENSO = /<!--\s*censo:/;
@@ -147,6 +155,8 @@ const sdlc = parseTable(lines, /^\|\s*Fase\s*\|/);
 
 const nArq = validar(arq, 'Arquitectónica');
 const nSdlc = validar(sdlc, 'SDLC');
+const puerta = validarPuertaControles(lines, arq, { fail });
+validarObjetoMedido([...(arq ?? []), ...(sdlc ?? [])], { fail });
 
 if (errors.length) {
   console.error('━━━ Medición de Madurez (S-19) ━━━');

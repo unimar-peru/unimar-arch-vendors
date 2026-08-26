@@ -1,0 +1,73 @@
+{
+  "_comment": "PISO NORMATIVO del analisis estatico por runtime. S-23 ya obliga al satelite a cablear en local «linters/SAST del stack» y ADR-0056 D2/D3/D4 ya fija las reglas y los cuatro umbrales de R4; lo que faltaba era el ejecutor. `validate-gates-locales.mjs`, unico ejecutor de S-23, implementa CINCO gates --puerta local, gitleaks, auditoria de dependencias, coverage y commitlint-- y NINGUNO de ellos es el linter. Este dato es el piso contra el que se juzga la declaracion que ADR-0210 domicilia en DECISIONS.md.",
+  "_comentarioMedicion": "MEDIDO el 2026-08-10 sobre la organizacion real con `gh api search/code`, no de memoria (SD-05). Las tres fichas que originan esta decision describian mal su defecto: (a) G-142 decia «no existen como configuracion en ningun repositorio» y es falso -- `unimar-shells/eslint.config.mjs` declara `complexity: ['error', 19]`, uno de los cuatro umbrales de D4, como ERROR y su CI lo invoca; lo cierto es que UNO de los cuatro esta configurado y a 19 en vez de a 10, y que `max-lines-per-function`, `max-params`, `max-depth` y `no-magic-numbers` dan CERO configuraciones en toda la organizacion -- sus unicas apariciones son ADR-0056 y su espejo publicado. (b) G-178 decia que la compuerta de fronteras «no existe en ningun repositorio de la suite» y es falso -- `unimar-scm/eslint.config.mjs` impone `@nx/enforce-module-boundaries` como ERROR mas cinco patrones de `no-restricted-imports` y cinco de `no-restricted-syntax` que cubren tambien el `import()` dinamico, y `.github/workflows/gobernanza.yml` lo invoca con `npx nx run-many -t lint`. (c) G-141 decia que en C# «nadie puede fallar» y es falso -- `unimar-shells/Directory.Build.props` declara `EnableNETAnalyzers`, `AnalysisLevel latest`, `Nullable enable` y `TreatWarningsAsErrors`, y `unimar-scm/src/services/mdm/Directory.Build.props` declara `SonarAnalyzer.CSharp` con `TreatWarningsAsErrors`. Lo que SI se sostiene de G-141 es la mitad que mira al corpus: `stack-tecnologico-autorizado-dotnet.es.md` da CERO en los ocho terminos `linting`, `analizador`, `analyzer`, `roslyn`, `stylecop`, `sonar`, `nullable` y `editorconfig`, y la columna .NET de ADR-0056 D3 esta vacia en cinco de sus seis filas.",
+  "_comentarioDefectoReal": "El defecto medido NO es la ausencia de analizadores: es que TRES satelites eligieron TRES configuraciones distintas sin que el estandar lo sepa, no lo pueda contrastar y no lo pueda citar. `unimar-shells` usa los analizadores de .NET con `TreatWarningsAsErrors`; `unimar-scm` usa SonarAnalyzer.CSharp con `TreatWarningsAsErrors`; `unimar-ums` usa SonarAnalyzer.CSharp como AVISO y NO TIENE NINGUN WORKFLOW --su `.github/` contiene solo `CODEOWNERS`--, de modo que su analizador no lo invoca ninguna puerta remota. Un estandar que no sabe cual es la respuesta de cada repositorio no puede converger, y lo primero que hace falta no es elegir la herramienta sino SABER cual usa cada uno.",
+  "version": 1,
+  "adr": "0210",
+  "regla": "S-37",
+  "_comentarioRuntimes": "Las tres filas son FIJAS, una por runtime autorizado de ADR-0040 §A, y no se derivan del arbol: derivarlas haria que un repositorio sin codigo de un runtime callara esa fila, que es exactamente el defecto de «por senal» que ADR-0197 cerro. `no-presente` es una respuesta, no un silencio, y ADEMAS SE CONTRASTA: si el arbol tiene ficheros de ese runtime, `no-presente` es una mentira y la puerta se pone roja. Las extensiones son el censo; los directorios excluidos evitan el falso positivo del paquete montado (ADR-0174, G-347) y de las dependencias instaladas.",
+  "runtimes": [
+    {
+      "id": "nodejs",
+      "titulo": "Node.js / TypeScript",
+      "extensiones": [".ts", ".tsx", ".mts", ".cts", ".js", ".mjs", ".cjs", ".jsx"],
+      "fundamento": "ADR-0040 §A; stack-tecnologico-autorizado-nodejs.es.md linea 34 («Linting y Formateo» -> ESLint v10 + Prettier v3); ADR-0056 D3 columna Node.js y D4",
+      "estandarDeclara": "Si. El stack de Node nombra ESLint, y ADR-0056 D3/D4 nombra las nueve reglas concretas que le corresponden."
+    },
+    {
+      "id": "dotnet",
+      "titulo": ".NET / C#",
+      "extensiones": [".cs", ".csproj", ".sln", ".slnx", ".vbproj", ".fsproj"],
+      "fundamento": "ADR-0040 §A; stack-tecnologico-autorizado-dotnet.es.md (categoria «Formateo» -> CSharpier, SIN categoria de linting); ADR-0056 D3 columna .NET y D6",
+      "estandarDeclara": "No. La columna .NET de ADR-0056 D3 esta vacia en cinco de sus seis filas y el stack .NET no nombra analizador alguno: G-141 sigue abierta y esta fila es donde su ausencia se hace visible en cada repositorio en vez de quedar en un documento que nadie lee."
+    },
+    {
+      "id": "android",
+      "titulo": "Android / Kotlin",
+      "extensiones": [".kt", ".kts", ".gradle"],
+      "fundamento": "ADR-0040 §A; stack-tecnologico-autorizado-android.es.md linea 35 («Linting» -> Detekt + ktlint); ADR-0056 D3 columna Android y D4",
+      "estandarDeclara": "Si. El stack de Android nombra Detekt y ktlint, y ADR-0056 D3/D4 nombra las nueve reglas de Detekt que le corresponden. Ningun repositorio de la organizacion tiene hoy codigo Kotlin: `filename:detekt.yml` da 0 y no hay ningun `.kt` medido el 2026-08-10."
+    }
+  ],
+  "_comentarioDirectoriosExcluidos": "Ningun barrido cuenta lo que no es corpus del repositorio. `.estandar` es el paquete publicado que el CI monta DENTRO de la fuente (ADR-0174, G-347): contar sus `.mjs` haria que todo satelite declarase `nodejs` presente por tener el estandar instalado, que es la acusacion mas absurda posible.",
+  "directoriosExcluidos": [
+    "node_modules", ".git", ".estandar", "dist", "build", "coverage", "bin", "obj", "out",
+    "target", "vendor", "TestResults", ".next", ".nx", ".turbo", ".venv", "venv",
+    "__pycache__", ".gradle", "Pods", "_bmad", "_bmad-output", ".claude", ".worktrees"
+  ],
+  "_comentarioSeveridad": "Vocabulario CERRADO. `bloquea` es la unica respuesta que no cuesta una ficha, y es deliberado: es la conducta que S-23 ya ordena. `avisa` y `sin-analizador` son declaraciones honestas de incumplimiento y EXIGEN un `G-NNN` abierto en la misma celda -- mecanica de S-32: la declaracion de ausencia CADUCA con su pendiente. Sin ese precio, `avisa` seria la casilla que todos rellenan el primer dia y nadie vuelve a mirar, que es exactamente el estado de `unimar-ums` hoy: SonarAnalyzer.CSharp instalado, en modo aviso, y ni un workflow que lo ejecute.",
+  "vocabularioSeveridad": {
+    "bloquea": "El analizador corre y su hallazgo detiene el trabajo. Es lo que S-23 ordena.",
+    "avisa": "El analizador corre y no detiene nada. Legitimo mientras se salda deuda heredada -- encender la puerta de golpe sobre codigo existente acusa a todo el mundo el primer dia (ADR-0160 §1.4)-- y EXIGE `G-NNN` abierto en la misma celda.",
+    "sin-analizador": "Hay codigo de ese runtime y ningun analizador estatico. EXIGE `G-NNN` abierto en la misma celda. Es la respuesta que el propio nucleo da hoy sobre sus 118 ficheros Node (G-433).",
+    "no-presente": "No hay codigo de ese runtime en este repositorio. SE CONTRASTA con el censo del arbol: si lo hay, la puerta se pone roja."
+  },
+  "severidadConHerramienta": ["bloquea", "avisa"],
+  "severidadExigePendiente": ["avisa", "sin-analizador"],
+  "_comentarioUmbrales": "ADR-0056 D4 fija cuatro umbrales para R4 y CA-6 declara que ninguno es ejecutable porque «la configuracion no existe en ningun repositorio». Medido el 2026-08-10, uno si existe -- `complexity` a 19 en `unimar-shells`-- y los otros tres a cero. La columna `Umbrales` no exige adoptar 50/3/10/3: exige DECIR si se adoptan. `propios` es legitimo y cuesta una ficha, que es justo lo que `unimar-shells` ya hizo por escrito en su propia configuracion cuando fijo 19 en vez de 10 «porque un gate que nace en rojo se aprende a saltar». Convertir esa decision razonada en una acusacion seria la puerta que ADR-0160 §1.4 prohibe.",
+  "vocabularioUmbrales": {
+    "estandar": "Los cuatro umbrales de ADR-0056 D4 rigen sin desviacion. Solo cabe con severidad `bloquea` o `avisa`: sin analizador no hay umbral que aplicar.",
+    "propios": "Los umbrales efectivos se apartan de D4, o el analizador no los expresa. EXIGE `G-NNN` abierto en la misma celda.",
+    "no-presente": "No hay codigo de ese runtime. Solo cabe con severidad `no-presente`."
+  },
+  "umbralesExigePendiente": ["propios"],
+  "umbralesR4": [
+    { "metrica": "Lineas por funcion", "umbral": "> 50", "eslint": "max-lines-per-function", "detekt": "LongMethod", "configuracionesMedidas": 0 },
+    { "metrica": "Parametros", "umbral": "> 3", "eslint": "max-params", "detekt": "LongParameterList", "configuracionesMedidas": 0 },
+    { "metrica": "Complejidad ciclomatica", "umbral": "> 10", "eslint": "complexity", "detekt": "CyclomaticComplexMethod", "configuracionesMedidas": 1 },
+    { "metrica": "Profundidad de anidamiento", "umbral": "> 3", "eslint": "max-depth", "detekt": "NestedBlockDepth", "configuracionesMedidas": 0 }
+  ],
+  "_comentarioOlas": "DOS OLAS, y la segunda NO se arma sola. Armarla es un acto explicito del propietario --un PR que cambie `OLA_2_ARMADA` en el ejecutor--, no una fecha que se dispara sola y explota en manos de quien pase ese dia (ADR-0188, y el mismo reparto que ADR-0196 §2.7 y ADR-0197 §2.5). La ola no armada NO queda en silencio: el ejecutor la censa en cada ejecucion y el pendiente tiene ficha (G-435).",
+  "olas": {
+    "1": {
+      "alcance": ["unimar_arch"],
+      "armada": true,
+      "porQue": "Es el repositorio que autora la norma, y aqui la ola 1 NO es vacua: el nucleo tiene 118 ficheros `.mjs`/`.js` --49 en `.harness/scripts`, 43 en `.harness/test`, 21 en `.harness/scripts/lib`, 3 en `tools/` y 2 en un informe-- que son los validadores con los que juzga a toda la suite, y CERO analizadores estaticos sobre ellos. La ola 1 obliga al nucleo a escribirlo (G-433) en vez de a que siga sin constar."
+    },
+    "2": {
+      "alcance": ["unimar-scm", "unimar-shells", "unimar-ums", "unimar-tablero-sdlc", "unimar-arch-vendors"],
+      "armada": false,
+      "porQue": "Los cinco reciben la norma el dia que se publique el plugin y ninguno tiene hoy el bloque: armarla ahora pondria en rojo cinco CI a la vez por un artefacto que nadie ha podido escribir todavia (ADR-0160 §1.4). Y hay una razon medida para esperar en vez de forzar: TRES de los cinco ya tienen analizador y cableado --`unimar-scm` y `unimar-shells` con puerta bloqueante en `gobernanza.yml`, `unimar-ums` con analizador en modo aviso y sin ningun workflow--, asi que la ola 2 sera mayormente una TRANSCRIPCION, no una adopcion. `unimar-tablero-sdlc` consta `sin-integrar` desde el 2026-08-09 (G-404, ADR-0201) y no se cuenta como satelite conforme."
+    }
+  }
+}

@@ -20,12 +20,29 @@
  * `.harness/scripts/` que desde el caché del plugin.
  *
  * Gates (según el stack del satélite):
- *   1. Git hooks presentes (`.husky/pre-commit`).
+ *   1. La puerta local del estándar instalada y ACTIVA, verificada delegando en
+ *      `install-hooks.mjs --check`.
  *   2. Escáner de secretos (gitleaks) configurado o cableado en un hook.
  *   3. Auditoría de dependencias del stack (`npm audit` / `dotnet list
  *      --vulnerable`), cuando el repositorio declara un manifiesto de paquetes.
  *   4. Umbral de coverage, cuando hay pruebas.
  *   5. Formato de commits (commitlint), por configuración o por invocación real.
+ *
+ * NINGÚN NOMBRE DE HOOK SE ESCRIBE AQUÍ (G-354). El gate 1 comprobaba
+ * `.husky/pre-commit` y el gate 5 mandaba «cablea commitlint en un hook
+ * `commit-msg`»: dos hooks que ADR-0170 retiró, de modo que el satélite que
+ * obedecía la norma vigente recibía dos avisos y, con `--strict`, quedaba
+ * bloqueado. Una puerta que acusa a quien cumple termina desactivada
+ * (ADR-0160 §1.4), y con ella se apagan los avisos verdaderos. Los nombres se
+ * derivan hoy de las plantillas que el paquete reparte, vía `lib/hooks.mjs`,
+ * que es la misma pieza que usa `install-hooks.mjs` desde G-349.
+ *
+ * Y EL GATE 1 NO SE REESCRIBE, SE DELEGA. Comprobar que existe un fichero es
+ * justo lo que no prueba nada: `unimar_tms` tenía sus dos hooks en disco y
+ * `core.hooksPath` sin configurar, así que git no ejecutaba ninguno (SD-05).
+ * Quien sabe responder «¿corre la puerta en este clon?» es `install-hooks.mjs
+ * --check`, que se lo pregunta a git. Se invoca y se adopta su veredicto: una
+ * segunda implementación del mismo juicio sería la tercera lista que envejece.
  *
  * El cableado se busca en los hooks **y en los scripts a los que delegan**: un
  * hook fino que llama a un orquestador (`scripts/verify-local.sh`) cablea el
@@ -38,7 +55,10 @@
  */
 
 import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { hooksDelEstandar, lista, SUFIJO_RETIRADO } from './lib/hooks.mjs';
 
 const RAIZ = process.cwd();
 const STRICT = process.argv.includes('--strict');
@@ -59,6 +79,25 @@ console.log('━━━ Gates locales de calidad y seguridad (S-23 / ADR-0106) �
 if (existsSync(join(RAIZ, '.harness', 'catalog.json'))) {
   console.log('  ✔ Este repositorio autora el estándar; no es un satélite. No aplica.');
   process.exit(0);
+}
+
+/*
+ * Los hooks que el estándar define HOY, y los que retiró. No es un dato de este
+ * fichero: sale de las plantillas que el paquete reparte (lib/hooks.mjs).
+ *
+ * Si no se puede derivar, este validador NO emite veredicto sobre el satélite y
+ * sale 1 (SD-06). El defecto sería del paquete instalado, no del repositorio
+ * juzgado, y convertirlo en un aviso contra el satélite repetiría el error que
+ * G-354 corrige: acusar a quien no tiene nada que arreglar. Es además el mismo
+ * trato que da `install-hooks.mjs`, que es el otro consumidor de la pieza.
+ */
+const ESTANDAR = hooksDelEstandar();
+if (ESTANDAR.error) {
+  console.error(`  ✘ No se puede saber qué hooks define el estándar: ${ESTANDAR.error} en ${ESTANDAR.dir}.`);
+  console.error('    Esto es un defecto del paquete instalado, no de este repositorio, y por eso');
+  console.error('    no se emite ningún veredicto sobre sus gates. Reinstala el estándar:');
+  console.error('      claude plugin enable unimar-core@unimar');
+  process.exit(1);
 }
 
 /*
@@ -94,6 +133,14 @@ function hooks() {
     }
   };
   for (const e of readdirSync(dir)) {
+    /*
+     * Un hook NEUTRALIZADO no cablea nada. `install-hooks.mjs` renombra a
+     * `<hook>.retirado` los hooks que el estándar dejó de definir, y git no
+     * invoca jamás ese nombre: su contenido es letra muerta. Leerlo como
+     * cableado daría por presente un gate que no se ejecuta, que es la clase
+     * de mentira que este validador ya corrigió para los comentarios (SD-05).
+     */
+    if (e.endsWith(SUFIJO_RETIRADO)) { detalle(`hook neutralizado, no cuenta: ${e}`); continue; }
     const contenido = leer(join(dir, e));
     if (!contenido) continue;
     out += contenido + '\n';
@@ -162,11 +209,40 @@ function existeArchivo(test, maxDepth = 6) {
   return false;
 }
 
-// 1. Git hooks presentes.
-if (hay(join('.husky', 'pre-commit'))) {
-  pass('Git hooks presentes (`.husky/pre-commit`).');
+/*
+ * 1. La puerta local del estándar, instalada y ACTIVA.
+ *
+ * El veredicto no se calcula aquí: se le pide a `install-hooks.mjs --check`,
+ * que es su ejecutor (S-12, ADR-0170) y el único que comprueba lo que importa
+ * —que git ejecute de verdad ese directorio de hooks, y que ningún hook
+ * retirado siga vivo—. Se adopta su salida tal cual, y sus líneas `✘` se
+ * repiten como detalle para que el satélite lea el diagnóstico y no un
+ * dictamen. Si el instalador no está junto a este validador, el defecto es del
+ * paquete y se dice así, sin cargárselo al repositorio juzgado.
+ */
+const INSTALADOR = fileURLToPath(new URL('./install-hooks.mjs', import.meta.url));
+if (!existsSync(INSTALADOR)) {
+  warn(`El paquete del estándar no trae \`install-hooks.mjs\` junto a este validador (${INSTALADOR}), así que no se puede comprobar si la puerta local ${lista(ESTANDAR.activos)} corre. Es un defecto del paquete instalado, no de este repositorio.`);
 } else {
-  warn('No hay `.husky/pre-commit`. Los gates locales necesitan hooks; actívalos con `install-hooks.mjs` y materializa el hook desde el plugin.');
+  const r = spawnSync(process.execPath, [INSTALADOR, '--check'], { cwd: RAIZ, encoding: 'utf-8' });
+  const salida = `${r.stdout ?? ''}${r.stderr ?? ''}`;
+  if (r.status === 0) {
+    pass(`Puerta local ${lista(ESTANDAR.activos)} instalada y activa (verificado con \`install-hooks.mjs --check\`).`);
+  } else {
+    // Las rutas absolutas del instalador se acortan contra la raíz: el aviso lo
+    // lee alguien que ya sabe en qué repositorio está.
+    const motivos = salida.split('\n')
+      .filter((l) => l.includes('✘'))
+      .map((l) => l.replace(/^\s*✘\s*/, '').trim().split(RAIZ).join('.'));
+    for (const m of motivos) detalle(`install-hooks --check: ${m}`);
+    warn(
+      `La puerta local ${lista(ESTANDAR.activos)} no corre en este clon: \`install-hooks.mjs --check\` sale ${r.status}`
+      + `${motivos.length ? ` — ${motivos[0]}` : ''}`
+      + `${motivos.length > 1 ? ` (y ${motivos.length - 1} motivo(s) más; ejecútalo para verlos)` : ''} `
+      + 'Actívala con `node "$UNIMAR_CORE/scripts/install-hooks.mjs"` (S-12, ADR-0170). '
+      + 'Un hook en disco no es evidencia de que la puerta corra: sin `core.hooksPath` git no ejecuta ninguno.',
+    );
+  }
 }
 
 // 2. Escáner de secretos (gitleaks).
@@ -212,18 +288,36 @@ if (tienePruebas) {
 const commitlintConfig = ['commitlint.config.js', 'commitlint.config.mjs', 'commitlint.config.cjs', '.commitlintrc', '.commitlintrc.json', '.commitlintrc.js']
   .some((f) => hay(f));
 /*
- * La mera existencia de `.husky/commit-msg` NO cuenta. El hook `commit-msg` que
- * reparte este estandar comprueba las referencias del mensaje (SD-02), que es
- * otra cosa que su formato: un satelite podia tenerlo y aceptar igualmente
- * cualquier mensaje. Se exige la evidencia real: un archivo de configuracion de
+ * La mera existencia de un hook de mensaje NO cuenta. El `commit-msg` que este
+ * estandar repartia comprobaba las referencias del mensaje (SD-02), que es otra
+ * cosa que su formato: un satelite podia tenerlo y aceptar igualmente cualquier
+ * mensaje. Se exige la evidencia real: un archivo de configuracion de
  * commitlint, o una invocacion suya en lo que los hooks ejecutan.
+ *
+ * EL REMEDIO NOMBRA EL HOOK VIGENTE, NO UNO RETIRADO (G-354). Este aviso
+ * mandaba «cablea commitlint en un hook `commit-msg`», y ADR-0170 retiro ese
+ * hook: la unica forma de obedecer al validador era desobedecer a la norma.
+ * El domicilio de commitlint es hoy el punto unico de control, sobre el rango
+ * que el push publica, tal como lo declara la tabla de S-23.
  */
+const HOOK_DEL_FORMATO = lista(ESTANDAR.activos);
+const REMEDIO_COMMITLINT = `Cablealo en ${HOOK_DEL_FORMATO}, sobre el rango que el push publica `
+  + '--`npx commitlint --from "$(git rev-parse @{push})" --to HEAD`-- y no en un hook por commit: '
+  + 'el estandar tiene una sola puerta local (S-12, ADR-0170).';
+
+const retiradosVivos = ESTANDAR.retirados.filter((h) => hay(join('.husky', h)));
+
 if (commitlintConfig || /commitlint/i.test(HOOKS_EJEC)) {
   pass('Formato de commits validado en local (commitlint).');
-} else if (hay(join('.husky', 'commit-msg'))) {
-  warn('Hay `.husky/commit-msg`, pero no valida el FORMATO del mensaje: el hook del estandar comprueba las referencias (SD-02), no Conventional Commits. Cablea commitlint en el (ADR-0106 §2.1).');
+} else if (retiradosVivos.length) {
+  warn(
+    `Hay ${lista(retiradosVivos)} en \`.husky/\`, y el estandar ya no define ese hook: ADR-0170 lo retiro en favor de ${HOOK_DEL_FORMATO}. `
+    + 'Tampoco valida el FORMATO del mensaje --el hook que se repartia comprobaba las referencias (SD-02), no Conventional Commits--. '
+    + `Sin commitlint no hay gate de formato. ${REMEDIO_COMMITLINT} `
+    + 'Y neutraliza el hook retirado con `install-hooks.mjs`: git lo sigue ejecutando como segunda puerta.',
+  );
 } else {
-  warn('Sin validación de formato de commits. Cablea commitlint en un hook `commit-msg` (Conventional Commits) (ADR-0106 §2.1).');
+  warn(`Sin validación de formato de commits (Conventional Commits, ADR-0106 §2.1). ${REMEDIO_COMMITLINT}`);
 }
 
 // Resumen.

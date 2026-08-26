@@ -164,12 +164,22 @@ function readRegistry() {
       }
       /*
        * Una fila mas ancha que la cabecera se reescribiria truncada, y truncar en
-       * silencio es destruir un dato que alguien escribio a mano. No se falla —eso
-       * acotaria una regla que un satelite conforme obedece, y seria `major`— pero
-       * se dice en voz alta antes de que `--fix` lo haga irreversible.
+       * silencio es destruir un dato que alguien escribio a mano. Esto FALLA, y
+       * falla aqui a proposito.
+       *
+       * Antes era un aviso, con el razonamiento de que fallar acotaria una regla
+       * que un satelite conforme obedece. El razonamiento describia mal lo que el
+       * codigo hacia: el registro ya salia con codigo 1 —medido el 2026-08-08, con
+       * celdas sobrantes llenas y vacias—, solo que por el camino equivocado. La
+       * comparacion final lo encontraba distinto de su forma normalizada y lo
+       * diagnosticaba como «desordenado o sus contadores no cuadran», que es falso,
+       * y remitia a `--fix`, que es justo el mando que borra la celda. Fallar aqui
+       * no acota nada —ningun registro que hoy valide deja de validar— y cambia una
+       * receta destructiva por la unica que conserva el dato: declarar la columna.
        */
       if (c.length > columnas) {
-        console.error(`  ⚠ Fila ${i + 1}: trae ${c.length} columnas y la cabecera declara ${columnas}; el sobrante se perdera al normalizar. Declara la columna en la cabecera.`);
+        fail(`Fila ${i + 1}: trae ${c.length} columnas y la cabecera declara ${columnas}. Declara la columna en la cabecera; NO ejecutes --fix, truncaria la celda sobrante.`);
+        return null;
       }
       const [id, titulo, criticidad, complejidad, estado, dimension, evidencia, apertura, tipo, deuda, ambito] = c;
       return { id, titulo, criticidad, complejidad, estado, dimension, evidencia, apertura, tipo: tipo ?? '', deuda: deuda ?? '', ambito: ambito ?? '' };
@@ -254,18 +264,54 @@ if (errors.length) {
 }
 
 const sorted = sortRows(reg.rows);
-const counterIdx = reg.lines.findIndex((l) => l.startsWith('> **Pendientes:**'));
-if (counterIdx === -1) {
+
+/*
+ * TODAS las lineas de contadores, no la primera.
+ *
+ * `findIndex` devolvia la primera y reescribia solo esa. Con dos, la segunda
+ * sobrevivia intacta: si la primera ya cuadraba, `current === next` y esto
+ * imprimia «valido y ordenado» sobre un archivo que publicaba DOS recuentos
+ * distintos. Paso de verdad — un merge resolvio este mismo conflicto tomando
+ * ambos lados y `develop` estuvo afirmando a la vez «Total: 432» y
+ * «Total: 425», en el archivo cuya primera linea dice «una sola verdad».
+ *
+ * El duplicado no es desorden: es una segunda afirmacion que nadie hizo. Por
+ * eso se nombra aparte y no se esconde bajo «desordenado o sus contadores no
+ * cuadran», que es el diagnostico que habria dado y no habria llevado a nadie
+ * al defecto.
+ */
+const contadores = reg.lines.flatMap((l, i) => (l.startsWith('> **Pendientes:**') ? [i] : []));
+if (contadores.length === 0) {
   console.error('  ✘ GAPS.md no contiene la línea de contadores "> **Pendientes:** ...".');
   process.exit(1);
 }
 
 const out = [...reg.lines];
-out[counterIdx] = renderCounters(sorted);
+out[contadores[0]] = renderCounters(sorted);
+
+/* Las copias sobrantes se MARCAN aqui y se retiran despues del `splice`:
+ * borrarlas ahora correria los indices que el `splice` de filas usa. */
+const SOBRANTE = Symbol('contador duplicado');
+for (const i of contadores.slice(1)) out[i] = SOBRANTE;
+
 out.splice(reg.sepIdx + 1, reg.end - reg.sepIdx - 1, ...sorted.map(renderRow));
 
 const current = reg.lines.join('\n');
-const next = out.join('\n');
+const next = out.filter((l) => l !== SOBRANTE).join('\n');
+
+if (contadores.length > 1) {
+  const cuales = contadores.map((i) => `línea ${i + 1}`).join(', ');
+  console.error('━━━ Registro Único de Control de Gaps (S-20) ━━━');
+  console.error(`  ✘ GAPS.md publica ${contadores.length} líneas de contadores (${cuales}), y solo puede haber una.`);
+  for (const i of contadores) console.error(`      ${reg.lines[i].trim()}`);
+  console.error('\n  Dos recuentos son dos afirmaciones, y una de ellas es falsa. Suele venir de');
+  console.error('  resolver un conflicto de fusión tomando los dos lados.');
+  if (!FIX) {
+    console.error(`  · Ejecuta: node ${YO} --fix — conserva la primera, recalculada, y retira el resto.`);
+    process.exit(1);
+  }
+  console.error('  · Se conserva la primera, recalculada, y se retiran las demás.\n');
+}
 
 if (current === next) {
   console.log(`  ✔ Registro de gaps válido y ordenado (${sorted.length} entradas).`);

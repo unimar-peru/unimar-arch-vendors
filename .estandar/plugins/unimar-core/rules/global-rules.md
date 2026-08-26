@@ -1,5 +1,9 @@
 # Global Rules (Context-Optimized)
 
+<!-- vigencia: revisar-antes-de=2027-02-09 -->
+
+> Vigencia: revisar antes del 2027-02-09 — norma publicada, repaso semestral (S-35, [ADR-0196](../reference/architecture/adrs/core/0196-la-vigencia-se-declara-donde-puede-sostenerse-verdadera.es.md), `Aceptado`: es la decisión que crea S-35).
+
 Directivas vinculantes para el repositorio satélite Unimar Arch, inspiradas en el upstream open source Evolith (<https://github.com/beyondnetcode/evolith_arch32>) y adaptadas al contexto del producto Unimar.
 
 | ID | Regla | Restricción |
@@ -49,7 +53,9 @@ Los validadores se invocan desde la raíz del repositorio. En la fuente del est�
 
 Con Claude Code, la skill `validar-gobernanza` corre el barrido entero en un paso.
 
-> **Qué comprueba `validate-docs.mjs`, exactamente.** Enlaces relativos y anclas: el destino existe y el `#fragmento` corresponde a un encabezado real. Encoding UTF-8, y además **texto mutilado** — prosa a la que se le han caído las tildes o la eñe, que sigue siendo UTF-8 válido y que ninguna comprobación de encoding delata. Trazabilidad TS↔ADR.
+> **Qué comprueba `validate-docs.mjs`, exactamente.** Enlaces relativos y anclas: el destino existe y el `#fragmento` corresponde a un encabezado real. Encoding UTF-8, y además **texto mutilado** — prosa a la que se le han caído las tildes o la eñe, que sigue siendo UTF-8 válido y que ninguna comprobación de encoding delata.
+>
+> **Ya no comprueba la cadena de trazabilidad, y decirlo importa:** aquí ponía «Trazabilidad TS↔ADR» y era falso. Los cuatro chequeos que lo sostenían filtraban por un campo de metadato que ningún artefacto usa, así que corrían sobre conjunto vacío (G-172). Se retiraron, y esa cadena la juzga ahora `validate-cadena-artefactos.mjs`, sobre el contrato de metadato de [ADR-0178](../reference/architecture/adrs/core/0178-el-contrato-de-metadato-de-la-cadena-y-su-ejecutor.es.md).
 >
 > De Mermaid comprueba la **estructura**: que el bloque declare un tipo de diagrama conocido y que sus `subgraph`/`alt`/`loop` cierren con `end`. **No renderiza**: haría falta un motor Mermaid y este harness no lleva dependencias. Un diagrama puede pasar el gate y aun así dibujar algo incorrecto — una flecha a un nodo inexistente, por ejemplo. Ese resto sigue siendo revisión humana.
 >

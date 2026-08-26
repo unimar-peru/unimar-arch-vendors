@@ -92,3 +92,58 @@ export function partirDestino(crudo) {
   const i = crudo.indexOf("#");
   return i === -1 ? [crudo, null] : [crudo.slice(0, i), crudo.slice(i + 1)];
 }
+
+/*
+ * --- Lo absoluto tambien es un enlace (G-335) ---
+ *
+ * `destinosDe` y `enlacesDe` SALTAN toda URL absoluta, y esa omision era total:
+ * ni la fuente ni el paquete abrian un solo `blob/main/`. El resultado medido:
+ * de las 86 URL distintas al propio repositorio que publica el paquete, una
+ * llevaba rota desde el 2026-07-27 --`templates/CONTRIBUTING.md` cita
+ * `reference/governance/standards/taxonomia-repositorio-satelite.md`, que se
+ * mudo a `taxonomy/`--, y todo satelite que materializo su `CONTRIBUTING.md`
+ * arrastra el enlace muerto.
+ *
+ * Saltarlas tenia una razon legitima --no se pueden resolver contra el disco--
+ * pero solo vale para las URL AJENAS. Una URL al propio repositorio describe una
+ * ruta de un arbol que quien valida tiene delante, y es juzgable sin red. Aqui
+ * vive la parte pura: extraerlas y partirlas. Resolverlas contra una referencia
+ * git es de `lib/urls-fuente.mjs`, porque este modulo no conoce el disco.
+ */
+
+/** URLs absolutas enlazadas en un documento, en orden de aparicion. */
+export function* urlsDe(content) {
+  const cuerpo = content.replace(/```[\s\S]*?```/g, " ");
+  for (const re of [ENLACE_RE, IMAGEN_RE]) {
+    re.lastIndex = 0;
+    for (const m of cuerpo.matchAll(re)) {
+      const dentro = m[1];
+      if (esMarcador(dentro.trim())) continue;
+      const crudo = limpiarDestino(dentro);
+      // El marcador se vuelve a mirar ya limpio: `<https://…/${VAR}/x>` solo se
+      // delata cuando se le han quitado los angulos.
+      if (!crudo || !esExterno(crudo) || esMarcador(crudo)) continue;
+      yield crudo;
+    }
+  }
+}
+
+/**
+ * Parte una URL que describe un archivo de un repositorio GitHub:
+ * `https://github.com/<duenio>/<repo>/(blob|tree|raw)/<ref>/<ruta>`.
+ *
+ * Devuelve `null` para cualquier otra forma --un issue, un release, la portada
+ * del repositorio, otro dominio--: no nombran una ruta del arbol y no hay nada
+ * que resolver. Decir «no la se juzgar» es la respuesta correcta; inventarle una
+ * ruta seria peor que no mirarla.
+ */
+export function partirUrlDeRepo(url) {
+  const m = /^https:\/\/github\.com\/([^/]+)\/([^/]+)\/(blob|tree|raw)\/([^/]+)\/(.+)$/i.exec(url.trim());
+  if (!m) return null;
+  const [, duenio, repo, , ref, resto] = m;
+  const ruta = resto.split("#")[0].split("?")[0].replace(/\/+$/, "");
+  if (!ruta) return null;
+  let decodificada;
+  try { decodificada = decodeURIComponent(ruta); } catch { decodificada = ruta; }
+  return { duenio, repo, ref, ruta: decodificada };
+}

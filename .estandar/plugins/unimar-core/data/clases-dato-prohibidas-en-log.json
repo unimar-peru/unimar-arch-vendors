@@ -1,0 +1,59 @@
+{
+  "_comment": "PISO NORMATIVO de clases de dato que ninguna senal de observabilidad puede registrar en claro (ADR-0193, que ejecuta ADR-0096 §2.7.1). No es la lista de campos de un producto: es el MINIMO que toda lista de producto tiene que cubrir. ADR-0096 §2.7.1 exigio «una lista de campos prohibidos por producto» y dos productos escribieron dos listas que se contradicen -- CP-06 (Node/Pino) redacta `dni`, `phone` y `address` y NO redacta ningun token; CP-02 (.NET/Serilog) redacta `token`, `accessToken` y `apiKey` y NO redacta `authorization`, `cookie` ni `dni`; y ninguna de las dos redacta un solo campo de pago, que §2.7.1 nombra por su nombre. Sin piso, «por producto» significa «cada uno el suyo», y eso es lo que se midio.",
+  "_comentarioCobertura": "Una superficie CUBRE una clase cuando su declaracion nombra AL MENOS UNO de los `tokens` de esa clase. No se exigen todos, y esa es la mitad que hace la puerta sostenible (ADR-0160 §1.4): el nombre del campo es idiomatico del runtime --`*.dni` en rutas de Pino, `nationalid` en nombres de propiedad de Serilog-- y exigir un vocabulario unico acusaria a quien ya redacta la clase con otra palabra. Lo que se exige es que la superficie DEMUESTRE haber pensado la clase, no que copie una lista.",
+  "_comentarioPiso": "PISO, NO TECHO. Un producto anade lo suyo --numero de contenedor si identifica a una persona, historial clinico, lo que sea-- y nadie se lo impide. Lo que no puede es quedarse por debajo.",
+  "_comentarioFueraDeAlcance": "Ver `fueraDeAlcance`: el numero de documento aduanero (DAM/DUA), el numero de contenedor y el numero de manifiesto NO entran en el piso, y no por descuido. Son el localizador con el que soporte encuentra la transaccion al minuto cero (ADR-0096 §2.2): redactarlos destruiria exactamente la trazabilidad que el log existe para dar, y no son dato personal bajo la Ley 29733 art. 2.4 -- identifican un despacho, no a una persona natural.",
+  "version": 1,
+  "adr": "0193",
+  "regla": "S-34",
+  "clases": [
+    {
+      "id": "credencial",
+      "titulo": "Credenciales y secretos",
+      "fundamento": "ADR-0096 §2.7.1 («credenciales»); ISO/IEC 27001:2022 A.8.15",
+      "tokens": ["password", "passwd", "contrasena", "passwordhash", "secret", "apikey", "clientsecret", "privatekey"]
+    },
+    {
+      "id": "token_de_sesion",
+      "titulo": "Tokens de sesion, acceso y refresco",
+      "fundamento": "ADR-0096 §2.7.1 («tokens»); ADR-0157 (portador firmado UMS)",
+      "tokens": ["token", "jwt", "assertion", "bearer"]
+    },
+    {
+      "id": "cabecera_de_autenticacion",
+      "titulo": "Cabeceras que portan la credencial",
+      "fundamento": "ADR-0096 §2.7.1; es la via mas corta por la que un token llega al log sin que nadie lo escriba",
+      "tokens": ["authorization", "cookie", "x-api-key", "xapikey", "proxy-authorization"]
+    },
+    {
+      "id": "documento_de_identidad",
+      "titulo": "Numero de documento de identidad de persona natural",
+      "fundamento": "ADR-0096 §2.7.1 («numeros de documento»); Ley 29733 art. 2.4",
+      "tokens": ["dni", "documentnumber", "numerodocumento", "nationalid", "ssn", "taxid", "passport", "pasaporte", "carnetextranjeria"]
+    },
+    {
+      "id": "contacto_de_persona",
+      "titulo": "Datos de contacto que identifican a una persona natural",
+      "fundamento": "Ley 29733 art. 2.4 (dato personal es el que identifica o hace identificable a la persona natural)",
+      "tokens": ["email", "mail", "phone", "telefono", "celular", "address", "direccion"]
+    },
+    {
+      "id": "medio_de_pago",
+      "titulo": "Instrumentos de pago y cuentas bancarias",
+      "fundamento": "ADR-0096 §2.7.1 («datos de pago»); PCI DSS v4.0 req. 3.3",
+      "tokens": ["cardnumber", "creditcard", "tarjeta", "cvv", "cvc", "iban", "accountnumber", "cuentabancaria"]
+    }
+  ],
+  "fueraDeAlcance": [
+    {
+      "id": "localizador_aduanero",
+      "titulo": "Numero de DAM/DUA, de manifiesto y de contenedor",
+      "porQue": "Es el LOCALIZADOR de la transaccion (ADR-0096 §2.2): sin el, soporte no encuentra el despacho al minuto cero y el log deja de servir para lo unico que sirve. No es dato personal bajo la Ley 29733 art. 2.4 -- identifica un despacho, no a una persona natural. Si un producto necesita ocultarlo por otra razon, lo anade a SU lista; el piso no se lo pide."
+    },
+    {
+      "id": "identificador_de_usuario_del_envoltorio",
+      "titulo": "`userId` y `tenantId` del envoltorio canonico",
+      "porQue": "ADR-0007 regla 5, recogida en ADR-0096 §2.1, los declara OBLIGATORIOS en cada entrada. Son identificadores opacos internos, no atributos de la persona, y prohibirlos aqui pondria a este piso a contradecir un contrato aceptado -- que es exactamente el defecto que este piso viene a cerrar."
+    }
+  ]
+}

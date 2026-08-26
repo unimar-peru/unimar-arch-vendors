@@ -1,0 +1,70 @@
+{
+  "descripcion": "PISO NORMATIVO del catálogo de quality gates: artefactos por fase SDLC con su obligatoriedad por defecto. Ésta es la FUENTE del estándar y lo que `plugin.manifest.json` empaqueta hacia los satélites como `data/artefactos-por-fase.json`. Fuente normativa del contenido: reference/governance/sdlc/mapeo-artefactos-sdlc.es.md (ADR-0138/0141). El tablero SDLC mantiene un ESPEJO de este archivo y lo carga como default del servidor; la parity entre piso y espejo la exige ADR-0148 y la verifica validate-gates-catalog.mjs. Los overrides operativos por instalación son del tablero, no del estándar: viven en su tabla config, clave 'artefactos_config' ({ \"<fase>\": { \"<nombre>\": bool } }).",
+  "version": 1,
+  "fases": {
+    "1": {
+      "nombre": "Concepción y Descubrimiento",
+      "gate": "Aprobación de Negocio",
+      "artefactos": [
+        { "nombre": "PRD aprobado y versionado", "tipo": "documento", "obligatorio": true, "_nota": "ADR-0151: el PRD es UN solo obligatorio. «Publicado en el índice de iniciativas» NO es un artefacto separado del gate: su enforcement vive en el satélite productor (validador §3 validate-prd-index, S-25/ADR-0140 §2.1), no se re-verifica en el tablero (ADR-0088)." },
+        { "nombre": "Historias de Usuario", "tipo": "documento", "obligatorio": true },
+        { "nombre": "Backlog Ágil", "tipo": "documento", "obligatorio": true },
+        { "nombre": "Directivas Arquitectónicas", "tipo": "documento", "obligatorio": true },
+        { "nombre": "ADR de topología/arquitectura inicial", "tipo": "adr", "obligatorio": true },
+        { "nombre": "Business Case / ROI", "tipo": "documento", "obligatorio": false }
+      ]
+    },
+    "2": {
+      "nombre": "Diseño y Arquitectura",
+      "gate": "Baseline de Diseño Aprobado",
+      "artefactos": [
+        { "nombre": "Blueprint C4 (Contexto + Contenedores)", "tipo": "documento", "obligatorio": true },
+        { "nombre": "Historias Funcionales aprobadas", "tipo": "documento", "obligatorio": true },
+        { "nombre": "ADRs de decisiones significativas", "tipo": "adr", "obligatorio": true },
+        { "nombre": "Tech Stack Autoritativo", "tipo": "documento", "obligatorio": true },
+        {
+          "nombre": "Modelo de Datos",
+          "tipo": "documento",
+          "obligatorio": true,
+          "_nota": "ADR-0229: se exige UNO POR PRD, no por repositorio. El alcance del modelo sigue al de su PRD (suite o sistema). Un PRD cuyo sistema no posee esquema relacional queda exento DECLARANDOLO en el README de su fase con el gap enlazado."
+        },
+        { "nombre": "Mapa de Contextos Acotados", "tipo": "documento", "obligatorio": false },
+        { "nombre": "Especificación UX / wireframes", "tipo": "documento", "obligatorio": false }
+      ]
+    },
+    "3": {
+      "nombre": "Construcción",
+      "gate": "Build Exitoso",
+      "artefactos": [
+        { "nombre": "Código fuente + pruebas automatizadas", "tipo": "código", "obligatorio": true },
+        { "nombre": "CI en verde (lint / test / build)", "tipo": "pipeline", "obligatorio": true },
+        { "nombre": "Cobertura ≥ 80%", "tipo": "reporte", "obligatorio": true },
+        { "nombre": "DoD cumplida por historia", "tipo": "checklist", "obligatorio": true },
+        { "nombre": "Historias Técnicas trazables", "tipo": "documento", "obligatorio": true },
+        { "nombre": "Delta documental actualizado", "tipo": "documento", "obligatorio": true }
+      ]
+    },
+    "4": {
+      "nombre": "Validación y QA",
+      "gate": "RC Sellado",
+      "artefactos": [
+        { "nombre": "Test Summary Report (TSR) SELLADO", "tipo": "reporte", "obligatorio": true },
+        { "nombre": "Pruebas E2E en verde", "tipo": "reporte", "obligatorio": true },
+        { "nombre": "Pruebas de integración prod-like", "tipo": "reporte", "obligatorio": true },
+        { "nombre": "Aceptación de negocio firmada", "tipo": "documento", "obligatorio": true },
+        { "nombre": "Métricas dentro de umbral (SLA)", "tipo": "reporte", "obligatorio": true }
+      ]
+    },
+    "5": {
+      "nombre": "Entrega y Operaciones",
+      "gate": "Producción Activa",
+      "artefactos": [
+        { "nombre": "Release Notes aprobadas", "tipo": "documento", "obligatorio": true },
+        { "nombre": "Plan de rollback probado", "tipo": "documento", "obligatorio": true },
+        { "nombre": "Checklist de observabilidad verificado", "tipo": "checklist", "obligatorio": true },
+        { "nombre": "Evidencia de despliegue exitoso", "tipo": "reporte", "obligatorio": true },
+        { "nombre": "Runbook de operaciones", "tipo": "documento", "obligatorio": true }
+      ]
+    }
+  }
+}

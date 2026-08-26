@@ -3,8 +3,8 @@ COPIA VERBATIM DE LOS VALIDADORES DEL ESTANDAR UNIMAR
 
 Origen   : unimar-peru/unimar-marketplace
 Ruta     : plugins/unimar-core/{scripts,rules}
-Etiqueta : unimar-core-1.58.0
-Commit   : d6edcad4e63212025fd928c5ec658f59d22ec598
+Etiqueta : unimar-core-1.90.0
+Commit   : dd7ee819668a1023a2c83ecaada341abc1f731ec
 
 POR QUE ESTA COMMITEADA Y NO SE OBTIENE EN EL CI
 ------------------------------------------------

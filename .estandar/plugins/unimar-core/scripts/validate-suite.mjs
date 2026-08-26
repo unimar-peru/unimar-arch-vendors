@@ -40,6 +40,7 @@
 import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
 import { join, resolve, dirname } from 'node:path';
 import { yamlPlano, leerSuite, ARCHIVOS_SUITE } from './lib/suite.mjs';
+import { leerSiglas } from './lib/catalogo-siglas.mjs';
 import { fileURLToPath } from 'node:url';
 
 const RAIZ = process.cwd();
@@ -62,20 +63,23 @@ if (existsSync(join(RAIZ, '.harness', 'catalog.json'))) {
   process.exit(0);
 }
 
-/** Siglas `Ratificada` derivadas del catálogo empaquetado, si viaja en esta copia. */
-function siglasRatificadas() {
+/**
+ * Siglas citables derivadas del catálogo empaquetado, si viaja en esta copia.
+ *
+ * El parseo YA NO VIVE AQUÍ (ADR-0192): lo hace `lib/catalogo-siglas.mjs`, que
+ * es el lector único. Mientras esta función traía su propia expresión regular,
+ * el vocabulario de estados estaba cableado en dos sitios y el día que el
+ * catálogo estrenó un tercer estado había que acordarse de los dos.
+ */
+function siglasCitables() {
   const candidatos = [
     join(ESTANDAR, 'reference', 'architecture', 'catalogo-sistemas-suite.es.md'),
     join(ESTANDAR, '..', 'reference', 'architecture', 'catalogo-sistemas-suite.es.md'),
   ];
   const cat = candidatos.find(existsSync);
   if (!cat) return null;
-  const set = new Set();
-  for (const linea of readFileSync(cat, 'utf-8').split('\n')) {
-    const m = linea.match(/^\|\s*\*\*([A-Z]{2,4})\*\*\s*\|\s*`?Ratificada`?/);
-    if (m) set.add(m[1]);
-  }
-  return set.size ? set : null;
+  const leido = leerSiglas(readFileSync(cat, 'utf-8'));
+  return leido && leido.citables.size ? leido.citables : null;
 }
 
 /** Busca archivos por nombre exacto, con profundidad acotada. */
@@ -104,7 +108,7 @@ if (!suitePath && sistemaPaths.length === 0) {
   process.exit(0);
 }
 
-const RATIFICADAS = siglasRatificadas();
+const RATIFICADAS = siglasCitables();
 if (!RATIFICADAS) warn('El catálogo de sistemas no viaja en esta copia del estándar; no se verifica la ratificación de siglas.');
 const esRatificada = (s) => !RATIFICADAS || RATIFICADAS.has(s);
 
@@ -124,13 +128,25 @@ if (!suitePath) {
   detalle(`suite \`${suite.id}\` con sistemas [${sistemas.join(', ')}].`);
 }
 
-// 4. sistema.yaml
-const declarados = new Set();
+/* 4. sistema.yaml
+ *
+ * `declarados` era un `Set` y su contenido se lista en el resumen. G-398 §1.1 lo
+ * anotó como cuarto sitio del mismo patrón —coleccionar identificadores sin
+ * comprobar la repetición— y pidió que la decisión constara en vez de omitirse:
+ * consta aquí, y es CORREGIRLO. Dos `sistema.yaml` con la misma sigla no son un
+ * sistema visto dos veces: son dos declaraciones que se contradicen, y sin esta
+ * línea la segunda entraba en el conjunto sin dejar rastro. Sigue siendo aviso y
+ * no puerta porque este validador entero declara `bloquea: false` mientras la
+ * adopción madura (ADR-0120 §5): lo que se corrige es la ceguera, no el rango. */
+const declarados = new Map();
 for (const sp of sistemaPaths) {
   const s = yamlPlano(readFileSync(sp, 'utf-8')).sistema ?? {};
   const rel = sp.slice(RAIZ.length + 1);
   if (!s.sigla) { fail(`\`${rel}\`: falta \`sigla\`.`); continue; }
-  declarados.add(s.sigla);
+  if (declarados.has(s.sigla)) {
+    fail(`\`${rel}\`: la sigla \`${s.sigla}\` ya la declara \`${declarados.get(s.sigla)}\`. Dos sistemas no comparten sigla.`);
+  }
+  declarados.set(s.sigla, rel);
   if (!esRatificada(s.sigla)) fail(`\`${rel}\`: la sigla \`${s.sigla}\` no es \`Ratificada\` (regla 2).`);
   if (suite && s.suite && suite.id && s.suite !== suite.id) fail(`\`${rel}\`: \`suite: ${s.suite}\` no coincide con la Suite declarada \`${suite.id}\`.`);
   if (suite && Array.isArray(suite.sistemas) && !suite.sistemas.includes(s.sigla)) warn(`\`${rel}\`: la sigla \`${s.sigla}\` no está listada en \`suite.yaml.sistemas\`.`);
@@ -160,5 +176,5 @@ if (errores.length) {
   process.exit(0);
 }
 for (const a of avisos) console.warn(`  ⚠ ${a}`);
-console.log(`  ✔ Modelo Suite → Sistema coherente${avisos.length ? ` (${avisos.length} aviso(s))` : ''}: suite \`${suite?.id ?? '—'}\`, sistemas [${[...declarados].join(', ')}].`);
+console.log(`  ✔ Modelo Suite → Sistema coherente${avisos.length ? ` (${avisos.length} aviso(s))` : ''}: suite \`${suite?.id ?? '—'}\`, sistemas [${[...declarados.keys()].join(', ')}].`);
 process.exit(0);
