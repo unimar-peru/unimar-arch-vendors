@@ -1,5 +1,9 @@
 # Glosario de Terminología
 
+<!-- vigencia: revisar-antes-de=2027-02-09 -->
+
+> Vigencia: revisar antes del 2027-02-09 — norma publicada, repaso semestral (S-35, [ADR-0196](../reference/architecture/adrs/core/0196-la-vigencia-se-declara-donde-puede-sostenerse-verdadera.es.md), `Aceptado`: es la decisión que crea S-35).
+
 Terminología controlada para el corpus Unimar Arch, en español. Al añadir un nuevo término, mantenerlo en español, salvo las excepciones explícitas (acrónimos, identificadores de código, marcas).
 
 ## Términos Técnicos
@@ -17,7 +21,7 @@ Terminología controlada para el corpus Unimar Arch, en español. Al añadir un 
 | Quality Gate | Criterio objetivo de paso para una fase o release | Conservado verbatim |
 | Perfil de Runtime | Conjunto de decisiones técnicas específicas para un runtime declarado | |
 | SDLC | Software Development Life Cycle | Acrónimo conservado verbatim |
-| Gate de Validación | Punto de control automatizado en CI o pre-commit | |
+| Gate de Validación | Punto de control automatizado: en el CI, o local en el hook `pre-push` — el único que el estándar define (S-12) | |
 
 ## Términos de Producto
 

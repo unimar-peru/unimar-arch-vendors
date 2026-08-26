@@ -1,5 +1,8 @@
 # Reglas Spec-Driven (SD-01 … SD-08)
 
+<!-- vigencia: revisar-antes-de=2027-02-09 -->
+
+> Vigencia: revisar antes del 2027-02-09 — norma publicada, repaso semestral (S-35, [ADR-0196](../reference/architecture/adrs/core/0196-la-vigencia-se-declara-donde-puede-sostenerse-verdadera.es.md), `Aceptado`: es la decisión que crea S-35).
 > **Propietario:** Architecture Board
 > **Alcance:** `unimar_arch` y todo repositorio satélite. Vinculante para agentes BMAD y contribuidores humanos.
 > **Regla de herencia:** S-22
@@ -32,10 +35,14 @@ indistinguible de una cita propia. La forma calificada se excluye del barrido lo
 construcción; **no se comprueba que exista en el otro repositorio**, porque este validador no lo
 tiene delante y afirmar lo que no se puede verificar es lo que SD-05 prohíbe.
 
-**El momento importa tanto como la forma.** La referencia se comprueba al escribir el mensaje —hook
-`commit-msg`, `validate-trazabilidad.mjs --mensaje`—, no después. Un mensaje ya publicado no se
-corrige sin reescribir historia, así que una puerta que solo mire hacia atrás detecta el defecto
-justo cuando deja de ser corregible, y de paso bloquea a quien no lo escribió.
+**El momento importa tanto como la forma.** La referencia se comprueba **antes de publicar** y solo
+sobre lo que se publica: el hook `pre-push` invoca `validate-trazabilidad.mjs` sin banderas, y su
+rango por defecto —`HEAD --not --remotes`, los commits que ninguna referencia remota alcanza— es
+justo la carga del push. Esa definición del rango es la que garantiza el remedio: la puerta nunca
+puede morder un mensaje ya publicado —que no se corrige sin reescribir historia ajena y de paso
+bloquearía a quien no lo escribió—, y sí muerde el que todavía es tuyo, reescribible con
+`git rebase -i` y `reword` sin conflicto posible. El modo `--mensaje` sigue existiendo para juzgar
+un mensaje suelto, pero ya no hay un hook del estándar que lo invoque (ADR-0170).
 
 ## SD-03 — La decisión precede a la implementación
 

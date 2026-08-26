@@ -1,0 +1,71 @@
+{
+  "_comment": "PISO NORMATIVO de clases de senal de observabilidad sobre las que ADR-0096 §2.7.4 exige declarar retencion y proteccion contra manipulacion (ADR-0197, regla S-36). §2.7.4 dice «cada producto DEBE declarar retencion por senal» y no enumera las senales, no fija minimo y no dice donde se declara. Sin las tres cosas, la obligacion se satisface callando tres de las cuatro clases y escribiendo `24h` en la cuarta -- que es literalmente lo unico que la organizacion tiene escrito: `block_retention: 24h` de Tempo en `unimar-ums`, medido el 2026-08-09; `retention_period` de Loki y `storage.tsdb.retention` de Prometheus aparecen CERO veces en toda la organizacion.",
+  "_comentarioPiso": "PISO, NO TECHO. Un producto declara mas y nadie se lo impide. Lo que no puede es quedarse por debajo, ni callar una clase.",
+  "_comentarioPisoNumerico": "El piso numerico existe SOLO en `pista_auditoria`, y no por pereza. Ni ISO/IEC 27001:2022 A.8.15 ni NIST SP 800-92 fijan una cifra -- fijan la obligacion de tener una politica-- y este repositorio todavia no ha enlazado sus clausulas exactas (G-195, abierta desde el 2026-07-18). Inventar aqui «90 dias» y atribuirlo a un control que no se ha leido es la afirmacion sin evidencia que SD-05 prohibe. La cifra de `pista_auditoria` NO se inventa: se toma del propio corpus, que ya se la exige por escrito en cuatro documentos, y se toma la MAYOR de las dos que aparecen -- 5 anos en `on-prem-kubernetes/README.md:112,146` y `escenarios-despliegue-multinube.es.md:218`; 7 anos en `ejemplo-plan-seguridad-ums.es.md:60,148` y `analisis-requisitos-ums-qtrack.es.md:180` (RU-007). Fijarlo en 5 dejaria por debajo del estandar un requisito que UMS ya se impuso. Que las dos cifras convivan sin arbitro es defecto propio: G-401.",
+  "_comentarioProteccion": "La proteccion minima de `pista_auditoria` NO la decide ADR-0197: la decidio ADR-0016 §3 el 2026-05-09 (destino de solo adicion, con disparadores que bloquean DELETE y UPDATE). Para las tres senales operativas el corpus NO ha decidido mecanismo alguno, y decidirlo desde aqui seria normar el interior de un destino que este repositorio no gobierna, no despliega y no puede consultar. Lo exigido es DECLARAR cual es -- incluido `ninguna`, con su pendiente.",
+  "_comentarioSalidasHonestas": "`ninguna` y `no-gobernada` son declaraciones legitimas y EXIGEN nombrar en la misma celda un `G-NNN` que exista y siga abierto en el «Registro» de GAPS.md. Es la mecanica de `sujeto_no_observado` de S-32: la marca caduca con su pendiente. Sin esa exigencia, `ninguna` seria la casilla que todos rellenan el primer dia y nadie vuelve a mirar.",
+  "version": 1,
+  "adr": "0197",
+  "regla": "S-36",
+  "clases": [
+    {
+      "id": "log_aplicacion",
+      "titulo": "Log de aplicacion",
+      "queEs": "El registro estructurado de la transaccion de negocio, con el envoltorio canonico de ADR-0096 §2.1.",
+      "retencionMinimaDias": null,
+      "proteccionMinima": "declarada",
+      "fundamento": "ADR-0096 §2.7.4; ISO/IEC 27001:2022 A.8.15; NIST SP 800-92"
+    },
+    {
+      "id": "metrica",
+      "titulo": "Metrica",
+      "queEs": "La serie temporal de la que se leen tasas, latencias y saturacion (ADR-0096 §2.6).",
+      "retencionMinimaDias": null,
+      "proteccionMinima": "declarada",
+      "fundamento": "ADR-0096 §2.7.4; ISO/IEC 27001:2022 A.8.15"
+    },
+    {
+      "id": "traza",
+      "titulo": "Traza distribuida",
+      "queEs": "El tramo propagado por W3C Baggage con el prefijo `unimar.` (ADR-0096 §2.6, §3).",
+      "retencionMinimaDias": null,
+      "proteccionMinima": "declarada",
+      "fundamento": "ADR-0096 §2.7.4; ISO/IEC 27001:2022 A.8.15"
+    },
+    {
+      "id": "pista_auditoria",
+      "titulo": "Pista de auditoria de negocio",
+      "queEs": "El libro mayor legal de ADR-0016: quien cambio que, cuando, desde donde, con el delta antes/despues. ADR-0096 §2.4 lo deslinda expresamente de las tres senales operativas -- aquellas viven con la retencion de la telemetria, esta tiene «su propia retencion y control de acceso».",
+      "retencionMinimaDias": 2555,
+      "retencionMinimaTexto": "7a",
+      "proteccionMinima": "append-only",
+      "fundamento": "ADR-0016 §3 (destino de solo adicion); corpus propio: 7 anos en `ejemplo-plan-seguridad-ums.es.md:60,148` y `analisis-requisitos-ums-qtrack.es.md:180` (RU-007)"
+    }
+  ],
+  "vocabularioRetencion": {
+    "duracion": "`Nd`, `Nm` o `Na` -- dias, meses o anos. La conversion a dias es 1, 30 y 365, declarada aqui para que la comparacion con el piso sea la misma en toda la suite.",
+    "indefinida": "Se guarda sin caducidad. Siempre pasa el piso.",
+    "no-emite": "El repositorio no produce esta clase de senal. Exige razon escrita en `Base` y obliga a `no-emite` tambien en `Proteccion`.",
+    "no-gobernada": "La senal existe y su destino lo opera alguien que no es este repositorio. Exige `G-NNN` abierto en la misma celda."
+  },
+  "vocabularioProteccion": [
+    "append-only",
+    "firma",
+    "custodia-separada",
+    "ninguna",
+    "no-emite",
+    "no-gobernada"
+  ],
+  "olas": {
+    "1": {
+      "alcance": ["unimar_arch"],
+      "armada": true,
+      "porQue": "Es el repositorio que autora la norma. Si el nucleo no puede declarar lo que emite, nadie puede."
+    },
+    "2": {
+      "alcance": ["unimar-scm", "unimar-shells", "unimar-ums", "unimar-tablero-sdlc", "unimar-arch-vendors"],
+      "armada": false,
+      "porQue": "Los cinco reciben la norma el dia que se publique el plugin, y ninguno tiene hoy el bloque: armarla ahora pondria en rojo los cinco CI a la vez por un artefacto que nadie ha podido escribir todavia, y la unica via rapida a verde seria rellenar veinte celdas con humo (ADR-0160 §1.4). Armarla es un acto explicito del propietario -- un PR que cambie el alcance del ejecutor--, no una fecha que se dispara sola. La ola no queda en silencio: el ejecutor la censa en cada ejecucion y el pendiente es G-400."
+    }
+  }
+}

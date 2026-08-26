@@ -1,0 +1,265 @@
+name: Gobernanza
+
+# Los gates que solo corren en el pre-commit local (evadible con --no-verify, e
+# inexistente si nadie configuro core.hooksPath) se ejecutan aqui, en el
+# servidor, donde nadie los puede saltar. Es el limite de merge inevadible.
+#
+# El estandar Unimar no vive en una copia local (.harness/): lo provee el plugin
+# unimar-core. El runner no tiene Claude Code instalado, asi que obtiene los
+# validadores haciendo checkout del repositorio del marketplace.
+
+# `develop` es la rama de integracion (ADR-0050): es donde el trabajo se junta
+# por primera vez y donde un choque entre dos ramas aparece. Escuchar solo
+# `main` dejaba la unica puerta inevadible del satelite corriendo DESPUES de
+# integrar, que es cuando ya no sirve para decidir si el cambio entra.
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+permissions:
+  contents: read
+
+# Empujar dos veces seguidas a la misma rama deja la primera ejecucion corriendo
+# contra codigo que ya no existe. Se cancela: el veredicto que importa es el del
+# ultimo commit, y pagar minutos por juzgar un arbol muerto no ayuda a nadie.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# UN SOLO bloque `env` de primer nivel. Dos claves `env:` en el mismo mapa son
+# una clave duplicada de YAML, y GitHub Actions no la resuelve por precedencia:
+# rechaza el workflow entero antes de ejecutar un solo paso. El satelite recien
+# dado de alta se encontraba con que su unica puerta inevadible no arrancaba, y
+# el error --de sintaxis, no de gobernanza-- no nombraba ninguna regla.
+env:
+  # Version del estandar, FIJADA A UN TAG. El CI de este satelite no debe cambiar
+  # de comportamiento porque alguien publique en el marketplace: subir de version
+  # es un commit aqui, revisable como cualquier otro. Apuntar a `main` renuncia a
+  # builds reproducibles.
+  #
+  # ESTE NUMERO LO GOBIERNA EL NUCLEO, no quien copia la plantilla (G-176,
+  # ADR-0195). Es el pin con el que NACE todo satelite nuevo, asi que dejarlo
+  # atras no atrasa a un repositorio: hace nacer atrasados a los que aun no
+  # existen. Se quedo en `1.59.0` con `1.66.0` publicada --siete versiones-- y
+  # nadie lo dijo. Hoy lo dicen dos puertas: la de `--sync`, que se niega a
+  # publicar si este numero no es el que se publica, y `validate-deriva-estandar`
+  # en el CI del nucleo.
+  STANDARD_REF: unimar-core-1.90.0
+
+  # Identificador publico de la GitHub App del CI. No es secreto: va aqui para
+  # que se vea en el diff. Lo secreto es solo la clave privada.
+  UNIMAR_CI_CLIENT_ID: Iv23li6S5GfyBHJKzHGZ
+
+jobs:
+  gobernanza:
+    name: Validadores del estandar
+    runs-on: ubuntu-latest
+    steps:
+      # fetch-depth: 0 -- validate-trazabilidad recorre el historial y comprueba
+      # con `git cat-file` que los hashes de evidencia de los gaps cerrados
+      # existan. Con el clon superficial por defecto (profundidad 1) no estan, y
+      # el gate reportaria como colgante toda evidencia legitima.
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          # Node 22 como minimo: los validadores usan `glob` de node:fs/promises.
+          node-version: '24'
+
+      # Token efimero de la GitHub App `unimar-ci`, acotado al repositorio que
+      # se va a leer. Sustituye al token personal: una App no caduca ni pertenece
+      # a una persona. Inventario en `unimar_arch/.harness/secretos.json`.
+      #
+      # Sin `|| github.token` de reserva, a proposito: ese token no alcanza otro
+      # repositorio privado, asi que la reserva no arregla nada y convierte un
+      # secreto ausente en un fallo tardio y confuso.
+      - name: Token efimero para leer el estandar
+        id: app-token-1
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
+        with:
+          client-id: ${{ env.UNIMAR_CI_CLIENT_ID }}
+          private-key: ${{ secrets.UNIMAR_CI_APP_KEY }}
+          owner: unimar-peru
+          repositories: unimar-marketplace
+
+      - name: Obtener el estandar
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          repository: unimar-peru/unimar-marketplace
+          ref: ${{ env.STANDARD_REF }}
+          token: ${{ steps.app-token-1.outputs.token }}
+          path: .estandar
+
+      - name: Ruta de los validadores
+        run: echo "UNIMAR_CORE=$GITHUB_WORKSPACE/.estandar/plugins/unimar-core" >> "$GITHUB_ENV"
+
+      # Sin --fix: modo verificacion. Falla si MADUREZ.md o GAPS.md no estan
+      # normalizados, en vez de arreglarlos en silencio.
+      - name: Madurez medida y con evidencia (S-19)
+        run: node "$UNIMAR_CORE/scripts/validate-madurez.mjs"
+
+      - name: Registro de gaps valido y ordenado (S-20)
+        run: node "$UNIMAR_CORE/scripts/validate-gaps.mjs"
+
+      - name: Cada casilla de madurez < 5 tiene su gap (S-19, S-20)
+        run: node "$UNIMAR_CORE/scripts/validate-correspondencia.mjs"
+
+      - name: Encoding, texto mutilado, enlaces y anclas (S-09, S-10, SD-06)
+        run: node "$UNIMAR_CORE/scripts/validate-docs.mjs"
+
+      # Compila de verdad los diagramas, y por eso pide su motor: el validador lo
+      # instala fijado por version exacta (ADR-0181 §2.2). `--exigir-motor` hace
+      # que no poder compilar sea fallo, porque en el CI no poder comprobar no es
+      # aprobar (SD-05, ADR-0220).
+      - name: Todo diagrama Mermaid compila (SD-06)
+        run: node "$UNIMAR_CORE/scripts/validate-mermaid.mjs" --exigir-motor
+
+      - name: El pie de copyright no fecha (S-35)
+        run: node "$UNIMAR_CORE/scripts/validate-vigencia.mjs"
+
+      - name: Cada señal declara cuánto dura y quién puede alterarla (S-36)
+        run: node "$UNIMAR_CORE/scripts/validate-retencion-senal.mjs"
+
+      - name: Cada runtime declara su analizador estático y lo cablea (S-37)
+        run: node "$UNIMAR_CORE/scripts/validate-analisis-estatico.mjs"
+
+      # El ambito de runtime de un ADR local se declara en su front-matter
+      # (S-38, ADR-0213). Aqui la ola 1 no aplica --un ADR de satelite lleva
+      # identidad `ADR-<SIGLA>-NNN` y no numero de nucleo (S-15)--, asi que el
+      # validador CENSA y solo se pone rojo si un ADR declara el campo y lo
+      # declarado contradice al disco.
+      - name: El ámbito de runtime de un ADR se declara (S-38)
+        run: node "$UNIMAR_CORE/scripts/validate-ambito-runtime.mjs"
+
+      # El PRD y la historia tecnica declaran las secciones de su plantilla
+      # canonica (S-39, ADR-0223). El corte de ola es el repositorio: aqui el
+      # validador CENSA y no puede ponerse rojo hasta que el propietario arme
+      # la ola 2 (G-460). Sin objeto se ABSTIENE y lo dice.
+      - name: El PRD y la historia técnica declaran sus secciones (S-39)
+        run: node "$UNIMAR_CORE/scripts/validate-secciones-prd-historia-tecnica.mjs"
+
+      # Cada Blueprint declara qué hace su sistema cuando una dependencia
+      # SALIENTE no responde (S-42, ADR-0234). `denegar` es el valor por
+      # defecto y no cuesta nada; `permitir` --seguir operando sin ella--
+      # exige gap declarado, porque un fallo abierto sin dueño es una decisión
+      # de seguridad que nadie tomó. Sin Blueprints se ABSTIENE y lo dice.
+      - name: El Blueprint dice qué pasa si una dependencia cae (S-42)
+        run: node "$UNIMAR_CORE/scripts/validate-comportamiento-degradado.mjs"
+
+      # Ningún artefacto sale con una credencial dentro (S-43, ADR-0235). En el
+      # satélite la ola 2 CENSA y nunca puede ponerse roja: armarla es un acto
+      # explícito de su propietario, no una fecha que se dispara sola.
+      - name: Ningún artefacto lleva una credencial dentro (S-43)
+        run: node "$UNIMAR_CORE/scripts/validate-credencial-en-artefacto.mjs"
+
+      - name: Ninguna referencia G-NNN o ADR-NNNN cuelga (SD-02)
+        run: node "$UNIMAR_CORE/scripts/validate-trazabilidad.mjs"
+
+      - name: Estructura de los artefactos SDLC (S-01..S-05, S-13)
+        run: node "$UNIMAR_CORE/scripts/validate-satellite-base.mjs"
+
+      - name: Las reglas de herencia estan triajadas (S-15, S-16)
+        run: node "$UNIMAR_CORE/scripts/validate-triaje.mjs"
+
+      # Estructura del satelite: CONTRIBUTING.md con bucle de retorno, raiz de
+      # fuente declarada, esqueleto de la taxonomia, y ningun marcador sin
+      # sustituir. Sin esta puerta, S-18 depende de que el operador la recuerde.
+      - name: Estructura del satelite (S-16, S-18)
+        run: node "$UNIMAR_CORE/scripts/validate-estructura-satelite.mjs"
+
+      # El runner de agente que la norma predica es el que el instalador corre
+      # (G-316, ADR-0219). `ides` de _bmad/_config/manifest.yaml es lo que BMAD
+      # obedece: mientras declare otro runner, cualquier install lo regenera y
+      # ninguna limpieza es estable. Tambien bloquea el residuo VERSIONADO del
+      # runner anterior, que el instalador nunca borra al migrar. Sin _bmad/, se
+      # abstiene: S-17 reclama la instalacion en otro sitio.
+      - name: El runner declarado es el que corre (S-17)
+        run: node "$UNIMAR_CORE/scripts/validate-runner.mjs"
+
+      # Ubicacion de los artefactos SDLC (contrato de ubicacion, G-017): las cinco
+      # fases materializadas con su hub, y ningun artefacto generado suelto en
+      # docs/ raiz o bajo reference/. No aplica en libreria (ADR-0069).
+      - name: Ubicacion de artefactos SDLC (S-01..S-05, S-18)
+        run: node "$UNIMAR_CORE/scripts/validate-ubicacion-artefactos.mjs"
+
+      # La cadena PRD -> FS -> US -> TS + ADR -> TSR -> RN (G-172, ADR-0178).
+      # Compone con el paso anterior: aquel comprueba DONDE vive el artefacto,
+      # este lo que hay dentro. En un satelite el arbol docs/0N-... es el censo
+      # del producto, asi que aqui una referencia colgante BLOQUEA.
+      - name: La cadena de trazabilidad esta completa (SD-02, ADR-0178)
+        run: node "$UNIMAR_CORE/scripts/validate-cadena-artefactos.mjs"
+
+      # Demanda inter-sistema (ADR-0132): cada ficha
+      # reference/governance/demandas/DMD-*.yaml contra su esquema, su
+      # consistencia interna (id / solicitante / origen.prd) y las reglas de
+      # gobernanza -- diferir o rechazar exige motivo, aceptada exige
+      # atencion.prd. El gate se declaraba bloqueante y no lo invocaba nadie
+      # (G-361); su domicilio es este, porque en la fuente el validador se
+      # abstiene: el nucleo autora el estandar, no es receptor de demanda.
+      # No aplica si el satelite no lleva registro de demandas.
+      - name: Fichas de demanda inter-sistema (ADR-0132)
+        run: node "$UNIMAR_CORE/scripts/validate-demandas.mjs"
+
+      # Indice de iniciativas publicado (S-25, ADR-0140): un satelite de producto
+      # con PRDs DEBE publicar su initiatives-index.json y listar en el todos sus
+      # PRDs. Solo lectura; el gate F1 del tablero cubre continuidad/alcanzabilidad.
+      - name: Indice de iniciativas publicado (S-25)
+        run: node "$UNIMAR_CORE/scripts/validate-prd-index.mjs"
+
+      # La vinculacion al estandar se lee del repositorio (S-28, ADR-0180): este
+      # mismo fichero existe, git lo sigue, declara STANDARD_REF fijado a una
+      # etiqueta y algun `ref:` la usa. Un pin que ningun checkout consume es un
+      # comentario con dos puntos, y el diff ensena una version que no gobierna
+      # nada. Solo lectura: el nucleo exige, no escribe aqui (ADR-0088 S2.3).
+      - name: Vinculacion al estandar declarada (S-28)
+        run: node "$UNIMAR_CORE/scripts/validate-vinculacion-estandar.mjs"
+
+      # Fase 1 define, el tablero planifica (S-24, ADR-0134). Bloquea el gantt, el
+      # eje temporal, el trimestre como horizonte y las fechas de entrega
+      # declaradas por nombre; avisa de lo heuristico. Exceptua el historial de
+      # cambios (S-13): un gate que lo marcara empujaria a falsearlo.
+      - name: Fase 1 sin calendario (S-24)
+        run: node "$UNIMAR_CORE/scripts/validate-s24-fase1.mjs"
+
+      # El numero de un ADR, de una regla y de una ficha se reclama EMPUJANDO
+      # (S-26, ADR-0175, ADR-0197). Son los dos unicos pasos que preguntan AL
+      # REMOTO: la colision no vive dentro de una rama --ahi cada una es
+      # internamente coherente-- sino ENTRE ramas, donde ninguna ve a la otra.
+      # Por eso corren en cada push: el segundo llega despues del primero y lo
+      # ve. El `fetch-depth: 0` de arriba es lo que hace posible mirar; sin
+      # `origin/main` no juzgan y lo dicen, que no es aprobar pero tampoco es
+      # bloquear a quien clona en plano.
+      - name: Dos ADR de ramas distintas no llevan el mismo numero (S-26)
+        run: node "$UNIMAR_CORE/scripts/validate-adr-numeracion.mjs"
+
+      - name: La regla y la ficha tampoco repiten numero entre ramas (S-26)
+        run: node "$UNIMAR_CORE/scripts/validate-identificadores.mjs"
+
+      # Aviso, no puerta: la heuristica de SD-04 tiene falsos positivos. Sale 0
+      # aunque encuentre candidatos; su salida se lee en el log del PR.
+      - name: Criterios de aceptacion verificables (SD-04, aviso)
+        run: node "$UNIMAR_CORE/scripts/validate-criterios.mjs"
+
+      # Aviso, no puerta (ADR-0106 S6): los gates locales son la postura de
+      # seguridad; este paso solo reporta si el satelite los cablea. La seguridad
+      # no depende de este CI (P-LOCAL-02) — se corre aqui por visibilidad.
+      - name: Gates locales de calidad y seguridad (S-23, aviso)
+        run: node "$UNIMAR_CORE/scripts/validate-gates-locales.mjs"
+
+      # Aviso: coherencia del modelo Suite -> Sistema -> PRD (ADR-0120), si el
+      # satelite declara suite.yaml/sistema.yaml.
+      - name: Modelo Suite -> Sistema -> PRD (ADR-0120, aviso)
+        run: node "$UNIMAR_CORE/scripts/validate-suite.mjs"
+
+      - name: Lint de Markdown
+        run: >
+          npx --yes markdownlint-cli@0.39.0
+          --config .markdownlint.json
+          --ignore .claude --ignore _bmad --ignore _bmad-output --ignore .estandar
+          "**/*.md"
+
+  # El satelite anade aqui su job de build y pruebas (gate F3/F4 del SDLC).

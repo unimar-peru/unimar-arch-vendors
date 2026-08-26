@@ -1,0 +1,14 @@
+# Directorios que no son autoría de este satélite. Aquí, y no repetidos en cada
+# invocación de markdownlint, para que el hook, el CI y quien lo corra a mano
+# miren exactamente el mismo conjunto.
+
+node_modules/
+
+# Generado por BMAD y por los runners de agente.
+_bmad/
+_bmad-output/
+
+# Raíz de código fuente del satélite: es código, no documentación. Su Markdown
+# incidental (READMEs de librerías, fixtures) lo rige la convención del runtime,
+# no el linter documental de Unimar.
+RAIZ_DE_FUENTE/

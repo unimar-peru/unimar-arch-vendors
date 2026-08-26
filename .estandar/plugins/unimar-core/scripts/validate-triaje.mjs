@@ -56,14 +56,41 @@ if (!existsSync(reglasDoc)) {
   process.exit(1);
 }
 
-/** IDs canónicos, de las filas `| **S-NN** | ...` de la tabla de reglas. */
+/*
+ * IDs canónicos, de las filas `| **S-NN** | ...` de la tabla de reglas.
+ *
+ * Se acumulan TODAS las filas de cada número, no la última. Aquí el `Map` no
+ * colapsaba: SOBREESCRIBÍA. Una segunda fila `**S-34**` con contenido distinto
+ * desalojaba a la legítima, el satélite pasaba a triajar el nombre de la
+ * impostora y la regla real desaparecía de todos los mensajes —sin que ninguna
+ * salida dijera jamás que había dos— (G-398). Y esta tabla llega DENTRO del
+ * paquete: el satélite no puede corregirla, solo obedecerla, así que la
+ * ambigüedad tiene que detener el triaje en vez de resolverse en silencio a
+ * favor de la que llegó última.
+ */
 const canonicas = new Map();
-for (const linea of readFileSync(reglasDoc, 'utf-8').split('\n')) {
+readFileSync(reglasDoc, 'utf-8').split('\n').forEach((linea, i) => {
   const m = linea.match(/^\|\s*\*\*(S-\d{2})\*\*\s*\|\s*([^|]+)\|/);
-  if (m) canonicas.set(m[1], m[2].trim());
-}
+  if (!m) return;
+  if (!canonicas.has(m[1])) canonicas.set(m[1], []);
+  canonicas.get(m[1]).push({ nombre: m[2].trim(), linea: i + 1 });
+});
 if (canonicas.size === 0) {
   console.error('  ✘ No se pudo derivar ninguna regla de satellite-repo-rules.md. ¿Cambió el formato de la tabla?');
+  process.exit(1);
+}
+
+const ambiguas = [...canonicas].filter(([, filas]) => filas.length > 1);
+if (ambiguas.length) {
+  for (const [id, filas] of ambiguas) {
+    console.error(`  ✘ ${id} está declarada ${filas.length} veces en la tabla canónica del estándar:`);
+    for (const f of filas) console.error(`      línea ${f.linea}: ${f.nombre}`);
+  }
+  console.error(
+    '\n  Dos reglas distintas bajo el mismo número no son una: la segunda desplazaba a la\n'
+    + '  primera y este satélite habría triajado el nombre equivocado, en verde (G-398).\n'
+    + '  Esto no se arregla aquí: la tabla viene del estándar. Repórtalo en su repositorio.',
+  );
   process.exit(1);
 }
 
@@ -109,10 +136,10 @@ for (const [i, linea] of readFileSync(decisiones, 'utf-8').split('\n').entries()
   triajadas.set(id, { operacion, justificacion, linea: i + 1 });
 }
 
-for (const [id, nombre] of canonicas) {
+for (const [id, filas] of canonicas) {
   const t = triajadas.get(id);
   if (!t) {
-    fail(`${id} (${nombre}) no está triajada en DECISIONS.md.`);
+    fail(`${id} (${filas[0].nombre}) no está triajada en DECISIONS.md.`);
     continue;
   }
   if (!OPERACIONES.has(t.operacion)) {
